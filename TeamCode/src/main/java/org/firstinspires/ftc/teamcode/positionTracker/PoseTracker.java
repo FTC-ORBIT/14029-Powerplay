@@ -8,6 +8,21 @@ public class PoseTracker {
 
     public static void update() {
         Drivetrain.drive.update();
+        // * here all of the logic to decide if we can believe the sensors will go
+        /*
+         * if(distanceFromWall <= Constants.maxDistanceToBelieveDistanceSensor
+         * && headingToBelieveDistanceSensorInTolerance){
+         * x = cos(heading) * distanceFromWall
+         * }
+         * if(colorSensorInTolerance){
+         * if(blue){
+         * y = Constants.blueLineYPosition * Math.signum(robotPose.y)
+         * }else{
+         * y = Constants.redLineYPosition * Math.signum(robotPose.y)
+         * }
+         * }
+         */
+
         robotPose = Drivetrain.drive.getPoseEstimate();
     }
 
