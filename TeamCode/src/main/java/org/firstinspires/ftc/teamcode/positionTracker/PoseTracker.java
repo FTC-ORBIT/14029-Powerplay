@@ -21,6 +21,13 @@ public class PoseTracker {
          * y = Constants.redLineYPosition * Math.signum(robotPose.y)
          * }
          * }
+         * 
+         * // this is for 2 distance sensors
+         * if(distanceSensor1 + distanceSensor2 + 2 * robot radius >
+         * Constants.fieldWidth){
+         * heading = cos(Constants.fieldWidth / distanceSensor1 +
+         * distanceSensor2 + 2(robot radius))
+         * }
          */
 
         robotPose = Drivetrain.drive.getPoseEstimate();
