@@ -20,14 +20,13 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
-import org.firstinspires.ftc.teamcode.positionTracker.Pose2DP;
 
 public class Drivetrain {
 
     public static final DcMotor[] motors = new DcMotor[4];
     static ElapsedTime time = new ElapsedTime();
-    public static SampleMecanumDrive drive ;//= new SampleMecanumDrive(opModeClass.hardwareMap);
-    public static Pose2d lastPosition = drive.getPoseEstimate(); //TODO is this equal to the last Autonomous position?
+    public static SampleMecanumDrive drive;// = new SampleMecanumDrive(opModeClass.hardwareMap);
+    public static Pose2d lastPosition = drive.getPoseEstimate(); // TODO is this equal to the last Autonomous position?
     public static float lastTime = 0;
     public static Vector lastVelocity = getVelocity_FieldCS();
 
@@ -38,16 +37,15 @@ public class Drivetrain {
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
-        motors [0].setDirection(DcMotorSimple.Direction.REVERSE);
-        motors [2].setDirection(DcMotorSimple.Direction.REVERSE);
-        //TODO make sure to reverse the right motors according to your robot
-        //TODO if your initial robot position is not 0,0,0 make sure to fix the position (look for the function in the documentry). might be setPoseEstimate
+        // TODO make sure to reverse the right motors according to your robot
+        // TODO if your initial robot position is not 0,0,0 make sure to fix the
+        // position (look for the function in the documentry). might be setPoseEstimate
+        
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-
 
     public static void operate(final Vector velocity_W, float omega) {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
@@ -56,11 +54,11 @@ public class Drivetrain {
     }
     // did field centric
 
-    public static Vector getVelocity_FieldCS (){
+    public static Vector getVelocity_FieldCS() {
         drive.update();
         float currentTime = (float) time.seconds();
         Pose2d currentPosition = drive.getPoseEstimate();
-        Pose2d deltaPose = currentPosition.minus(lastPosition); //TODO maybe a name a little more logical?
+        Pose2d deltaPose = currentPosition.minus(lastPosition); // TODO maybe a name a little more logical?
         float deltaTime = currentTime - lastTime;
 
         float xVelocity = (float) (deltaPose.getX() / deltaTime);
@@ -70,22 +68,24 @@ public class Drivetrain {
         lastTime = currentTime;
         return new Vector(xVelocity, yVelocity);
     }
-    public static float getSpeed (){
+
+    public static float getSpeed() {
         return getVelocity_FieldCS().norm();
     }
-    public static Pose2d getPose_FieldCS (){
+
+    public static Pose2d getPose_FieldCS() {
         drive.update();
         return drive.getPoseEstimate();
     }
 
-    public static Vector getAcceleration (){
+    public static Vector getAcceleration() {
         drive.update();
         float currentTime = (float) time.seconds();
         Vector currentVelocity = getVelocity_FieldCS();
 
         Vector deltaVelocity = currentVelocity.subtract(lastVelocity);
         float deltaTime = currentTime - lastTime;
-        Vector acceleration = deltaVelocity.scale(1/deltaTime);
+        Vector acceleration = deltaVelocity.scale(1 / deltaTime);
 
         lastVelocity = currentVelocity;
         lastTime = currentTime;
@@ -97,10 +97,10 @@ public class Drivetrain {
             motor.setPower(0);
         }
     }
-    public static void setPosition(Pose2d pose2d){
-    drive.setPoseEstimate(pose2d);
-    }
 
+    public static void setPosition(Pose2d pose2d) {
+        drive.setPoseEstimate(pose2d);
+    }
 
     public static void drive(Vector drive, double r) {
         final double lfPower = drive.y + drive.x + r;
