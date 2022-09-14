@@ -19,16 +19,6 @@ public class Robot extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Drivetrain.init(this.hardwareMap);
-        OrbitGyro.init(this.hardwareMap);
-        boolean right = true;
-
         waitForStart();
-
-        while (right) {
-            PoseTracker.Pose2d robotPose = Drivetrain.getPose_FieldCS();
-        }
     }
-
 }

@@ -40,6 +40,7 @@ public class Drivetrain {
         // TODO make sure to reverse the right motors according to your robot
         // TODO if your initial robot position is not 0,0,0 make sure to fix the
         // position (look for the function in the documentry). might be setPoseEstimate
+        
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
