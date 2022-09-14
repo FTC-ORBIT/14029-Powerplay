@@ -17,22 +17,10 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 public class Robot extends LinearOpMode {
     // * set new robot pose to 0,0 and heading to 0
 
-
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain.drive.update();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Drivetrain.init(this.hardwareMap);
-        OrbitGyro.init(this.hardwareMap);
-        boolean right = true;
-
 
         waitForStart();
 
-        while (right) {
-            Drivetrain.drive.update();
-            Pose2d robotPose = Drivetrain.getPose_FieldCS();
-        }
     }
-
 }

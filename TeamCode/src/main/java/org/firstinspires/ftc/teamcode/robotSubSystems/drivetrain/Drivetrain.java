@@ -38,6 +38,8 @@ public class Drivetrain {
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
+        motors [0].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors [2].setDirection(DcMotorSimple.Direction.REVERSE);
         //TODO make sure to reverse the right motors according to your robot
         //TODO if your initial robot position is not 0,0,0 make sure to fix the position (look for the function in the documentry). might be setPoseEstimate
         for (final DcMotor motor : motors) {
