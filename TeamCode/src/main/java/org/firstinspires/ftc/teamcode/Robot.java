@@ -17,7 +17,10 @@ public class Robot extends LinearOpMode {
         OrbitGyro.init(hardwareMap);
 
         waitForStart();
-        Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+        while (!isStopRequested()) {
+            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+            telemetry.update();
+        }
     }
 }
