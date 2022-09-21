@@ -220,7 +220,6 @@ public class WebcamExample extends LinearOpMode {
                 webcam.pauseViewport();
             } else {
                 webcam.resumeViewport();
-            }
-        }
+            }        }
     }
 }
