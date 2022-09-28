@@ -16,6 +16,6 @@ public class DistSensor {
         sensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distanceSensor");
     }
 
-    public static float readDistance(){return (float) sensor.getDistance(DistanceUnit.CM);}
+    public static float getDistance(){return (float) sensor.getDistance(DistanceUnit.CM);}
 
 }
