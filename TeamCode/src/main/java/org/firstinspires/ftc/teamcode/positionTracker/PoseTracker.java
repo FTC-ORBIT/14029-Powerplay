@@ -15,7 +15,7 @@ public class PoseTracker {
     private static ElapsedTime time = new ElapsedTime();
     private static Vector lastVelocity = getVelocity_FieldCS();
     private static float lastTime = 0;
-    
+
 
     public static void init (HardwareMap hardwareMap){
         time.reset();
@@ -35,7 +35,7 @@ public class PoseTracker {
 
         lastPosition = currentPosition;
         lastTime = currentTime;
-        return new Vector(3, 5); // Im keeping this function so it would be easier in the future with road runner
+        return new Vector(xVelocity, yVelocity);
     }
 
     public static float getSpeed() {
