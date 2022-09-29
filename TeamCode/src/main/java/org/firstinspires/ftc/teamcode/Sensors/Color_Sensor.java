@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Sensors;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
