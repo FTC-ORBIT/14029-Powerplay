@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 @TeleOp(group =  "ColorSensor")
 public class ColoSensor extends LinearOpMode {
 
+
     ColorSensor color;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -16,11 +17,13 @@ public class ColoSensor extends LinearOpMode {
         // Wait for the Play button to be pressed
         waitForStart();
 
+        // While the Op Mode is running, update the telemetry values.
         while (!isStopRequested()) {
-            telemetry.addData("Red", color.red());
-            telemetry.addData("Green", color.green());
-            telemetry.addData("Blue", color.blue());
+            telemetry.addData("Red", ((255 * color.red())/4095));
+            telemetry.addData("Green", ((255 * color.green())/4095));
+            telemetry.addData("Blue", ((255 * color.blue())/4095));
             telemetry.update();
         }
     }
-}
+    }
+
