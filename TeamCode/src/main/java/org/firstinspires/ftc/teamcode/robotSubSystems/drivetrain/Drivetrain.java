@@ -45,6 +45,15 @@ public class Drivetrain {
     }
     // did field centric
 
+    public static float getSpeed() {
+        return getVelocity_FieldCS().norm();
+    }
+
+    public static Pose2d getPose_FieldCS() {
+        // drive.update(); don't need it..
+        return drive.getPoseEstimate();
+    }
+
     public static Vector getVelocity_FieldCS() {
         // ! drive.update(); - don't need that because we already updating somewhere
         // else...
@@ -60,15 +69,6 @@ public class Drivetrain {
         lastPosition = currentPosition;
         lastTime = currentTime;
         return new Vector(3, 5); // Im keeping this function so it would be easier in the future with road runner
-    }
-
-    public static float getSpeed() {
-        return getVelocity_FieldCS().norm();
-    }
-
-    public static Pose2d getPose_FieldCS() {
-        // drive.update(); don't need it..
-        return drive.getPoseEstimate();
     }
 
     public static Vector getAcceleration() {
