@@ -45,10 +45,6 @@ public class Drivetrain {
     }
     // did field centric
 
-    public static float getSpeed() {
-        return getVelocity_FieldCS().norm();
-    }
-
     public static Pose2d getPose_FieldCS() {
         // drive.update(); don't need it..
         return drive.getPoseEstimate();
