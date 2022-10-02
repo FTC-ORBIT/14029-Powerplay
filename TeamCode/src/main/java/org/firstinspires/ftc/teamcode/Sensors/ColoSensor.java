@@ -19,9 +19,9 @@ public class ColoSensor extends LinearOpMode {
 
         // While the Op Mode is running, update the telemetry values.
         while (!isStopRequested()) {
-            telemetry.addData("Red", ((255 * color.red())/4095));
-            telemetry.addData("Green", ((255 * color.green())/4095));
-            telemetry.addData("Blue", ((255 * color.blue())/4095));
+            telemetry.addData("Red", ((255 * color.red())/4095) > 255 ? 255 : ((255 * color.red())/4095));
+            telemetry.addData("Green", ((255 * color.green())/4095) > 255 ? 255 : ((255 * color.green())/4095));
+            telemetry.addData("Blue", ((255 * color.blue())/4095) > 255 ? 255 : ((255 * color.blue())/4095));
             telemetry.update();
         }
     }
