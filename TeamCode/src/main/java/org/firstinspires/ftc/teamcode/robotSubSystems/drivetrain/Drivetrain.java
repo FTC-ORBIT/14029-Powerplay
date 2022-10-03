@@ -52,33 +52,27 @@ public class Drivetrain {
     }
 
     public static Vector getVelocity_FieldCS() {
-        float currentTime = (float) time.seconds();
-        Pose2d deltaPose = pose.minus(lastPosition); // TODO maybe a name
+        Vector deltaPose = pose.minus(new Vector(lastPosition.x, lastPosition.y)); // TODO maybe a name
         // a little more logical?
-        float deltaTime = currentTime - lastTime;
 
         // float xVelocity = (float) (deltaPose.getX() / deltaTime);
         // float yVelocity = (float) (deltaPose.getY() / deltaTime);
 
         // * any operation you are doing both on x and y you can do as vector.
 
-        final Vector velocity = deltaPose.scale(1 / deltaTime);
+        final Vector velocity = deltaPose.scale(1 / GlobalData.deltaTime);
 
         lastPosition = pose;
-        lastTime = currentTime;
         return velocity;
     }
 
     public static Vector getAcceleration() {
-        float currentTime = (float) time.seconds();
         Vector currentVelocity = getVelocity_FieldCS();
 
         Vector deltaVelocity = currentVelocity.subtract(lastVelocity);
-        float deltaTime = currentTime - lastTime;
-        Vector acceleration = deltaVelocity.scale(1 / deltaTime);
+        Vector acceleration = deltaVelocity.scale(1 / GlobalData.deltaTime);
 
         lastVelocity = currentVelocity;
-        lastTime = currentTime;
         return acceleration;
     }
 

@@ -14,6 +14,8 @@ public class PoseTracker {
     private static Pose2d robotPose;
     private static Vector robotVelocity;
     private static Vector robotAcceleration;
+    private static float omega;
+    private static float lastAngle = robotPose.heading;
 
     public static void calcPose() { // * we are calling this function every cycle in the opmode.
         Drivetrain.drive.update(); // ! this is the only place we should call the update function.
@@ -25,6 +27,7 @@ public class PoseTracker {
         // TODO: here the velocity and acceleration will go.
         robotVelocity = getVelocity();
         robotAcceleration = getAcceleration();
+
     }
 
     public static Pose2d getPose() {
@@ -36,7 +39,13 @@ public class PoseTracker {
     }
 
     public static float getHeading() {
-        // return heading - I don't know how to get the heading in this pose2d class...
+        return robotPose.heading;
+    }
+
+    public static float getOmega() {
+        final float omega = (getHeading() - lastAngle) / GlobalData.deltaTime;
+        lastAngle = getHeading();
+        return omega;
     }
 
     public static Vector getVelocity() {

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Sensors.DistSensor;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.positionTracker;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
@@ -20,10 +21,14 @@ public class Robot extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()) {
+            GlobalData.currentTime = (float) time.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+            Drivetrain.operate(leftStick, (float) PoseTracker.robotPose.heading);
             telemetry.update();
             PoseTracker.calcPose();
+
+            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+            GlobalData.lastTime = GlobalData.currentTime;
         }
     }
 }
