@@ -16,7 +16,8 @@ public class Drivetrain {
 
     public static SampleMecanumDrive drive = new SampleMecanumDrive(opModeClass.hardwareMap);
 
-    public static Pose2d lastPosition = drive.getPoseEstimate(); // TODO is this
+    private static Pose2d pose;
+    public static Pose2d lastPosition = pose; // TODO is this
     // equal to the last Autonomous position?
     public static float lastTime = 0;
     public static Vector lastVelocity = getVelocity_FieldCS();
@@ -42,33 +43,33 @@ public class Drivetrain {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
+        pose = drive.getPoseEstimate();
     }
     // did field centric
 
     public static Pose2d getPose_FieldCS() {
-        // drive.update(); don't need it..
-        return drive.getPoseEstimate();
+        return pose;
     }
 
     public static Vector getVelocity_FieldCS() {
-        // ! drive.update(); - don't need that because we already updating somewhere
-        // else...
         float currentTime = (float) time.seconds();
-        Pose2d currentPosition = drive.getPoseEstimate();
-        Pose2d deltaPose = currentPosition.minus(lastPosition); // TODO maybe a name
+        Pose2d deltaPose = pose.minus(lastPosition); // TODO maybe a name
         // a little more logical?
         float deltaTime = currentTime - lastTime;
 
-        float xVelocity = (float) (deltaPose.getX() / deltaTime);
-        float yVelocity = (float) (deltaPose.getY() / deltaTime);
+        // float xVelocity = (float) (deltaPose.getX() / deltaTime);
+        // float yVelocity = (float) (deltaPose.getY() / deltaTime);
 
-        lastPosition = currentPosition;
+        // * any operation you are doing both on x and y you can do as vector.
+
+        final Vector velocity = deltaPose.scale(1 / deltaTime);
+
+        lastPosition = pose;
         lastTime = currentTime;
-        return new Vector(3, 5); // Im keeping this function so it would be easier in the future with road runner
+        return velocity;
     }
 
     public static Vector getAcceleration() {
-        // drive.update();
         float currentTime = (float) time.seconds();
         Vector currentVelocity = getVelocity_FieldCS();
 
