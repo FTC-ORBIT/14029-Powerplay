@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.positionTracker;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.Sensors.ColoSensor;
+import org.firstinspires.ftc.teamcode.Sensors.DistSensor;
+import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 
 public class PoseTracker {
 
@@ -68,4 +72,12 @@ public class PoseTracker {
     public static void resetPosition (){
         setPosition(new Pose2d(0,0,0));
     }
+
+    public static Pose2d getPositionFromDistSensor() {
+        double x = Math.sin(OrbitGyro.getAngle()) * DistSensor.getDistance();
+        double y = Math.cos(OrbitGyro.getAngle()) * DistSensor.getDistance();
+        Pose2d pose2d = new Pose2d().copy(x, y, OrbitGyro.getAngle());
+        return pose2d;
+    }
+
 }
