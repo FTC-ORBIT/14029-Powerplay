@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.ImageProc;
+package org.firstinspires.ftc.teamcode.ImageProc.AprilTag;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.ImageProc.AprilTag.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -147,37 +148,44 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null)
-        {
-            /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
-             */
-        }
-        else
-        {
-            /*
-             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
-             */
-
-            // e.g.
-            if(tagOfInterest.pose.x <= 20)
-            {
-                // do something
-            }
-            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
-            {
-                // do something else
-            }
-            else if(tagOfInterest.pose.x >= 50)
-            {
-                // do something else
-            }
+//        if(tagOfInterest == null)
+//        {
+//            /*
+//             * Insert your autonomous code here, presumably running some default configuration
+//             * since the tag was never sighted during INIT
+//             */
+//        }
+//        else
+//        {
+//            /*
+//             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
+//             */
+//
+//            // e.g.
+//            if(tagOfInterest.pose.x <= 20)
+//            {
+//                // do something
+//            }
+//            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
+//            {
+//                // do something else
+//            }
+//            else if(tagOfInterest.pose.x >= 50)
+//            {
+//                // do something else
+//            }
+//        }
+        if(tagOfInterest == null || tagOfInterest.id == LEFT){
+            //trajectory... (lef)
+        }else if(tagOfInterest.id == MIDDLE){
+            //trajectory... (middle)
+        }else{
+            //trajectory... (right)
         }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        //while (opModeIsActive()) {sleep(20);}
     }
 
     void tagToTelemetry(AprilTagDetection detection)
