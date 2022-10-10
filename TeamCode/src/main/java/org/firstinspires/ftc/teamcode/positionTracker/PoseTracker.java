@@ -7,15 +7,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
 public class PoseTracker {
     private static Pose2d robotPose;
     private static Vector robotVelocity;
     private static Vector robotAcceleration;
     private static float omega;
-    private static float lastAngle = robotPose.heading;
+    private static float lastAngle = (float) robotPose.getHeading();
 
     public static void calcPose() { // * we are calling this function every cycle in the opmode.
         Drivetrain.drive.update(); // ! this is the only place we should call the update function.
@@ -35,11 +36,11 @@ public class PoseTracker {
     }
 
     public static Vector getPosition() {
-        return new Vector(robotPose.x, robotPose.y);
+        return new Vector((float) robotPose.getX(), (float) robotPose.getY());
     }
 
     public static float getHeading() {
-        return robotPose.heading;
+        return (float) robotPose.getHeading();
     }
 
     public static float getOmega() {

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 public class Drivetrain {
 
@@ -43,7 +44,7 @@ public class Drivetrain {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        pose = drive.getPoseEstimate();
+        pose = drive.getPoseEstimate(); ////TODO: delete it because it may be useless
     }
     // did field centric
 
