@@ -7,12 +7,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class DistSensor {
 
-    static ModernRoboticsI2cRangeSensor sensor;
+    private final ModernRoboticsI2cRangeSensor sensor;
 
-    public static void init(HardwareMap hardwareMap) {
+    public DistSensor (HardwareMap hardwareMap) {
         sensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distanceSensor");
     }
 
-    public static float getDistance(){return (float) sensor.getDistance(DistanceUnit.CM);}
+    public float getDistance(){return (float) sensor.getDistance(DistanceUnit.CM);}
 
 }
