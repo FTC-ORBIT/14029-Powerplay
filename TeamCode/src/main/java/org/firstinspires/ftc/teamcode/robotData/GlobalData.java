@@ -14,5 +14,7 @@ public class GlobalData {
 
     public static double[] driverAxes = new double[6];
 
+    public static boolean isAutonomous;
+
 }
 //useless?
