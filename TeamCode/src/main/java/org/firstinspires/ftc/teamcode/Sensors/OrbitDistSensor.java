@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class DistSensor {
+public class OrbitDistSensor {
 
     private final ModernRoboticsI2cRangeSensor sensor;
 
-    public DistSensor (HardwareMap hardwareMap) {
+    public OrbitDistSensor(HardwareMap hardwareMap) {
         sensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distanceSensor");
     }
 
