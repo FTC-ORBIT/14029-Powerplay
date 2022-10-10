@@ -17,9 +17,11 @@ public class PoseTracker {
     private static ElapsedTime time = new ElapsedTime();
     private static Vector lastVelocity = getVelocity_FieldCS();
     private static float lastTime = 0;
+    private static OrbitDistSensor distSensor;
 
 
     public static void init (HardwareMap hardwareMap){
+        distSensor = new OrbitDistSensor(hardwareMap);
         time.reset();
         drive = new SampleMecanumDrive(hardwareMap);
         // TODO if your initial robot position is not 0,0,0 make sure to fix the position (look for the function in the documentry). might be setPoseEstimate
@@ -72,8 +74,8 @@ public class PoseTracker {
     }
 
     public static Pose2d getPositionFromDistSensor() {
-        double x = Math.sin(OrbitGyro.getAngle()) * OrbitDistSensor.getDistance();
-        double y = Math.cos(OrbitGyro.getAngle()) * OrbitDistSensor.getDistance();
+        double x = Math.sin(OrbitGyro.getAngle()) * distSensor.getDistance();
+        double y = Math.cos(OrbitGyro.getAngle()) * distSensor.getDistance(); 
         Pose2d pose2d = new Pose2d().copy(x, y, OrbitGyro.getAngle());
         return pose2d;
     }
