@@ -17,4 +17,9 @@ public class GlobalData {
     public static float lastTime = 0;
     public static float deltaTime = 0;
 
+
+    public static boolean isAutonomous;
+
 }
+//useless?
+
