@@ -70,11 +70,5 @@ public class PoseTracker {
         setPose(new Pose2d(0, 0, 0));
     }
 
-    public static Pose2d getPositionFromDistSensor() {
-        double x = Math.sin(OrbitGyro.getAngle()) * OrbitDistSensor.getDistance();
-        double y = Math.cos(OrbitGyro.getAngle()) * OrbitDistSensor.getDistance();
-        Pose2d pose2d = new Pose2d().copy(x, y, OrbitGyro.getAngle());
-        return pose2d;
-    }
 
 }
