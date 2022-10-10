@@ -13,18 +13,16 @@ import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 public class Drivetrain {
 
     public static final DcMotor[] motors = new DcMotor[4];
-    static ElapsedTime time = new ElapsedTime();
 
-    public static SampleMecanumDrive drive = new SampleMecanumDrive(opModeClass.hardwareMap);
+    public static SampleMecanumDrive drive;
 
     private static Pose2d pose;
-    public static Pose2d lastPosition = pose; // TODO is this
+    public static Vector lastPosition;
     // equal to the last Autonomous position?
     public static float lastTime = 0;
     public static Vector lastVelocity = getVelocity_FieldCS();
 
     public static void init(HardwareMap hardwareMap) {
-        time.reset();
         drive = new SampleMecanumDrive(hardwareMap);
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
@@ -53,17 +51,12 @@ public class Drivetrain {
     }
 
     public static Vector getVelocity_FieldCS() {
-        Vector deltaPose = pose.minus(new Vector(lastPosition.x, lastPosition.y)); // TODO maybe a name
-        // a little more logical?
+        Vector position = new Vector((float)pose.getX(),(float) pose.getY());
+        Vector deltaPosition = position.subtract(lastPosition);
 
-        // float xVelocity = (float) (deltaPose.getX() / deltaTime);
-        // float yVelocity = (float) (deltaPose.getY() / deltaTime);
+        final Vector velocity = deltaPosition.scale(1 / GlobalData.deltaTime);
 
-        // * any operation you are doing both on x and y you can do as vector.
-
-        final Vector velocity = deltaPose.scale(1 / GlobalData.deltaTime);
-
-        lastPosition = pose;
+        lastPosition = position;
         return velocity;
     }
 
