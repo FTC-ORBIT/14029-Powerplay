@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
@@ -38,7 +39,17 @@ public class PoseTracker {
     public static Vector getPosition() {
         return new Vector((float) robotPose.getX(), (float) robotPose.getY());
     }
-
+    public static void initColor(HardwareMap hardwareMap){
+        OrbitColorSensor.init(hardwareMap);
+    }
+    public static Vector updatePose(HardwareMap hardwareMap){
+        if (GlobalData.isAutonomous){
+            if (OrbitColorSensor.readColor(OrbitColorSensor.rgb()[0],OrbitColorSensor.rgb()[1],OrbitColorSensor.rgb()[2])){
+                resetPosition();
+            }
+        }
+        return getPosition();
+    }
     public static float getHeading() {
         return (float) robotPose.getHeading();
     }

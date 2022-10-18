@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode.Sensors;
+import android.media.UnsupportedSchemeException;
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+
+import org.firstinspires.ftc.teamcode.positionTracker.PoseTracker;
 
 public class OrbitColorSensor {
 
 
 
         private static ColorSensor color;
-
         public static void init(HardwareMap hardwareMap) {
             color = hardwareMap.get(com.qualcomm.robotcore.hardware.ColorSensor.class, "Color");
+
         }
 
         private static float colorMap(float num) {
