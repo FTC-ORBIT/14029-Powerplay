@@ -7,6 +7,7 @@ public class GlobalData {
 
     public static RobotState robotState = RobotState.TRAVEL;
     public static boolean inAutonomous;
+    public static boolean blueOrRedStart_Red;
     // Joystick buttons pressed (rising edge)
     public static boolean[] driverPressedButtons = new boolean[15];
     public static boolean[] driverReleasedButtons = new boolean[15];

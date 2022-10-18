@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitDistSensor;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
@@ -42,13 +43,28 @@ public class PoseTracker {
     public static void initColor(HardwareMap hardwareMap){
         OrbitColorSensor.init(hardwareMap);
     }
-    public static Vector updatePose(HardwareMap hardwareMap){
+    public static void updatePose(HardwareMap hardwareMap){
         if (GlobalData.isAutonomous){
-            if (OrbitColorSensor.readColor(OrbitColorSensor.rgb()[0],OrbitColorSensor.rgb()[1],OrbitColorSensor.rgb()[2])){
-                resetPosition();
+            String color = OrbitColorSensor.readColor(OrbitColorSensor.rgb()[0],OrbitColorSensor.rgb()[1],OrbitColorSensor.rgb()[2]);
+            float distSensor = OrbitDistSensor.getDistance();
+            if (color == "red"){
+                if (GlobalData.blueOrRedStart_Red){
+                    setPose(new Pose2d(150,distSensor,0));
+                }
+                else {
+                    setPose(new Pose2d(210, distSensor, 0));
+                }
+            }
+            else if (color == "blue"){
+                if (GlobalData.blueOrRedStart_Red){
+                    setPose(new Pose2d(210,distSensor,0));
+                }
+                else {
+                    setPose(new Pose2d(150, distSensor, 0));
+                }
             }
         }
-        return getPosition();
+        return;
     }
     public static float getHeading() {
         return (float) robotPose.getHeading();
