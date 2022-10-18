@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 public class Drivetrain {
 
-    public static final DcMotor[] motors = new DcMotor[4];
+    private static final DcMotor[] motors = new DcMotor[4];
 
     public static SampleMecanumDrive drive;
 
