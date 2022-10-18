@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.intake;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
 
     public static final DcMotor motors[] = new DcMotor[2];
+    private static float power;
 
     public void init(HardwareMap hardwareMap) {
 
@@ -19,20 +19,22 @@ public class Intake {
         }
     }
 
-    public void operate() {
-
-        for (final DcMotor motor : motors) {
-            motor.setPower(1);
-            //TODO: change power according to tests
+    public void operate(IntakeState state) {
+        switch (state) {
+            case COLLECT:
+                power = 1;
+                //TODO: adjust to appropriate value for collection
+                break;
+            case STOP:
+                power = 0;
+                break;
+            case DEPLETE:
+                power = -1;
+                //TODO: adjust to appropriate value for depletion
+                break;
         }
 
-    }
-
-    public void stop() {
-
-    }
-
-    public void reset() {
+        for (final DcMotor motor : motors) motor.setPower(power);
 
     }
 }
