@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.positionTracker;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistSensor;
+import org.firstinspires.ftc.teamcode.robotData.Constants;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
@@ -44,23 +41,26 @@ public class PoseTracker {
         OrbitColorSensor.init(hardwareMap);
     }
     public static void updatePose(HardwareMap hardwareMap){
-        if (GlobalData.isAutonomous){
-            String color = OrbitColorSensor.readColor(OrbitColorSensor.rgb()[0],OrbitColorSensor.rgb()[1],OrbitColorSensor.rgb()[2]);
-            float distSensor = OrbitDistSensor.getDistance();
+        String color = OrbitColorSensor.readColor(OrbitColorSensor.rgb()[0],OrbitColorSensor.rgb()[1],OrbitColorSensor.rgb()[2]);
+        float distanceFromWall = OrbitDistSensor.getDistance();
+        if (GlobalData.isAutonomous && distanceFromWall >= 30 && color == "red" || color == "blue"){
+            // needs to be in double
+            float[] xy = {(float) (Constants.distanceFromWall + (Constants.distanceOfColorFromMiddle * Math.abs(Math.cos(getHeading() + Constants.angleBetweenColorAndMiddle)))),
+                    (float) (distanceFromWall * Math.abs(Math.cos(getHeading())))};
             if (color == "red"){
                 if (GlobalData.blueOrRedStart_Red){
-                    setPose(new Pose2d(150,distSensor,0));
+                    setPose(new Pose2d(xy[0],xy[1],getHeading()));
                 }
                 else {
-                    setPose(new Pose2d(210, distSensor, 0));
+                    setPose(new Pose2d(xy[0] + Constants.differenceInDisBetweenColors, xy[1], getHeading()));
                 }
             }
             else if (color == "blue"){
                 if (GlobalData.blueOrRedStart_Red){
-                    setPose(new Pose2d(210,distSensor,0));
+                    setPose(new Pose2d(xy[0] + Constants.differenceInDisBetweenColors,xy[1], getHeading()));
                 }
                 else {
-                    setPose(new Pose2d(150, distSensor, 0));
+                    setPose(new Pose2d(xy[0], xy[1], getHeading()));
                 }
             }
         }
