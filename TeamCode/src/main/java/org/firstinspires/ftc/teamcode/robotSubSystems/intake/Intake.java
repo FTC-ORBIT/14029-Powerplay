@@ -19,7 +19,7 @@ public class Intake {
         }
     }
 
-    public void operate(IntakeState state) {
+    public static void operate(IntakeState state) {
         switch (state) {
             case COLLECT:
                 power = IntakeConstants.intakePower;
