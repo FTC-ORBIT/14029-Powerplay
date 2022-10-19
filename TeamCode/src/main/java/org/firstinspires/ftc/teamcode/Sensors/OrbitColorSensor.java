@@ -9,7 +9,7 @@ public class OrbitColorSensor {
         private static ColorSensor color;
 
         public static void init(HardwareMap hardwareMap) {
-            color = hardwareMap.get(com.qualcomm.robotcore.hardware.ColorSensor.class, "Color");
+            color = hardwareMap.get(ColorSensor.class, "Color");
         }
 
         private static float colorMap(float num) {
