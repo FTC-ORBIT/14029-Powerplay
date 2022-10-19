@@ -22,14 +22,14 @@ public class Intake {
     public void operate(IntakeState state) {
         switch (state) {
             case COLLECT:
-                power = 1;
+                power = IntakeConstants.intakePower;
                 //TODO: adjust to appropriate value for collection
                 break;
             case STOP:
                 power = 0;
                 break;
             case DEPLETE:
-                power = -1;
+                power = IntakeConstants.depletePower;
                 //TODO: adjust to appropriate value for depletion
                 break;
         }
