@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.ImageProc.AprilTag;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -48,13 +50,17 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
-        camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(720,480, OpenCvCameraRotation.UPRIGHT);
+                camera.setPipeline(aprilTagDetectionPipeline);
+                FtcDashboard.getInstance().startCameraStream(camera, 60);
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("place", aprilTagDetectionPipeline.getLatestDetections());
+                FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
 
             @Override
@@ -64,14 +70,16 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             }
         });
 
-        telemetry.setMsTransmissionInterval(50);
+
 
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
+        while (!isStopRequested())
         {
+            telemetry.setMsTransmissionInterval(50);
+
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if(currentDetections.size() != 0)

@@ -19,7 +19,7 @@ public class OpenCv extends OpMode {
     @Override
     public void init() {
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam");
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
