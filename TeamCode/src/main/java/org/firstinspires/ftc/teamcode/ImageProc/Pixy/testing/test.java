@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.ImageProc.Pixy.testing;
 
-import android.os.Environment;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,7 +8,6 @@ import org.firstinspires.ftc.teamcode.ImageProc.Pixy.hardware.PixyBlock;
 import org.firstinspires.ftc.teamcode.ImageProc.Pixy.hardware.PixyBlockList;
 import org.firstinspires.ftc.teamcode.ImageProc.Pixy.hardware.PixyCam;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;

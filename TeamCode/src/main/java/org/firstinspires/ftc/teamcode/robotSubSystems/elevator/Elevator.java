@@ -13,8 +13,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 
-import java.util.Base64.Encoder;
-
 public class Elevator {
     private static DcMotor firstMotor = null;
     private static DcMotor secondMotor = null;
@@ -29,13 +27,8 @@ public class Elevator {
     }
 
 
-    private static float getHeight(){
-        height = elevatorEncoder.getCurrentPosition() * gearRatio;
-        return height;
-    }
-
-
     public static void operate (ElevatorStates elevatorState){
+        final float height = elevatorEncoder.getCurrentPosition() * gearRatio;
         switch (elevatorState){
             case INTAKE:
                 elevatorPID.setWanted(intakeHeight);
@@ -53,8 +46,8 @@ public class Elevator {
                 elevatorPID.setWanted(highHeight);
                 break;
         }
-        firstMotor.setPower(elevatorPID.update(getHeight()));
-        secondMotor.setPower(elevatorPID.update(getHeight()));
+        firstMotor.setPower(elevatorPID.update(height));
+        secondMotor.setPower(elevatorPID.update(height));
     }
 
 }
