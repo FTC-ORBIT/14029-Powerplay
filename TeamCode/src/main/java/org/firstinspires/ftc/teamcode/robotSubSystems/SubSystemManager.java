@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robotSubSystems;
 
 import static org.firstinspires.ftc.teamcode.robotData.GlobalData.isGamePiece;
 import static org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw.clawServo;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw.isClawCorrectPos;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -20,10 +21,10 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 public class SubSystemManager {
 
     public static RobotState state = RobotState.TRAVEL;
-    static ElevatorStates elevatorState = ElevatorStates.INTAKE;
-    static ClawState clawState = ClawState.CLOSE;
-    static ArmState armState = ArmState.BACK;
-    static IntakeState intakeState = IntakeState.STOP;
+    private static ElevatorStates elevatorState = ElevatorStates.INTAKE;
+    private static ClawState clawState = ClawState.CLOSE;
+    private static ArmState armState = ArmState.BACK;
+    private static IntakeState intakeState = IntakeState.STOP;
 
     private static RobotState getState (Gamepad gamepad){
         return gamepad.b ? RobotState.TRAVEL : gamepad.a ? RobotState.INTAKE : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
@@ -39,18 +40,19 @@ public class SubSystemManager {
     }
 
     public static ElevatorStates getElevatorStateFromSecondDriver (Gamepad gamepad){
-        return elevatorState = gamepad.a ? ElevatorStates.GROUND : gamepad.b ? ElevatorStates.LOW : gamepad.x ? ElevatorStates.MID : gamepad.y ? ElevatorStates.HIGH : null;
+        return gamepad.a ? ElevatorStates.GROUND : gamepad.b ? ElevatorStates.LOW : gamepad.x ? ElevatorStates.MID : gamepad.y ? ElevatorStates.HIGH : null;
     }
 
 
     private static void setSubsystemToState(Gamepad gamepad1, Gamepad gamepad2) {
-        elevatorState = getElevatorStateFromSecondDriver(gamepad2);
+        final ElevatorStates fromSecondDriver = getElevatorStateFromSecondDriver(gamepad2);
+        if (fromSecondDriver != null) {elevatorState = fromSecondDriver;}
         switch (state) {
             case TRAVEL:
                 intakeState = IntakeState.STOP;
                 if (isGamePiece) {
                     clawState = ClawState.CLOSE;
-                    if (clawServo.getPosition() == ClawConstants.closed) {
+                    if (isClawCorrectPos(ClawConstants.closed)) {
                         elevatorState = ElevatorStates.LOW; // TODO need to check the timing when intaking
                         armState = ArmState.FRONT;
                     }
@@ -78,7 +80,7 @@ public class SubSystemManager {
                     clawState = ClawState.OPEN;
                 } else {
                     clawState = ClawState.CLOSE;
-                    if (clawServo.getPosition() == ClawConstants.closed) {
+                    if (isClawCorrectPos(ClawConstants.closed)) {
                         state = RobotState.TRAVEL;
                     }
                 }
@@ -94,6 +96,9 @@ public class SubSystemManager {
         }
         if (gamepad1.right_bumper){
             armState = armState == ArmState.FRONT ? ArmState.BACK : ArmState.FRONT;
+        }
+        if (gamepad1.y){
+            clawState = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
         }
         Intake.operate(intakeState);
         Elevator.operate(elevatorState);
