@@ -25,6 +25,8 @@ public class SubSystemManager {
     private static ClawState clawState = ClawState.CLOSE;
     private static ArmState armState = ArmState.BACK;
     private static IntakeState intakeState = IntakeState.STOP;
+    private static boolean lastRightBumperButtonState;
+    private static boolean lastYButtonState;
 
     private static RobotState getState (Gamepad gamepad){
         return gamepad.b ? RobotState.TRAVEL : gamepad.a ? RobotState.INTAKE : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
@@ -94,16 +96,22 @@ public class SubSystemManager {
                 break;
 
         }
-        if (gamepad1.right_bumper){
+        if (gamepad1.right_bumper && !lastRightBumperButtonState){
             armState = armState == ArmState.FRONT ? ArmState.BACK : ArmState.FRONT;
         }
-        if (gamepad1.y){
+
+        if (gamepad1.y && !lastYButtonState){
             clawState = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
         }
+
         Intake.operate(intakeState);
         Elevator.operate(elevatorState);
         Claw.operate(clawState);
         Arm.operate(armState);
+
+
+        lastYButtonState = gamepad1.y;
+        lastRightBumperButtonState = gamepad1.right_bumper;
     }
 
 }
