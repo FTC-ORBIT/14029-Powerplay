@@ -21,12 +21,17 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 public class SubSystemManager {
 
     public static RobotState state = RobotState.TRAVEL;
+    public static RobotState lastState = RobotState.TRAVEL;
     private static ElevatorStates elevatorState = ElevatorStates.INTAKE;
     private static ClawState clawState = ClawState.CLOSE;
     private static ArmState armState = ArmState.BACK;
+    private static ClawState clawStateDriver = ClawState.CLOSE;
+    private static ArmState armStateDriver = ArmState.BACK;
     private static IntakeState intakeState = IntakeState.STOP;
     private static boolean lastRightBumperButtonState;
     private static boolean lastYButtonState;
+    private static boolean rightBumperControl = false; // TODO maybe a better name?
+    private static boolean yButtonControl = false; // TODO maybe a better name?
 
     private static RobotState getState (Gamepad gamepad){
         return gamepad.b ? RobotState.TRAVEL : gamepad.a ? RobotState.INTAKE : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
@@ -49,11 +54,15 @@ public class SubSystemManager {
     private static void setSubsystemToState(Gamepad gamepad1, Gamepad gamepad2) {
         final ElevatorStates fromSecondDriver = getElevatorStateFromSecondDriver(gamepad2);
         if (fromSecondDriver != null) {elevatorState = fromSecondDriver;}
+        if (lastState != state){
+            rightBumperControl = false;
+            yButtonControl = false;
+        }
         switch (state) {
             case TRAVEL:
                 intakeState = IntakeState.STOP;
                 if (isGamePiece) {
-                    clawState = ClawState.CLOSE;
+                    clawState = ClawState.CLOSE ;
                     if (isClawCorrectPos(ClawConstants.closed)) {
                         elevatorState = ElevatorStates.LOW; // TODO need to check the timing when intaking
                         armState = ArmState.FRONT;
@@ -97,21 +106,24 @@ public class SubSystemManager {
 
         }
         if (gamepad1.right_bumper && !lastRightBumperButtonState){
-            armState = armState == ArmState.FRONT ? ArmState.BACK : ArmState.FRONT;
+            armStateDriver = armState == ArmState.FRONT ? ArmState.BACK : ArmState.FRONT;
+            rightBumperControl = true;
         }
 
         if (gamepad1.y && !lastYButtonState){
-            clawState = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
+            clawStateDriver = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
+            yButtonControl = true;
         }
 
         Intake.operate(intakeState);
         Elevator.operate(elevatorState);
-        Claw.operate(clawState);
-        Arm.operate(armState);
+        if (!yButtonControl) { Claw.operate(clawState); } else {Claw.operate(clawStateDriver);}
+        if (!rightBumperControl) { Arm.operate(armState); } else { Arm.operate(armStateDriver);}
 
 
         lastYButtonState = gamepad1.y;
         lastRightBumperButtonState = gamepad1.right_bumper;
+        lastState = state;
     }
 
 }
