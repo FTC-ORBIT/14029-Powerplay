@@ -8,12 +8,12 @@ public class Claw {
     private static float pos;
     public static Servo clawServo;
 
-    public static void init(HardwareMap hardwareMap){
+    public static void init(HardwareMap hardwareMap) {
         clawServo = hardwareMap.get(Servo.class, "clawServo");
     }
 
-    public static void operate(ClawState state){
-        switch (state){
+    public static void operate(ClawState state) {
+        switch (state) {
             case OPEN:
                 pos = ClawConstants.open;
                 break;
@@ -22,5 +22,9 @@ public class Claw {
                 break;
         }
         clawServo.setPosition(pos);
+    }
+
+    public static boolean isClawCorrectPos(float wantedPos) {
+        return clawServo.getPosition() == wantedPos ? true : false;
     }
 }
