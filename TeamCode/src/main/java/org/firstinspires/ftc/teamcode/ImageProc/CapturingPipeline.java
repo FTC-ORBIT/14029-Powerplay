@@ -31,7 +31,7 @@ public class Pipeline extends OpenCvPipeline {
         picFilePath = "/sdcard/FIRST/" + picFileName;
         Imgcodecs.imwrite(picFilePath, inFrame);
         Imgproc.putText(inFrame, picFileName, new Point(20, 20), 2, 1, new Scalar(255, 0 ,0));
-
+        
         return inFrame;
 
     }
