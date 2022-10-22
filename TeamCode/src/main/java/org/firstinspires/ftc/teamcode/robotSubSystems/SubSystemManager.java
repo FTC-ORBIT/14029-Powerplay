@@ -50,6 +50,10 @@ public class SubSystemManager {
         return gamepad.a ? ElevatorStates.GROUND : gamepad.b ? ElevatorStates.LOW : gamepad.x ? ElevatorStates.MID : gamepad.y ? ElevatorStates.HIGH : null;
     }
 
+    public static void gamePieceControl (Gamepad gamepad1){
+    isGamePiece = gamepad1.dpad_down? true : gamepad1.dpad_left? false : isGamePiece;
+    }
+
 
     private static void setSubsystemToState(Gamepad gamepad1, Gamepad gamepad2) {
         final ElevatorStates fromSecondDriver = getElevatorStateFromSecondDriver(gamepad2);
@@ -114,6 +118,8 @@ public class SubSystemManager {
             clawStateDriver = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
             yButtonControl = true;
         }
+
+        gamePieceControl(gamepad1);
 
         Intake.operate(intakeState);
         Elevator.operate(elevatorState);
