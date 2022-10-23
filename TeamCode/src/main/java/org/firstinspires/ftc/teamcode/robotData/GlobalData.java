@@ -17,6 +17,7 @@ public class GlobalData {
     public static float currentTime = 0;
     public static float lastTime = 0;
     public static float deltaTime = 0;
+    public static float distanceSensor =0;
 
 
     public static boolean isAutonomous;
