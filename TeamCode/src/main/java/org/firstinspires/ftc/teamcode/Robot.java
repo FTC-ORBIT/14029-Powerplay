@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,31 +16,32 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 
 @TeleOp(name = "main")
-public class Robot extends LinearOpMode {
+public class Robot extends OpMode {
     ElapsedTime time = new ElapsedTime();
+
+
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void init() {
         time.reset();
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
         PoseTracker.setPose(new Pose2d(0, 0, 0));
-
-        waitForStart();
-        while (!isStopRequested()) {
-            GlobalData.currentTime = (float) time.seconds();
-            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            Drivetrain.operate(leftStick, (float) PoseTracker.getHeading());
-            telemetry.update();
-            PoseTracker.calcPose(); //TODO: delete it because it may be useless
-            SubSystemManager.setState(gamepad1, gamepad2);
-            SubSystemManager.gamePieceControl(gamepad1);
-
-            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
-            GlobalData.lastTime = GlobalData.currentTime;
-
-            SubSystemManager.printStates(telemetry);
-        }
     }
 
+    @Override
+    public void loop() {
 
+        GlobalData.currentTime = (float) time.seconds();
+        Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        Drivetrain.operate(leftStick, (float) PoseTracker.getHeading());
+        telemetry.update();
+        PoseTracker.calcPose(); //TODO: delete it because it may be useless
+        SubSystemManager.setState(gamepad1, gamepad2);
+        SubSystemManager.gamePieceControl(gamepad1);
+
+        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+        GlobalData.lastTime = GlobalData.currentTime;
+
+        SubSystemManager.printStates(telemetry);
+    }
 }
