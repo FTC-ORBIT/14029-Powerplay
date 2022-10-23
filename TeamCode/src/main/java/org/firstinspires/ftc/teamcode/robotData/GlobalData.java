@@ -7,7 +7,7 @@ public class GlobalData {
     public static boolean isGamePiece = false; // removed it just for this branch so I will be able to change this variable in other places too
 
     public static RobotState robotState = RobotState.TRAVEL;
-    public static boolean inAutonomous;
+    public static boolean inAutonomous = true;
     // Joystick buttons pressed (rising edge)
     public static boolean[] driverPressedButtons = new boolean[15];
     public static boolean[] driverReleasedButtons = new boolean[15];
@@ -19,8 +19,5 @@ public class GlobalData {
     public static float deltaTime = 0;
 
 
-    public static boolean isAutonomous;
-
 }
-//useless?
 

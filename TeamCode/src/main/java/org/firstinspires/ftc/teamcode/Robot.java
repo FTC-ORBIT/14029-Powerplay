@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -20,12 +19,14 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
 @TeleOp(name = "main")
-public class Robot extends OpMode {
+public class Robot extends LinearOpMode {
+
     ElapsedTime time = new ElapsedTime();
 
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
+
         time.reset();
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
@@ -33,21 +34,23 @@ public class Robot extends OpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
+
+        GlobalData.inAutonomous = false;
+
+        waitForStart();
+
+        while (!isStopRequested()){
+
+            GlobalData.currentTime = (float) time.seconds();
+            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+            SubSystemManager.setState(gamepad1, gamepad2);
+
+            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+
+            GlobalData.lastTime = GlobalData.currentTime;
+            telemetry.update();
+        }
     }
 
-    @Override
-    public void loop() {
-
-        GlobalData.currentTime = (float) time.seconds();
-        Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        Drivetrain.operate(leftStick, 3);
-        telemetry.update();
-        SubSystemManager.setState(gamepad1, gamepad2);
-        SubSystemManager.gamePieceControl(gamepad1);
-
-        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
-        GlobalData.lastTime = GlobalData.currentTime;
-
-        SubSystemManager.printStates(telemetry);
-    }
 }

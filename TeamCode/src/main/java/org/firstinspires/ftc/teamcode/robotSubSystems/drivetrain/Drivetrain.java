@@ -22,7 +22,7 @@ public class Drivetrain {
     public static Vector lastVelocity = getVelocity_FieldCS();
 
     public static void init(HardwareMap hardwareMap) {
-        if (DrivetrainConstants.isAutonomous) drive = new SampleMecanumDrive(hardwareMap);
+        if (GlobalData.inAutonomous) drive = new SampleMecanumDrive(hardwareMap);
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");

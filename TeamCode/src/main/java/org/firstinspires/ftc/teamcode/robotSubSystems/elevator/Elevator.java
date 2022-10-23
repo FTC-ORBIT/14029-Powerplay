@@ -23,6 +23,7 @@ public class Elevator {
     private static final PID elevatorPID = new PID(kP, 0, 0, 0, 0);
     private static float lastStateHeight;
     private static boolean lastOverrideState = false;
+    private  static float elevatorPower = 0f;
 
     public static void init(HardwareMap hardwareMap){
         firstMotor = hardwareMap.get(DcMotor.class, "firstMotor");
@@ -30,43 +31,35 @@ public class Elevator {
         //TODO reverse the motors if we need to
     }
 
-    private static void overrideSetup (float stateHeight){
-        lastStateHeight = stateHeight;
-        lastOverrideState = false;
-    }
 
     public static void operate (ElevatorStates elevatorState, Gamepad gamepad1){
         final float height = elevatorEncoder.getCurrentPosition() * gearRatio;
         switch (elevatorState){
             case INTAKE:
-                overrideSetup(intakeHeight);
                 elevatorPID.setWanted(intakeHeight);
                 break;
             case GROUND:
-                overrideSetup(groundHeight);
                 elevatorPID.setWanted(groundHeight);
                 break;
             case LOW:
-                overrideSetup(lowHeight);
                 elevatorPID.setWanted(lowHeight);
                 break;
             case MID:
-                overrideSetup(midHeight);
                 elevatorPID.setWanted(midHeight);
                 break;
             case HIGH:
-                overrideSetup(highHeight);
                 elevatorPID.setWanted(highHeight);
                 break;
             case OVERRIDE:
-                if (!lastOverrideState) {overrideHeight = lastStateHeight;}
-                ElevatorConstants.overrideHeight += gamepad1.right_stick_y;
-                lastOverrideState = true;
-                elevatorPID.setWanted(overrideHeight);
+                elevatorPower = gamepad1.right_stick_y;
                 break;
         }
-        firstMotor.setPower(elevatorPID.update(height));
-        secondMotor.setPower(elevatorPID.update(height));
+        if(!elevatorState.equals(ElevatorStates.OVERRIDE)){
+            elevatorPower = (float) elevatorPID.update(height);
+        }
+        
+        firstMotor.setPower(elevatorPower);
+        secondMotor.setPower(elevatorPower);
     }
 
 }
