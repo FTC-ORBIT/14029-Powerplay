@@ -12,8 +12,12 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.positionTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
+import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
+import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
 @TeleOp(name = "main")
 public class Robot extends OpMode {
@@ -25,7 +29,10 @@ public class Robot extends OpMode {
         time.reset();
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
-        PoseTracker.setPose(new Pose2d(0, 0, 0));
+        Elevator.init(hardwareMap);
+        Claw.init(hardwareMap);
+        Arm.init(hardwareMap);
+        Intake.init(hardwareMap);
     }
 
     @Override
@@ -33,9 +40,8 @@ public class Robot extends OpMode {
 
         GlobalData.currentTime = (float) time.seconds();
         Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        Drivetrain.operate(leftStick, (float) PoseTracker.getHeading());
+        Drivetrain.operate(leftStick, 3);
         telemetry.update();
-        PoseTracker.calcPose(); //TODO: delete it because it may be useless
         SubSystemManager.setState(gamepad1, gamepad2);
         SubSystemManager.gamePieceControl(gamepad1);
 
