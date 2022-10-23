@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -16,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp(name = "Camera test")
 public class OpenCv extends LinearOpMode {
     OpenCvCamera camera;
-    Pipeline pipeline = new Pipeline(telemetry);
+    MainPipeline pipeline = new MainPipeline(telemetry);
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
@@ -28,14 +27,11 @@ public class OpenCv extends LinearOpMode {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                if(gamepad1.a) {
-                    camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                    camera.setPipeline(pipeline);
-                    FtcDashboard.getInstance().startCameraStream(camera, 60);
-                    TelemetryPacket packet = new TelemetryPacket();
-                    //packet.put("place", pipeline.picCount);
-                    FtcDashboard.getInstance().sendTelemetryPacket(packet);
-                }
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                camera.setPipeline(pipeline);
+                FtcDashboard.getInstance().startCameraStream(camera, 1);
+                TelemetryPacket packet = new TelemetryPacket();
+                FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
 
             @Override
@@ -43,6 +39,12 @@ public class OpenCv extends LinearOpMode {
 
             }
         });
+        telemetry.update();
+        waitForStart();
+        while(!isStopRequested()){
+            waitForStart();
+
+        }
 
     }
     }

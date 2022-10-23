@@ -55,7 +55,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(720,480, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
                 camera.setPipeline(aprilTagDetectionPipeline);
                 FtcDashboard.getInstance().startCameraStream(camera, 60);
                 TelemetryPacket packet = new TelemetryPacket();
