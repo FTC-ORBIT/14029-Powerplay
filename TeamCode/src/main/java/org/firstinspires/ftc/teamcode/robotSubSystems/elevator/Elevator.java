@@ -62,6 +62,8 @@ public class Elevator {
                 if (!lastOverrideState) {overrideHeight = lastStateHeight;}
                 ElevatorConstants.overrideHeight += gamepad1.right_stick_y;
                 lastOverrideState = true;
+                elevatorPID.setWanted(overrideHeight);
+                break;
         }
         firstMotor.setPower(elevatorPID.update(height));
         secondMotor.setPower(elevatorPID.update(height));
