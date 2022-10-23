@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.positionTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
-//import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
+import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
@@ -29,10 +31,13 @@ public class Robot extends LinearOpMode {
             Drivetrain.operate(leftStick, (float) PoseTracker.getHeading());
             telemetry.update();
             PoseTracker.calcPose(); //TODO: delete it because it may be useless
-            //setState();
+            SubSystemManager.setState(gamepad1, gamepad2);
+            SubSystemManager.gamePieceControl(gamepad1);
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
             GlobalData.lastTime = GlobalData.currentTime;
+
+            SubSystemManager.printStates(telemetry);
         }
     }
 
