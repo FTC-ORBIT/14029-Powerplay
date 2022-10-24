@@ -36,6 +36,9 @@ public class Robot extends LinearOpMode {
         Intake.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
+        GlobalData.currentTime = 0;
+        GlobalData.lastTime = 0;
+        GlobalData.deltaTime = 0; // should we write it as a function??
 
         waitForStart();
 
