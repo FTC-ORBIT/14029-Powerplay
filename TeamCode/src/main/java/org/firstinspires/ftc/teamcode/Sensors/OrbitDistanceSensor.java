@@ -16,13 +16,7 @@ public class OrbitDistanceSensor {
     }
 
     public float getDistance(){
-        float distance = (float) distanceSensor.getDistance(DistanceUnit.CM);
-        if ( distance < 200) {
-            lastDistance = distance;
-            return distance;
-        } else {
-            return lastDistance;
-        }
+          return (float) distanceSensor.getDistance(DistanceUnit.CM);
     }
 
 }
