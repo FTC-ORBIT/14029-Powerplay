@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorCo
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.kP;
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.lowHeight;
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.midHeight;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.overrideHeight;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
