@@ -6,10 +6,10 @@ public class OrbitColorSensor {
 
 
 
-        private ColorSensor color;
+        private final ColorSensor colorSensor;
 
-        public void init(HardwareMap hardwareMap) {
-            color = hardwareMap.get(ColorSensor.class, "Color");
+        public OrbitColorSensor(HardwareMap hardwareMap) {
+            colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         }
 
         private float colorMap(float num) {
@@ -17,7 +17,7 @@ public class OrbitColorSensor {
         }
 
         public float[] rgb() {
-            return new float[]{colorMap(color.red()), colorMap(color.green()), colorMap(color.blue())};
+            return new float[]{colorMap(colorSensor.red()), colorMap(colorSensor.green()), colorMap(colorSensor.blue())};
         }
 
     }

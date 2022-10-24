@@ -53,7 +53,7 @@ public class SubSystemManager {
     private static void setSubsystemToState(Gamepad gamepad1, Gamepad gamepad2) {
         final ElevatorStates fromSecondDriver = getElevatorStateFromSecondDriver(gamepad2);
         if (fromSecondDriver != null) {elevatorState = fromSecondDriver;}
-        if (lastState != state){
+        if (!lastState.equals(state)){
             rightBumperControl = false;
             yButtonControl = false;
             rightStickControl = false;

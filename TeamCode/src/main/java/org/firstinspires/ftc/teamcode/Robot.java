@@ -1,20 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
-import org.firstinspires.ftc.teamcode.positionTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
-import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
@@ -22,6 +20,8 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 public class Robot extends LinearOpMode {
 
     ElapsedTime time = new ElapsedTime();
+    OrbitDistanceSensor distanceSensor;
+    OrbitColorSensor colorSensor;
 
 
     @Override
@@ -53,6 +53,7 @@ public class Robot extends LinearOpMode {
 
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
+            telemetry.addData("distance", distanceSensor.getDistance());
         }
     }
 
