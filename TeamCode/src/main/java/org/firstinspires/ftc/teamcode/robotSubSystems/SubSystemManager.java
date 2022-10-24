@@ -28,7 +28,6 @@ public class SubSystemManager {
     private static IntakeState intakeState = IntakeState.STOP;
     private static boolean lastRightBumperButtonState;
     private static boolean lastYButtonState;
-    private static boolean lastRightStickState;
     private static boolean rightBumperControl = false; // TODO maybe a better name?
     private static boolean yButtonControl = false; // TODO maybe a better name?
     private static boolean rightStickControl = false; //TODO maybe better name?
@@ -129,7 +128,6 @@ public class SubSystemManager {
 
         lastYButtonState = gamepad1.y;
         lastRightBumperButtonState = gamepad1.right_bumper;
-        lastRightStickState = gamepad1.right_stick_button;
         lastState = state;
     }
 

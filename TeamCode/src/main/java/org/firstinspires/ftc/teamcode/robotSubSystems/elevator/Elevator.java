@@ -57,7 +57,7 @@ public class Elevator {
         if(!elevatorState.equals(ElevatorStates.OVERRIDE)){
             elevatorPower = (float) elevatorPID.update(height);
         }
-        
+
         firstMotor.setPower(elevatorPower);
         secondMotor.setPower(elevatorPower);
     }
