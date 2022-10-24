@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 
-public class ElevatorConstans {
+public class ElevatorConstants {
     public static final float intakeHeight = 0;
     public static final float groundHeight = 0;
     public static final float lowHeight = 0;

@@ -8,7 +8,7 @@ public class Intake {
     public static final DcMotor motors[] = new DcMotor[2];
     private static float power;
 
-    public void init(HardwareMap hardwareMap) {
+    public static void init(HardwareMap hardwareMap) {
 
         motors[0] = hardwareMap.get(DcMotor.class, "IntakeR");
         motors[1] = hardwareMap.get(DcMotor.class, "IntakeL");

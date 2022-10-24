@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.gearRatio;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.groundHeight;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.highHeight;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.intakeHeight;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.kP;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.lowHeight;
-import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstans.midHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.gearRatio;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.groundHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.highHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.intakeHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.kP;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.lowHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.midHeight;
+import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.overrideHeight;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
@@ -19,6 +21,9 @@ public class Elevator {
     private static final DcMotor elevatorEncoder = firstMotor; //or second motor?
     private static float height;
     private static final PID elevatorPID = new PID(kP, 0, 0, 0, 0);
+    private static float lastStateHeight;
+    private static boolean lastOverrideState = false;
+    private  static float elevatorPower = 0f;
 
     public static void init(HardwareMap hardwareMap){
         firstMotor = hardwareMap.get(DcMotor.class, "firstMotor");
@@ -27,7 +32,7 @@ public class Elevator {
     }
 
 
-    public static void operate (ElevatorStates elevatorState){
+    public static void operate (ElevatorStates elevatorState, Gamepad gamepad1){
         final float height = elevatorEncoder.getCurrentPosition() * gearRatio;
         switch (elevatorState){
             case INTAKE:
@@ -45,9 +50,16 @@ public class Elevator {
             case HIGH:
                 elevatorPID.setWanted(highHeight);
                 break;
+            case OVERRIDE:
+                elevatorPower = gamepad1.right_stick_y;
+                break;
         }
-        firstMotor.setPower(elevatorPID.update(height));
-        secondMotor.setPower(elevatorPID.update(height));
+        if(!elevatorState.equals(ElevatorStates.OVERRIDE)){
+            elevatorPower = (float) elevatorPID.update(height);
+        }
+
+        firstMotor.setPower(elevatorPower);
+        secondMotor.setPower(elevatorPower);
     }
 
 }
