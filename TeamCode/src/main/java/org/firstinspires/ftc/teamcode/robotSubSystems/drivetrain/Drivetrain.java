@@ -22,7 +22,10 @@ public class Drivetrain {
     public static Vector lastVelocity = getVelocity_FieldCS();
 
     public static void init(HardwareMap hardwareMap) {
-        if (GlobalData.inAutonomous) drive = new SampleMecanumDrive(hardwareMap);
+        if (GlobalData.inAutonomous) {
+            drive = new SampleMecanumDrive(hardwareMap);
+            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        };
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
@@ -34,14 +37,13 @@ public class Drivetrain {
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public static void operate(final Vector velocity_W, float omega) {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        pose = drive.getPoseEstimate(); ////TODO: delete it because it may be useless
+        if (GlobalData.inAutonomous) { pose = drive.getPoseEstimate() ;}; ////TODO: delete it because it may be useless
     }
     // did field centric
 

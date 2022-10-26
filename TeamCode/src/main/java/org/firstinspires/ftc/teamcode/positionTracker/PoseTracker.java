@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.positionTracker;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+import org.firstinspires.ftc.teamcode.OrbitUtils.RGB;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -12,6 +13,7 @@ public class PoseTracker {
     private static Vector robotAcceleration;
     private static float omega;
     private static float lastAngle = (float) robotPose.getHeading();
+    private float[] rgb;
 
     public static void calcPose() { // * we are calling this function every cycle in the opmode.
         Drivetrain.drive.update(); // ! this is the only place we should call the update function.
@@ -66,4 +68,8 @@ public class PoseTracker {
     }
 
 
+    public void updatePositionAutonomous (RGB rgb){
+
+    }
+    //move this function as soon as there is gonna be an autonomous code
 }
