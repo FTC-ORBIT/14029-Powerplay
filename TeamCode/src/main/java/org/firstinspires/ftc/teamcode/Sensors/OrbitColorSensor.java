@@ -19,8 +19,8 @@ public class OrbitColorSensor {
         }
 
         public RGB rgb() {
-            final RGB rgb = new RGB();
-            return new RGB();
+            final RGB rgb = new RGB(colorSensor.red(), colorSensor.green(), colorSensor.blue());
+            return rgb;
         }
 
     }

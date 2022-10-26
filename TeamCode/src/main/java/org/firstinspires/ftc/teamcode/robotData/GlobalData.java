@@ -17,6 +17,8 @@ public class GlobalData {
     public static float currentTime = 0;
     public static float lastTime = 0;
     public static float deltaTime = 0;
+    final public static float red = 0;
+    final public static float blue = 0;
 
 
 }
