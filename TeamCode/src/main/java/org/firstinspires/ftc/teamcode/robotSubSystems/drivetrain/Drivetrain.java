@@ -19,7 +19,7 @@ public class Drivetrain {
     public static Vector lastPosition;
     // equal to the last Autonomous position?
     public static float lastTime = 0;
-    public static Vector lastVelocity = getVelocity_FieldCS();
+    public static Vector lastVelocity = GlobalData.inAutonomous == true ? getVelocity_FieldCS() : null;
 
     public static void init(HardwareMap hardwareMap) {
         if (GlobalData.inAutonomous) drive = new SampleMecanumDrive(hardwareMap);
