@@ -8,15 +8,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class OrbitDistanceSensor {
 
-    private final DistanceSensor distanceSensor;
-    private float lastDistance;
+  private final DistanceSensor distanceSensor;
+  private float lastDistance;
 
-    public OrbitDistanceSensor(HardwareMap hardwareMap) {
-      distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor")  ;
-    }
+  public OrbitDistanceSensor(HardwareMap hardwareMap) {
+    distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+  }
 
-    public float getDistance(){
-          return (float) distanceSensor.getDistance(DistanceUnit.CM);
-    }
+  public float getDistance() {
+    return (float) distanceSensor.getDistance(DistanceUnit.CM);
+  }
 
 }

@@ -27,7 +27,6 @@ public class Robot extends LinearOpMode {
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -45,11 +44,11 @@ public class Robot extends LinearOpMode {
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
         GlobalData.lastTime = 0;
-        GlobalData.deltaTime = 0; // should we write it as a function??
+        GlobalData.deltaTime = 0;
 
         waitForStart();
 
-        while (!isStopRequested()){
+        while (!isStopRequested()) {
 
             GlobalData.currentTime = (float) time.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);

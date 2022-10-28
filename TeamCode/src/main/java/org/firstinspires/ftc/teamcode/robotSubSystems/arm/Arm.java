@@ -6,14 +6,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm {
 
     private static float pos;
-    public static Servo armServo;
+    public static final Servo armServo;
 
-    public static void init(HardwareMap hardwareMap){
+    public static void init(HardwareMap hardwareMap) {
         armServo = hardwareMap.get(Servo.class, "armServo");
     }
 
-    public static void operate(ArmState state){
-        switch (state){
+    public static void operate(ArmState state) {
+        switch (state) {
             case FRONT:
                 pos = ArmConstants.front;
                 break;
@@ -24,8 +24,7 @@ public class Arm {
         armServo.setPosition(pos);
     }
 
-
-    public static void reset(){
-        armServo.setPosition(ArmConstants.reset);
+    public static void reset() {
+        armServo.setPosition(ArmConstants.back); // TODO or front...
     }
 }

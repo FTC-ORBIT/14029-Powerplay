@@ -22,12 +22,13 @@ public class Drivetrain {
     public static Vector lastVelocity = GlobalData.inAutonomous == true ? getVelocity_FieldCS() : null;
 
     public static void init(HardwareMap hardwareMap) {
-        if (GlobalData.inAutonomous) drive = new SampleMecanumDrive(hardwareMap);
+        if (GlobalData.inAutonomous)
+            drive = new SampleMecanumDrive(hardwareMap);
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
-        // TODO make sure to reverse the right motors according to your robot
+
         // TODO if your initial robot position is not 0,0,0 make sure to fix the
         // position (look for the function in the documentry). might be setPoseEstimate
 
@@ -41,7 +42,7 @@ public class Drivetrain {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        pose = drive.getPoseEstimate(); ////TODO: delete it because it may be useless
+        pose = drive.getPoseEstimate(); //// TODO: delete it because it may be useless
     }
     // did field centric
 
@@ -50,7 +51,7 @@ public class Drivetrain {
     }
 
     public static Vector getVelocity_FieldCS() {
-        Vector position = new Vector((float)pose.getX(),(float) pose.getY());
+        Vector position = new Vector((float) pose.getX(), (float) pose.getY());
         Vector deltaPosition = position.subtract(lastPosition);
 
         final Vector velocity = deltaPosition.scale(1 / GlobalData.deltaTime);
