@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.OrbitUtils;
 
-public final class Angle {
+public final class Angle{
 
     public static final float halfPI = (float) Math.PI / 2;
     public static final float pi = (float) Math.PI;

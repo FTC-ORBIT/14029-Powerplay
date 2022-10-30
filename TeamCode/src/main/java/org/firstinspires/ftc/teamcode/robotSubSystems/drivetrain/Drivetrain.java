@@ -77,7 +77,7 @@ public class Drivetrain {
         }
     }
 
-    public static void drive(Vector drive, double r) {
+    private static void drive(Vector drive, double r) {
         final double lfPower = drive.y + drive.x + r;
         final double rfPower = drive.y - drive.x - r;
         final double lbPower = drive.y - drive.x + r;
