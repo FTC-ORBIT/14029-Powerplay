@@ -15,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp(name = "Camera test")
 public class OpenCv extends LinearOpMode {
     OpenCvCamera camera;
-    MainPipeline pipeline = new MainPipeline(telemetry);
+    TestPipeline pipeline = new TestPipeline(telemetry);
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
