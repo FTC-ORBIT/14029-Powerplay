@@ -15,25 +15,22 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 
 public class Elevator {
-    private static DcMotor firstMotor = null;
-    private static DcMotor secondMotor = null;
-    private static final DcMotor elevatorEncoder = firstMotor; //or second motor?
+    private static DcMotor motors[] = new DcMotor[2];
+    private static final DcMotor elevatorEncoder = firstMotor;
     private static float height;
     private static final PID elevatorPID = new PID(kP, 0, 0, 0, 0);
     private static float lastStateHeight;
     private static boolean lastOverrideState = false;
-    private  static float elevatorPower = 0f;
+    private static float elevatorPower = 0f;
 
-    public static void init(HardwareMap hardwareMap){
-        firstMotor = hardwareMap.get(DcMotor.class, "firstMotor");
-        secondMotor = hardwareMap.get(DcMotor.class, "secondMotor");
-        //TODO reverse the motors if we need to
+    public static void init(HardwareMap hardwareMap) {
+        motors[0] = hardwareMap.get(DcMotor.class, "firstElevatorMotor");
+        motors[1] = hardwareMap.get(DcMotor.class, "secondElevatorMotor");
     }
 
-
-    public static void operate (ElevatorStates elevatorState, Gamepad gamepad1){
+    public static void operate(ElevatorStates elevatorState, Gamepad gamepad1) {
         final float height = elevatorEncoder.getCurrentPosition() * gearRatio;
-        switch (elevatorState){
+        switch (elevatorState) {
             case INTAKE:
                 elevatorPID.setWanted(intakeHeight);
                 break;
@@ -53,12 +50,12 @@ public class Elevator {
                 elevatorPower = gamepad1.right_stick_y;
                 break;
         }
-        if(!elevatorState.equals(ElevatorStates.OVERRIDE)){
+        if (!elevatorState.equals(ElevatorStates.OVERRIDE)) {
             elevatorPower = (float) elevatorPID.update(height);
         }
 
-        firstMotor.setPower(elevatorPower);
-        secondMotor.setPower(elevatorPower);
+        motors[0].setPower(elevatorPower);
+        motors[1].setPower(elevatorPower);
     }
 
 }

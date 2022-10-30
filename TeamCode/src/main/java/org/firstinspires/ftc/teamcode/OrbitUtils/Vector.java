@@ -14,9 +14,11 @@ public final class Vector {
 
     public static Vector zero() {
         return new Vector(0, 0);
-    } //returns Vector zero
+    } // returns Vector zero
 
-    public static Vector INF() { return new Vector(Constants.INF, Constants.INF); } // returns INF Vector
+    public static Vector INF() {
+        return new Vector(Constants.INF, Constants.INF);
+    } // returns INF Vector
 
     public float norm() {
         return (float) Math.sqrt(x * x + y * y);
@@ -41,9 +43,10 @@ public final class Vector {
             return scale(1 / norm());
         }
     }
+
     // returns maagal hyehida
     public static Vector unit(final float angle) {
-        return new Vector((float) Math.cos(angle) , (float) Math.sin(angle));
+        return new Vector((float) Math.cos(angle), (float) Math.sin(angle));
     }
 
     public static Vector fromAngleAndRadius(final float theta, final float radius) {
@@ -52,7 +55,9 @@ public final class Vector {
         return new Vector(vectorX, vectorY);
     }
 
-    public float dotProduct(final Vector other) { return x * other.x + y * other.y;}
+    public float dotProduct(final Vector other) {
+        return x * other.x + y * other.y;
+    }
 
     public Vector rotate(final float theta) {
         final float sinTheta = (float) Math.sin(theta);
@@ -71,7 +76,6 @@ public final class Vector {
             return new Vector(y, -x);
         }
     }
-    //TODO :to unterstand
 
     public Vector abs() {
         return new Vector(Math.abs(x), Math.abs(y));

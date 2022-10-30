@@ -12,7 +12,6 @@ public class Intake {
 
         motors[0] = hardwareMap.get(DcMotor.class, "IntakeR");
         motors[1] = hardwareMap.get(DcMotor.class, "IntakeL");
-        //TODO: reverse correct motor according to robot
 
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -23,18 +22,17 @@ public class Intake {
         switch (state) {
             case COLLECT:
                 power = IntakeConstants.intakePower;
-                //TODO: adjust to appropriate value for collection
                 break;
             case STOP:
                 power = 0;
                 break;
             case DEPLETE:
                 power = IntakeConstants.depletePower;
-                //TODO: adjust to appropriate value for depletion
                 break;
         }
 
-        for (final DcMotor motor : motors) motor.setPower(power);
+        for (final DcMotor motor : motors)
+            motor.setPower(power);
 
     }
 }
