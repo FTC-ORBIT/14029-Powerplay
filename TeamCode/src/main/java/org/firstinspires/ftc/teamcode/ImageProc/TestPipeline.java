@@ -35,8 +35,49 @@ public class TestPipeline extends OpenCvPipeline {
 //        Mat resizd = new Mat();
 //        Imgproc.resize(mat, resizd, new Size(320, 240));
 
+        //Mats:
+        Mat blur = new Mat();
         Mat hsv = new Mat();
-        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
+        Mat mask = new Mat();
+        Mat output = new Mat();
+        //Filters:
+        Imgproc.blur(input, blur, new Size(7,7));
+        Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
+        //Ranging the yellow objects:
+        Scalar low = new Scalar(0,0,0);
+        Scalar high = new Scalar(255,255,255);
+        Core.inRange(hsv, low, high, mask);
+
+
+
+
+        Mat dilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+        Mat erode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+
+        Imgproc.dilate(mask, output, dilate);
+        Imgproc.dilate(mask, output, dilate);
+
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+
+        Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+        if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+        {
+            // for each contour, display it in blue
+            for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+            {
+                Imgproc.drawContours(input, contours, idx, new Scalar(0, 0, 0));
+                
+            }
+
+
+
+
+
+
+
+
+            Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
         Mat mask = new Mat();
         Core.inRange(hsv, new Scalar(13, 85 ,103), new Scalar(77, 255, 255), mask);
 
