@@ -15,24 +15,36 @@ public class Auto {
 
     private static TrajectorySequence[] traj;
 
-    public static void run (boolean right, boolean first, boolean last, int tag){
-        if (right){
-            PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.length * 0.5, -Constants.width * 0.5, 0 ));
-        }else {
-            PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.length * 0.5, Constants.width * 0.5, 0 ));
+    public static void run(boolean right, boolean first, boolean last, int tag) {
+
+        //put here the image processing code for the randomization
+
+        if (right) {
+            PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.robotLength * 0.5, -((Constants.robotWidth * 0.5) + Constants.tileLength) , 0));
+        } else {
+            PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.robotLength * 0.5, (Constants.robotWidth * 0.5) + Constants.tileLength, 0));
         }
-        if (first){
-            Drivetrain.drive.followTrajectorySequence(firstToFidder(right));
-            traj[1] = firstToFidder(right);
+        PoseTracker.calcPose();
+
+        if (first) {
+            TrajectorySequence firstToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+                        .build();
+            Drivetrain.drive.followTrajectorySequence(firstToFidder);
+            traj[0] = firstToFidder;
             //drive to (x, y * (right ? -1 : 1)
         } else {
-            Drivetrain.drive.followTrajectorySequence(mainToFidder(right));
-            traj[1] = mainToFidder(right);
+            TrajectorySequence mainToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+                    .build();
+            Drivetrain.drive.followTrajectorySequence(mainToFidder);
+            traj[0] = mainToFidder;
         }
+
+        TrajectorySequence cycles = Drivetrain.drive.trajectorySequenceBuilder(traj[0].end())
+                .build();                                               // TODO I must define cycles here because only here taj [0] is updated to the current trajectory
 
         Drivetrain.drive.followTrajectorySequence(cycles);
 
-        switch (tag){
+        switch (tag) {
             case 1:
                 TrajectorySequence firstPark = Drivetrain.drive.trajectorySequenceBuilder(cycles.end())
                         .build();
@@ -52,19 +64,5 @@ public class Auto {
 
     }
 
-private static TrajectorySequence firstToFidder (boolean right){
-        TrajectorySequence firstToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
-            .build();
-        return firstToFidder;
-}
-
-private static TrajectorySequence mainToFidder (boolean right){
-        TrajectorySequence mainToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
-            .build();
-        return mainToFidder;
-}
-
-private static TrajectorySequence cycles = Drivetrain.drive.trajectorySequenceBuilder(traj[1].end())
-            .build();
 }
 
