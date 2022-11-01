@@ -49,7 +49,6 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-
             GlobalData.currentTime = (float) time.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
