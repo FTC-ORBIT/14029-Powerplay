@@ -18,12 +18,13 @@ public class Drivetrain {
     private static Pose2d pose;
     public static Vector lastPosition;
     // equal to the last Autonomous position?
-    public static float lastTime = 0;
-    public static Vector lastVelocity = GlobalData.inAutonomous == true ? getVelocity_FieldCS() : null;
+    public static Vector lastVelocity = GlobalData.inAutonomous ? getVelocity_FieldCS() : null;
 
     public static void init(HardwareMap hardwareMap) {
-        if (GlobalData.inAutonomous)
+        if (GlobalData.inAutonomous) {
+            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             drive = new SampleMecanumDrive(hardwareMap);
+        }
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
@@ -34,15 +35,16 @@ public class Drivetrain {
 
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     public static void operate(final Vector velocity_W, float omega) {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        pose = drive.getPoseEstimate(); //// TODO: delete it because it may be useless
+        if (GlobalData.inAutonomous) pose = drive.getPoseEstimate(); //// TODO: delete it because it may be useless
     }
     // did field centric
 
