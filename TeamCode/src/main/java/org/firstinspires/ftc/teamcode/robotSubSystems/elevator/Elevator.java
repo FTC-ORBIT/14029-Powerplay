@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 
 public class Elevator {
-    private static DcMotor motors[] = new DcMotor[2];
-    private static final DcMotor elevatorEncoder = firstMotor;
+    private static DcMotor elevatorMotor;
+    private static final DcMotor elevatorEncoder = elevatorMotor;
     private static float height;
     private static final PID elevatorPID = new PID(kP, 0, 0, 0, 0);
     private static float lastStateHeight;
@@ -24,8 +24,7 @@ public class Elevator {
     private static float elevatorPower = 0f;
 
     public static void init(HardwareMap hardwareMap) {
-        motors[0] = hardwareMap.get(DcMotor.class, "firstElevatorMotor");
-        motors[1] = hardwareMap.get(DcMotor.class, "secondElevatorMotor");
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elevatorMotor");
     }
 
     public static void operate(ElevatorStates elevatorState, Gamepad gamepad1) {
@@ -54,8 +53,7 @@ public class Elevator {
             elevatorPower = (float) elevatorPID.update(height);
         }
 
-        motors[0].setPower(elevatorPower);
-        motors[1].setPower(elevatorPower);
+        elevatorMotor.setPower(elevatorPower);
     }
 
 }
