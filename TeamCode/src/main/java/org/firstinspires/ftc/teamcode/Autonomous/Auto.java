@@ -25,7 +25,11 @@ public class Auto {
             PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.robotLength * 0.5, (Constants.robotWidth * 0.5) + Constants.tileLength, 0));
         }
         PoseTracker.calcPose();
+        TrajectorySequence elevator = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+                .addDisplacementMarker(() -> {
 
+                })
+                .build();
         if (first) {
             TrajectorySequence firstToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
                         .build();
