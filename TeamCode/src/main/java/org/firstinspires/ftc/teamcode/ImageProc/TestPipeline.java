@@ -25,6 +25,10 @@ public class TestPipeline extends OpenCvPipeline {
 
     }
     Telemetry telemetry;
+    public double[] junctionDist = new double[2];
+
+
+
 
     @Override
     public Mat processFrame(Mat input) {
@@ -43,35 +47,60 @@ public class TestPipeline extends OpenCvPipeline {
         Mat hierarchy = new Mat();
 
         //Filters:
-        Imgproc.blur(input, blur, new Size(7,7));
+        Imgproc.medianBlur(input, blur, 12); // 10-12
         Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
 
+        /*
+        Ranging the yellow objects:
 
-        //Ranging the yellow objects:
+
+        RGB:
+        low 170, 126, 30
+        high 255, 196, 131
+
+        HSV:
+        low 0, 136, 154
+        high 36, 214, 255
+         */
         Scalar low = new Scalar(0,0,0);
         Scalar high = new Scalar(255,255,255);
         Core.inRange(hsv, low, high, mask);
         List <MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
         hierarchy.release();
+
+
+        // Detecting Parameters
         int cx = -1;
         int cy = -1;
         Rect areaRect = null;
         boolean detected = false;
+        double area = 0;
         double minArea = 0; // The minimum pixels area of a junction from maximum +- 100 cm
-        double area = null;
+        double minWidth = 0;
+
+
+        //Detecting junctions:
+
         for (MatOfPoint contour : contours){
-            double area = Imgproc.contourArea(contour);
+            area = Imgproc.contourArea(contour);
             areaRect = Imgproc.boundingRect(contour);
             Moments M = Imgproc.moments(contour);
             cx = (int)(M.m10/M.m00);
             cy = (int)(M.m01/M.m00);
         }
         Point pnt = new Point(cx, cy);
-        if (area > minArea){
+
+
+        //Marking the closest junction:
+
+        if (area > minArea && areaRect.width > minWidth){
             detected = true;
+            Imgproc.rectangle(input, areaRect, new Scalar (255, 0, 0));
         }
-        Imgproc.rectangle(input, areaRect, new Scalar (255, 0, 0));
+
+
+
         return input;
 
 

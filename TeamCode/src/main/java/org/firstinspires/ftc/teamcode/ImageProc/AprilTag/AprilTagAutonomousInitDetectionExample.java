@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.ImageProc.AprilTag;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,7 +16,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
+@Autonomous
 public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 {
     OpenCvCamera camera;
@@ -37,9 +38,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
 
      // Tag ID 1,2,3 from the 36h11 family
-    int LEFT = 1;
-    int MIDDLE = 2;
-    int RIGHT = 3;
+    public static int LEFT = 1;
+    public static int MIDDLE = 2;
+    public static int RIGHT = 3;
+    public static int retTag;
+    boolean tagFound = false;
 
     AprilTagDetection tagOfInterest = null;
 
@@ -84,7 +87,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
             if(currentDetections.size() != 0)
             {
-                boolean tagFound = false;
+                tagFound = false;
 
                 for(AprilTagDetection tag : currentDetections)
                 {
@@ -92,12 +95,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
                     {
                         tagOfInterest = tag;
                         tagFound = true;
+                        retTag = tag.id;
                         break;
                     }
                 }
 
                 if(tagFound)
                 {
+
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                     tagToTelemetry(tagOfInterest);
                 }
@@ -206,4 +211,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+    public static int currentTagId(){
+        return retTag;
+    }
+
 }
