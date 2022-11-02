@@ -77,7 +77,7 @@ public class Auto {
                         Claw.operate(ClawState.OPEN);
                     })
                     .build();
-            TrajectorySequence mainJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToInitialJunction.end())
+            TrajectorySequence mainJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToMainJunction.end())
                     .addDisplacementMarker(() -> {
                         Claw.operate(ClawState.CLOSE);
                     })
