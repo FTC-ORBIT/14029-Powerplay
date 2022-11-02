@@ -5,15 +5,19 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.RGB;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.positionTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotData.Constants;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
+import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
@@ -21,7 +25,17 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 
 public class Auto {
 
+    public static OrbitColorSensor colorSensor;
+    public static OrbitDistanceSensor distanceSensor;
     private static TrajectorySequence[] traj;
+    private static int cyclesWantedNum = 3;
+    private static int cyclesCurrentNum;
+
+    public static void init(HardwareMap hardwareMap) {
+        colorSensor = new OrbitColorSensor(hardwareMap);
+        distanceSensor = new OrbitDistanceSensor(hardwareMap);
+        cyclesWantedNum = 3;
+    }
 
     public static void run(boolean right, boolean first, boolean last, int tag) {
 
@@ -37,49 +51,76 @@ public class Auto {
                 })
                 .build();
         if (first) {
-            TrajectorySequence firstToMainJunction = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
-                    .strafeTo(new Vector2d( PoseTracker.getPose().getX(), Constants.tileLength * (right ? -0.5 : 0.5)))
-                    .lineToLinearHeading(new Pose2d(-Constants.tileLength, Constants.tileLength * (right ? -0.5 : 0.5), Math.toRadians(90 * (right ? 1 : -1))))
+            TrajectorySequence firstToInitialJunction = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+                    .addDisplacementMarker(() -> {
+                        Claw.operate(ClawState.OPEN);
+                    })
+                    .build();
+            TrajectorySequence initialJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToInitialJunction.end())
                     .addDisplacementMarker(() -> {
                         Claw.operate(ClawState.CLOSE);
                     })
                     .build();
-            TrajectorySequence mainJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToMainJunction.end())
-                    .strafeTo(new Vector2d(-0.5 * Constants.tileLength, Constants.tileLength * (right ? -0.5 : 0.5)))
-                    .lineToLinearHeading(new Pose2d(-0.5 * Constants.tileLength, Constants.tileLength * (right? -1 : 1), Math.toRadians(90) * (right? -1 : 1 )))
-                                    .build();
 
-            Drivetrain.drive.followTrajectorySequence(firstToMainJunction);
-            while (GlobalData.hasGamePiece){}
-            Drivetrain.drive.followTrajectorySequence(mainJunctionToFidder);
+            Drivetrain.drive.followTrajectorySequence(firstToInitialJunction);
+            while (GlobalData.hasGamePiece) {
+            }
+            Drivetrain.drive.followTrajectorySequence(initialJunctionToFidder);
+            while (!Claw.isClawCorrectPos(ClawConstants.closed)) {
+            }
 
-            traj[0] = mainJunctionToFidder;
+            traj[0] = initialJunctionToFidder;
             //drive to (x, y * (right ? -1 : 1)
         } else {
-            TrajectorySequence mainToFidder = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+            TrajectorySequence firstToMainJunction = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
+                    .addDisplacementMarker(() -> {
+                        Claw.operate(ClawState.OPEN);
+                    })
                     .build();
-            Drivetrain.drive.followTrajectorySequence(mainToFidder);
-            traj[0] = mainToFidder;
+            TrajectorySequence mainJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToInitialJunction.end())
+                    .addDisplacementMarker(() -> {
+                        Claw.operate(ClawState.CLOSE);
+                    })
+                    .build();
+
+            Drivetrain.drive.followTrajectorySequence(firstToMainJunction);
+            while (GlobalData.hasGamePiece) {
+            }
+            Drivetrain.drive.followTrajectorySequence(mainJunctionToFidder);
+            while (!Claw.isClawCorrectPos(ClawConstants.closed)) {
+            }
+
+            traj[0] = mainJunctionToFidder;
         }
 
-        TrajectorySequence cycles = Drivetrain.drive.trajectorySequenceBuilder(traj[0].end())
-                .build();                                               // TODO I must define cycles here because only here taj [0] is updated to the current trajectory
+        TrajectorySequence intakeCycle = Drivetrain.drive.trajectorySequenceBuilder(traj[0].end())
+                .build(); // TODO I must define cycles here because only here taj [0] is updated to the current trajectory
 
-        Drivetrain.drive.followTrajectorySequence(cycles);
+        TrajectorySequence depleteCycle = Drivetrain.drive.trajectorySequenceBuilder(intakeCycle.end())
+                        .build();
+
+
+        while (cyclesCurrentNum <= cyclesWantedNum) {
+            Drivetrain.drive.followTrajectorySequence(intakeCycle);
+            while (!Claw.isClawCorrectPos(ClawConstants.closed)) {}
+            Drivetrain.drive.followTrajectorySequence(depleteCycle);
+            while (GlobalData.hasGamePiece) {}
+            cyclesCurrentNum++;
+        }
 
         switch (tag) {
             case 1:
-                TrajectorySequence firstPark = Drivetrain.drive.trajectorySequenceBuilder(cycles.end())
+                TrajectorySequence firstPark = Drivetrain.drive.trajectorySequenceBuilder(depleteCycle.end())
                         .build();
                 Drivetrain.drive.followTrajectorySequence(firstPark);
                 break;
             case 2:
-                TrajectorySequence secondPark = Drivetrain.drive.trajectorySequenceBuilder(cycles.end())
+                TrajectorySequence secondPark = Drivetrain.drive.trajectorySequenceBuilder(depleteCycle.end())
                         .build();
                 Drivetrain.drive.followTrajectorySequence(secondPark);
                 break;
             case 3:
-                TrajectorySequence thirdPark = Drivetrain.drive.trajectorySequenceBuilder(cycles.end())
+                TrajectorySequence thirdPark = Drivetrain.drive.trajectorySequenceBuilder(depleteCycle.end())
                         .build();
                 Drivetrain.drive.followTrajectorySequence(thirdPark);
                 break;
