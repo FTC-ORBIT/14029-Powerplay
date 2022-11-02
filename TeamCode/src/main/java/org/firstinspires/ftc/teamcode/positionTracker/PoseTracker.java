@@ -28,7 +28,7 @@ public class PoseTracker {
     }
 
     public static Pose2d getPose() {
-        return robotPose;
+        return robotPose = Drivetrain.drive.getPoseEstimate();
     }
 
     public static Vector getPosition() {

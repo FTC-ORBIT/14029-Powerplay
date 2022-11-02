@@ -48,7 +48,7 @@ public class Drivetrain {
     // did field centric
 
     public static Pose2d getPose_FieldCS() {
-        return pose;
+        return drive.getPoseEstimate();
     }
 
     public static Vector getVelocity_FieldCS() {

@@ -46,7 +46,7 @@ public class Auto {
                     .build();
             TrajectorySequence mainJunctionToFidder = Drivetrain.drive.trajectorySequenceBuilder(firstToMainJunction.end())
                     .strafeTo(new Vector2d(-0.5 * Constants.tileLength, Constants.tileLength * (right ? -0.5 : 0.5)))
-                    .lineToLinearHeading(new Pose2d(-0.5 * Constants.tileLength, ))
+                    .lineToLinearHeading(new Pose2d(-0.5 * Constants.tileLength, Constants.tileLength * (right? -1 : 1), Math.toRadians(90) * (right? -1 : 1 )))
                                     .build();
 
             Drivetrain.drive.followTrajectorySequence(firstToMainJunction);
