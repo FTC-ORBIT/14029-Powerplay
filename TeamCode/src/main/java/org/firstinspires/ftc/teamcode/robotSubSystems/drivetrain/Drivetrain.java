@@ -119,15 +119,15 @@ public class Drivetrain {
             motorsWithProblems[0] = motorsWithProblems[0] + 1;
             time.reset();
         }
-        else if (Math.abs(rfPower)-Math.abs(motors[1].getPower()) < DrivetrainConstants.wheelErrorRange) {
+        if (Math.abs(rfPower)-Math.abs(motors[1].getPower()) < DrivetrainConstants.wheelErrorRange) {
             motorsWithProblems[1] = motorsWithProblems[1] + 1;
             time.reset();
         }
-        else if (Math.abs(lbPower)-Math.abs(motors[2].getPower()) < DrivetrainConstants.wheelErrorRange) {
+        if (Math.abs(lbPower)-Math.abs(motors[2].getPower()) < DrivetrainConstants.wheelErrorRange) {
             motorsWithProblems[2] = motorsWithProblems[2] + 1;
             time.reset();
         }
-        else if (Math.abs(rbPower)-Math.abs(motors[3].getPower()) < DrivetrainConstants.wheelErrorRange) {
+        if (Math.abs(rbPower)-Math.abs(motors[3].getPower()) < DrivetrainConstants.wheelErrorRange) {
             motorsWithProblems[3] = motorsWithProblems[3] + 1;
             time.reset();
         }
