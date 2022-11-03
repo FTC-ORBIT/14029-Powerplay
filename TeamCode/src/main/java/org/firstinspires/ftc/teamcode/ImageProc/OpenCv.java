@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -29,9 +30,10 @@ public class OpenCv extends LinearOpMode {
             public void onOpened() {
                 camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
                 camera.setPipeline(pipeline);
-                FtcDashboard.getInstance().startCameraStream(camera, 1);
+                FtcDashboard.getInstance().startCameraStream(camera, 60);
                 TelemetryPacket packet = new TelemetryPacket();
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
+                sleep(2000);
             }
 
             @Override

@@ -32,24 +32,6 @@ public class TestPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        // Detecting junction
-
-
-//        Mat mat = new Mat();
-//        mat = Imgcodecs.imread("/sdcard/FIRST/junction_example.jpg");
-//        Mat resizd = new Mat();
-//        Imgproc.resize(mat, resizd, new Size(320, 240));
-
-        //Mats:
-        Mat blur = new Mat();
-        Mat hsv = new Mat();
-        Mat mask = new Mat();
-        Mat hierarchy = new Mat();
-
-        //Filters:
-        Imgproc.medianBlur(input, blur, 12); // 10-12
-        Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
-
         /*
         Ranging the yellow objects:
 
@@ -62,10 +44,23 @@ public class TestPipeline extends OpenCvPipeline {
         low 0, 136, 154
         high 36, 214, 255
          */
-        Scalar low = new Scalar(0,0,0);
-        Scalar high = new Scalar(255,255,255);
+
+        //Filters:
+        Mat picInput = new Mat();
+        picInput = Imgcodecs.imread("/sdcard/FIRST/36cm" + ".bmp"); //Junction pic from 36 cm
+        Mat blur = new Mat();
+        Imgproc.medianBlur(picInput, blur, 7); // 10-12
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
+
+
+
+        Scalar low = new Scalar(94, 142, 149); // <- right for the picture
+        Scalar high = new Scalar(107, 208, 255); // <- right for the picture
+        Mat mask = new Mat();
         Core.inRange(hsv, low, high, mask);
         List <MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
         hierarchy.release();
 
@@ -76,12 +71,11 @@ public class TestPipeline extends OpenCvPipeline {
         Rect areaRect = null;
         boolean detected = false;
         double area = 0;
-        double minArea = 0; // The minimum pixels area of a junction from maximum +- 100 cm
+        double minArea = 0;         // The minimum pixels area of a junction from maximum +- 100 cm
         double minWidth = 0;
 
 
         //Detecting junctions:
-
         for (MatOfPoint contour : contours){
             area = Imgproc.contourArea(contour);
             areaRect = Imgproc.boundingRect(contour);
@@ -93,15 +87,14 @@ public class TestPipeline extends OpenCvPipeline {
 
 
         //Marking the closest junction:
-
         if (area > minArea && areaRect.width > minWidth){
             detected = true;
-            Imgproc.rectangle(input, areaRect, new Scalar (255, 0, 0));
+            Imgproc.rectangle(picInput, areaRect, new Scalar (255, 0, 0));
         }
 
 
 
-        return input;
+        return mask;
 
 
 
