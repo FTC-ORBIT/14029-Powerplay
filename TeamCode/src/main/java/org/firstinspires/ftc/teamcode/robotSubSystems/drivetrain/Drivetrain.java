@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
@@ -16,6 +17,10 @@ public class Drivetrain {
     public static SampleMecanumDrive drive;
 
     private static Pose2d pose;
+    static String motorWithProblem;
+    static int timeWithInactiveMotor =0;
+    static int[] motorsWithProblems ={0,0,0,0};
+    static ElapsedTime time;
     public static Vector lastPosition;
     // equal to the last Autonomous position?
     public static Vector lastVelocity = GlobalData.inAutonomous ? getVelocity_FieldCS() : null;
@@ -93,5 +98,80 @@ public class Drivetrain {
         motors[2].setPower((lbPower / highestPower));
         motors[3].setPower((rbPower / highestPower));
     }
+    public static void checkMotor(Vector drive, double r){
+        //estimated speed
+        double lfPower = drive.y + drive.x + r;
+        double rfPower = drive.y - drive.x - r;
+        double lbPower = drive.y - drive.x + r;
+        double rbPower = drive.y + drive.x - r;
+        double highestPower = 1;
+        final double max = Math.max(Math.abs(lfPower),
+                Math.max(Math.abs(lbPower), Math.max(Math.abs(rfPower), Math.abs(rbPower))));
+        if (max > 1)
+            highestPower = max;
 
+        lfPower = lfPower/highestPower;
+        rfPower = rfPower/highestPower;
+        lbPower = lbPower/highestPower;
+        rbPower = rbPower/highestPower;
+
+        if (Math.abs(lfPower)-Math.abs(motors[0].getPower()) < DrivetrainConstants.wheelErrorRange) {
+            motorsWithProblems[0] = motorsWithProblems[0] + 1;
+            time.reset();
+        }
+        else if (Math.abs(rfPower)-Math.abs(motors[1].getPower()) < DrivetrainConstants.wheelErrorRange) {
+            motorsWithProblems[1] = motorsWithProblems[1] + 1;
+            time.reset();
+        }
+        else if (Math.abs(lbPower)-Math.abs(motors[2].getPower()) < DrivetrainConstants.wheelErrorRange) {
+            motorsWithProblems[2] = motorsWithProblems[2] + 1;
+            time.reset();
+        }
+        else if (Math.abs(rbPower)-Math.abs(motors[3].getPower()) < DrivetrainConstants.wheelErrorRange) {
+            motorsWithProblems[3] = motorsWithProblems[3] + 1;
+            time.reset();
+        }
+
+        if (timeWithInactiveMotor >= DrivetrainConstants.requiredTimeWithInactiveMotor){
+            if (motorWithProblem == "rf" || motorWithProblem == "lb"){
+                lfPower = drive.y + r;
+                rbPower = drive.y - r;
+
+                motors[0].setPower((lfPower));
+                motors[1].setPower((0));
+                motors[2].setPower((0));
+                motors[3].setPower((rbPower));
+            }
+            else {
+                rfPower = drive.y - r;
+                lbPower = drive.y + r;
+                motors[0].setPower((0));
+                motors[1].setPower((rfPower));
+                motors[2].setPower((lbPower));
+                motors[3].setPower((0));
+            }
+        }
+        else {
+            if (time.milliseconds() < DrivetrainConstants.deltaTimeOfInactiveMotor)
+                timeWithInactiveMotor++;
+            else
+                timeWithInactiveMotor = 0;
+            if (motorsWithProblems[0] > motorsWithProblems[1] && motorsWithProblems[0] > motorsWithProblems[2] &&
+                    motorsWithProblems[0] > motorsWithProblems[3])
+                motorWithProblem = "lf";
+            else if (motorsWithProblems[1] > motorsWithProblems[0] && motorsWithProblems[1] > motorsWithProblems[2] &&
+                    motorsWithProblems[1] > motorsWithProblems[3])
+                motorWithProblem = "rf";
+            else if (motorsWithProblems[2] > motorsWithProblems[0] && motorsWithProblems[2] > motorsWithProblems[1] &&
+                    motorsWithProblems[2] > motorsWithProblems[3])
+                motorWithProblem = "lb";
+            else
+                motorWithProblem = "rb";
+            motors[0].setPower((lfPower));
+            motors[1].setPower((rfPower));
+            motors[2].setPower((lbPower));
+            motors[3].setPower((rbPower));
+
+        }
+    }
 }
