@@ -56,4 +56,8 @@ public class Elevator {
         elevatorMotor.setPower(elevatorPower);
     }
 
+    public static void testMotors(){
+        elevatorMotor.setPower(0.5);
+    }
+
 }
