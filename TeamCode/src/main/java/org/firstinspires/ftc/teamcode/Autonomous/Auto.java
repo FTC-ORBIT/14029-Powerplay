@@ -35,6 +35,7 @@ public class Auto {
         colorSensor = new OrbitColorSensor(hardwareMap);
         distanceSensor = new OrbitDistanceSensor(hardwareMap);
         cyclesWantedNum = 3;
+        cyclesCurrentNum = 0;
     }
 
     public static void run(boolean right, boolean first, boolean last, int tag) {
@@ -44,7 +45,7 @@ public class Auto {
         } else {
             PoseTracker.setPose(new Pose2d((-3 * Constants.tileLength) + Constants.robotLength * 0.5, (Constants.robotWidth * 0.5) + Constants.tileLength, 0));
         }
-        PoseTracker.calcPose();
+        PoseTracker.getPose();
         TrajectorySequence elevator = Drivetrain.drive.trajectorySequenceBuilder(PoseTracker.getPose())
                 .addDisplacementMarker(() -> {
                     Elevator.operate(ElevatorStates.HIGH, null);
@@ -93,20 +94,31 @@ public class Auto {
             traj[0] = mainJunctionToFidder;
         }
 
-        TrajectorySequence intakeCycle = Drivetrain.drive.trajectorySequenceBuilder(traj[0].end())
-                .build(); // TODO I must define cycles here because only here taj [0] is updated to the current trajectory
 
-        TrajectorySequence depleteCycle = Drivetrain.drive.trajectorySequenceBuilder(intakeCycle.end())
-                        .build();
+        TrajectorySequence depleteCycle = Drivetrain.drive.trajectorySequenceBuilder(traj[0].end())
+                .build();
+        TrajectorySequence intakeCycle = Drivetrain.drive.trajectorySequenceBuilder(depleteCycle.end())
+                .build(); // TODO I must define cycles here because only here taj [0] is updated to the current trajectory
 
 
         while (cyclesCurrentNum <= cyclesWantedNum) {
-            Drivetrain.drive.followTrajectorySequence(intakeCycle);
-            while (!Claw.isClawCorrectPos(ClawConstants.closed)) {}
             Drivetrain.drive.followTrajectorySequence(depleteCycle);
             while (GlobalData.hasGamePiece) {}
+            Drivetrain.drive.followTrajectorySequence(intakeCycle);
+            while (!Claw.isClawCorrectPos(ClawConstants.closed)) {}
             cyclesCurrentNum++;
         }
+
+        if (last){
+            TrajectorySequence fidderToLast = Drivetrain.drive.trajectorySequenceBuilder(intakeCycle.end())
+                    .build();
+            Drivetrain.drive.followTrajectorySequence(fidderToLast);
+        } else {
+            Drivetrain.drive.followTrajectorySequence(depleteCycle);
+        }
+        while (GlobalData.hasGamePiece) {}
+
+        //TODO do we need to write a different code for parking in case last == true?
 
         switch (tag) {
             case 1:
