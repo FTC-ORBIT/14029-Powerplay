@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Sensors;
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -6,8 +7,11 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.RGB;
 
 public class OrbitColorSensor {
 
+    private final ColorSensor colorSensor;
 
-
+    public OrbitColorSensor(HardwareMap hardwareMap) {
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+    }
         private final ColorSensor colorSensor;
 
         public OrbitColorSensor(HardwareMap hardwareMap) {
@@ -23,5 +27,9 @@ public class OrbitColorSensor {
             return rgb;
         }
 
+
+    public float[] rgb() {
+        return new float[] { colorMap(colorSensor.red()), colorMap(colorSensor.green()), colorMap(colorSensor.blue()) };
     }
 
+}

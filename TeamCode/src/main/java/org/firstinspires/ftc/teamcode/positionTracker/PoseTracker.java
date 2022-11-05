@@ -65,7 +65,4 @@ public class PoseTracker {
     public static void resetPosition() {
         setPose(new Pose2d(0, 0, 0));
     }
-
-
-
 }

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,6 +19,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
+@Config
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
 
@@ -23,15 +27,17 @@ public class Robot extends LinearOpMode {
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
-
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
         GlobalData.lastTime = 0;
         GlobalData.deltaTime = 0; // should we write it as a function??
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        TelemetryPacket packet = new TelemetryPacket();
+
 
         time.reset();
         Drivetrain.init(hardwareMap);
@@ -41,11 +47,9 @@ public class Robot extends LinearOpMode {
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
 
-
         waitForStart();
 
-        while (!isStopRequested()){
-
+        while (!isStopRequested()) {
             GlobalData.currentTime = (float) time.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
@@ -56,6 +60,9 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             telemetry.addData("distance", distanceSensor.getDistance());
+
+            packet.put("distance", distanceSensor.getDistance());
+            dashboard.sendTelemetryPacket(packet);
         }
     }
 

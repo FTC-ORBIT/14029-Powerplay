@@ -18,8 +18,7 @@ public class Drivetrain {
     private static Pose2d pose;
     public static Vector lastPosition;
     // equal to the last Autonomous position?
-    public static float lastTime = 0;
-    public static Vector lastVelocity = getVelocity_FieldCS();
+    public static Vector lastVelocity = GlobalData.inAutonomous ? getVelocity_FieldCS() : null;
 
     public static void init(HardwareMap hardwareMap) {
         if (GlobalData.inAutonomous) {
@@ -30,12 +29,13 @@ public class Drivetrain {
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
-        // TODO make sure to reverse the right motors according to your robot
+
         // TODO if your initial robot position is not 0,0,0 make sure to fix the
         // position (look for the function in the documentry). might be setPoseEstimate
 
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
@@ -43,7 +43,10 @@ public class Drivetrain {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        if (GlobalData.inAutonomous) { pose = drive.getPoseEstimate() ;}; ////TODO: delete it because it may be useless
+        if (GlobalData.inAutonomous) {
+        pose = drive.getPoseEstimate();
+        } ////TODO: delete it because it may be useless
+
     }
     // did field centric
 
@@ -52,7 +55,7 @@ public class Drivetrain {
     }
 
     public static Vector getVelocity_FieldCS() {
-        Vector position = new Vector((float)pose.getX(),(float) pose.getY());
+        Vector position = new Vector((float) pose.getX(), (float) pose.getY());
         Vector deltaPosition = position.subtract(lastPosition);
 
         final Vector velocity = deltaPosition.scale(1 / GlobalData.deltaTime);
