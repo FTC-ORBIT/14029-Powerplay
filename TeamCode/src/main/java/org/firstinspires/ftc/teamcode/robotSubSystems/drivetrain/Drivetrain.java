@@ -96,7 +96,7 @@ public class Drivetrain {
 
     public static void testMotors(){
         for (final DcMotor motor : motors){
-            motor.setPower(0.5);
+            motor.setPower(0.2);
         }
     }
 
