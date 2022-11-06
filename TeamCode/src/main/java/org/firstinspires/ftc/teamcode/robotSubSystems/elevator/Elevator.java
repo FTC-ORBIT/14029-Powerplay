@@ -48,6 +48,8 @@ public class Elevator {
             case OVERRIDE:
                 elevatorPower = gamepad1.right_stick_y;
                 break;
+            case DEPLETE:
+                elevatorPower = -0.1f;
         }
         if (!elevatorState.equals(ElevatorStates.OVERRIDE)) {
             elevatorPower = (float) elevatorPID.update(height);

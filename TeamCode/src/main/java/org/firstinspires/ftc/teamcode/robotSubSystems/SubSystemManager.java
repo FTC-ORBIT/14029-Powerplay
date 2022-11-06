@@ -36,7 +36,7 @@ public class SubSystemManager {
     private static RobotState getState(Gamepad gamepad) {
         return gamepad.b ? RobotState.TRAVEL
                 : gamepad.a ? RobotState.INTAKE
-                        : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
+                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
     }
 
     public static void setState(Gamepad gamepad, Gamepad gamepad2) {
@@ -106,7 +106,7 @@ public class SubSystemManager {
                 clawState = ClawState.CLOSE;
                 armState = ArmState.FRONT;
                 if (gamepad1.y) {
-                    clawState = ClawState.OPEN;
+                    elevatorState = ElevatorStates.DEPLETE;
                 }
                 if (!GlobalData.hasGamePiece) {
                     state = RobotState.TRAVEL;
