@@ -39,7 +39,7 @@ public class SubSystemManager {
     private static RobotState getState(Gamepad gamepad) {
         return gamepad.b ? RobotState.TRAVEL
                 : gamepad.a ? RobotState.INTAKE
-                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.dpad_up ? RobotState.CLAWINTAKE : null;
+                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.x ? RobotState.CLAWINTAKE : null;
     }
 
     public static void setState(Gamepad gamepad, Gamepad gamepad2) {
