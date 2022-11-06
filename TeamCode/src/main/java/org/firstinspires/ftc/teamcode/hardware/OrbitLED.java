@@ -12,11 +12,10 @@ public class OrbitLED {
 
     public static RevBlinkinLedDriver blinkin;
     public static RevBlinkinLedDriver.BlinkinPattern pattern;
-    private static ElapsedTime elapsedTime;
+    private static ElapsedTime elapsedTime = new ElapsedTime();
 
     public static void init(HardwareMap hardwareMap) {
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class,"LED");
-        elapsedTime.reset();
     }
 
     public static void operate() {
@@ -41,6 +40,6 @@ public class OrbitLED {
             }
         }
 
-        blinkin.setPattern(pattern);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         }
     }
