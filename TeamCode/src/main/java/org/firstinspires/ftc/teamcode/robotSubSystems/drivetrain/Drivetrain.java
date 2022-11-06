@@ -98,9 +98,33 @@ public class Drivetrain {
         motors[2].setPower((lbPower / highestPower));
         motors[3].setPower((rbPower / highestPower));
     }
-    public static void checkMotor(Vector drive, double r){
+    public static void tankDrive(Vector drive, double r, boolean RFandLB){
+        double rfPower = 0;
+        double lbPower = 0;
+        double rbPower =0;
+        double lfPower=0;
+
+        if (RFandLB){
+            rfPower = drive.y + r;
+            lbPower = drive.y+r;
+        }
+        else{
+            lfPower = drive.y + r;
+            rbPower = drive.y - r;
+        }
+        double highestPower = 1;
+        final double max = Math.max(Math.abs(lfPower),
+                Math.max(Math.abs(lbPower), Math.max(Math.abs(rfPower), Math.abs(rbPower))));
+        if (max > 1)
+            highestPower = max;
+        motors[0].setPower((lfPower / highestPower));
+        motors[1].setPower((rfPower / highestPower));
+        motors[2].setPower((lbPower / highestPower));
+        motors[3].setPower((rbPower / highestPower));
+    }
+    /*public static void checkMotor(Vector drive, double r){
         //estimated speed
-        double lfPower = drive.y + drive.x + r;
+        /*double lfPower = drive.y + drive.x + r;
         double rfPower = drive.y - drive.x - r;
         double lbPower = drive.y - drive.x + r;
         double rbPower = drive.y + drive.x - r;
@@ -174,5 +198,5 @@ public class Drivetrain {
             motors[3].setPower((rbPower));
 
         }
-    }
+         */
 }
