@@ -40,7 +40,7 @@ public class OrbitLED {
                     break;
             }
         }
-        
+
         blinkin.setPattern(pattern);
         }
     }
