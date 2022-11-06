@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw {
 
     private static float pos;
-    public static final Servo clawServo;
+    public static Servo clawServo;
 
     public static void init(HardwareMap hardwareMap) {
         clawServo = hardwareMap.get(Servo.class, "clawServo");

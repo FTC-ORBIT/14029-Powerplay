@@ -34,17 +34,18 @@ public class Robot extends LinearOpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         time.reset();
-        Drivetrain.init(hardwareMap);
-        OrbitGyro.init(hardwareMap);
-        Elevator.init(hardwareMap);
-        Claw.init(hardwareMap);
-        Arm.init(hardwareMap);
-        Intake.init(hardwareMap);
+        //Drivetrain.init(hardwareMap);
+        //OrbitGyro.init(hardwareMap);
+        //Elevator.init(hardwareMap);
+        //Claw.init(hardwareMap);
+        //Arm.init(hardwareMap);
+        //Intake.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
         GlobalData.lastTime = 0;
         GlobalData.deltaTime = 0;
+        SubSystemManager.subSystemManagerTime.reset();
 
         waitForStart();
 
@@ -58,7 +59,7 @@ public class Robot extends LinearOpMode {
 
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
-            telemetry.addData("distance", distanceSensor.getDistance());
+            SubSystemManager.printStates(telemetry);
 
             packet.put("distance", distanceSensor.getDistance());
             dashboard.sendTelemetryPacket(packet);
