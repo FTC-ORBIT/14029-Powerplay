@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
-import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
@@ -30,8 +30,14 @@ public class Robot extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        GlobalData.inAutonomous = false;
+        GlobalData.currentTime = 0;
+        GlobalData.lastTime = 0;
+        GlobalData.deltaTime = 0; // should we write it as a function??
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
+
 
         time.reset();
         Drivetrain.init(hardwareMap);
@@ -40,11 +46,6 @@ public class Robot extends LinearOpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
-
-        GlobalData.inAutonomous = false;
-        GlobalData.currentTime = 0;
-        GlobalData.lastTime = 0;
-        GlobalData.deltaTime = 0;
 
         waitForStart();
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.positionTracker;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+import org.firstinspires.ftc.teamcode.OrbitUtils.RGB;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -27,7 +28,7 @@ public class PoseTracker {
     }
 
     public static Pose2d getPose() {
-        return robotPose;
+        return robotPose = Drivetrain.drive.getPoseEstimate();
     }
 
     public static Vector getPosition() {
@@ -64,5 +65,4 @@ public class PoseTracker {
     public static void resetPosition() {
         setPose(new Pose2d(0, 0, 0));
     }
-
 }

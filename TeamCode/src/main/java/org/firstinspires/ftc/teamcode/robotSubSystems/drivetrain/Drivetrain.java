@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
+import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 public class Drivetrain {
@@ -22,9 +22,9 @@ public class Drivetrain {
 
     public static void init(HardwareMap hardwareMap) {
         if (GlobalData.inAutonomous) {
-            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             drive = new SampleMecanumDrive(hardwareMap);
-        }
+            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        };
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
@@ -37,19 +37,21 @@ public class Drivetrain {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-
     }
 
     public static void operate(final Vector velocity_W, float omega) {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        if (GlobalData.inAutonomous) pose = drive.getPoseEstimate(); //// TODO: delete it because it may be useless
+        if (GlobalData.inAutonomous) {
+        pose = drive.getPoseEstimate();
+        } ////TODO: delete it because it may be useless
+
     }
     // did field centric
 
     public static Pose2d getPose_FieldCS() {
-        return pose;
+        return drive.getPoseEstimate();
     }
 
     public static Vector getVelocity_FieldCS() {
@@ -78,7 +80,7 @@ public class Drivetrain {
         }
     }
 
-    public static void drive(Vector drive, double r) {
+    private static void drive(Vector drive, double r) {
         final double lfPower = drive.y + drive.x + r;
         final double rfPower = drive.y - drive.x - r;
         final double lbPower = drive.y - drive.x + r;

@@ -39,12 +39,12 @@ public class SubSystemManager {
                         : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
     }
 
-    public static void setState(Gamepad gamepad, Gamepad gamepad2) {
-        final RobotState fromDriver = getState(gamepad);
-        if (fromDriver != null) {
-            state = fromDriver;
-        }
-        setSubsystemToState(gamepad, gamepad2);
+    public static void setState (Gamepad gamepad1, Gamepad gamepad2){
+        final RobotState fromDriver = getState(gamepad1);
+          if (fromDriver != null){
+              state = fromDriver;
+          }
+          setSubsystemToState(gamepad1, gamepad2);
     }
 
     public static ElevatorStates getElevatorStateFromSecondDriver(Gamepad gamepad2) {
