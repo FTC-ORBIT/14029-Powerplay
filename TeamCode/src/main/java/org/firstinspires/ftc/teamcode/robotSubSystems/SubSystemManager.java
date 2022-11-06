@@ -29,14 +29,17 @@ public class SubSystemManager {
     private static IntakeState intakeState = IntakeState.STOP;
     private static boolean lastRightBumperButtonState;
     private static boolean lastYButtonState;
+    private static boolean lastxButtonState;
     private static boolean rightBumperControl = false; // TODO maybe a better name?
     private static boolean yButtonControl = false; // TODO maybe a better name?
     private static boolean rightStickControl = false; // TODO maybe better name?
+    private static boolean lastLeftBumperButtonState;
+    private static boolean depleteControl = true;
 
     private static RobotState getState(Gamepad gamepad) {
         return gamepad.b ? RobotState.TRAVEL
                 : gamepad.a ? RobotState.INTAKE
-                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
+                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.dpad_up ? RobotState.CLAWINTAKE : null;
     }
 
     public static void setState(Gamepad gamepad, Gamepad gamepad2) {
@@ -105,21 +108,26 @@ public class SubSystemManager {
                 intakeState = IntakeState.STOP;
                 clawState = ClawState.CLOSE;
                 armState = ArmState.FRONT;
-                if (gamepad1.y) {
-                    elevatorState = ElevatorStates.DEPLETE;
-                }
-                if (!GlobalData.hasGamePiece) {
-                    state = RobotState.TRAVEL;
+                if (depleteControl) {
+                    if (gamepad1.y) {
+                        elevatorState = ElevatorStates.DEPLETE;
+                        depleteControl = !gamepad1.right_bumper;
+                    } else if (!gamepad1.y && lastYButtonState) {
+                        clawState = ClawState.OPEN;
+                    }
+                    if (!GlobalData.hasGamePiece) {
+                        state = RobotState.TRAVEL;
+                    }
                 }
                 break;
 
         }
-        if (gamepad1.right_bumper && !lastRightBumperButtonState) {
+        if (gamepad1.left_bumper && !lastLeftBumperButtonState) {
             armStateDriver = armState == ArmState.FRONT ? ArmState.BACK : ArmState.FRONT;
             rightBumperControl = true;
         }
 
-        if (gamepad1.y && !lastYButtonState) {
+        if (gamepad1.x && !lastxButtonState) {
             clawStateDriver = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
             yButtonControl = true;
         }
@@ -127,6 +135,7 @@ public class SubSystemManager {
         if (Math.abs(gamepad1.right_stick_y) > 0.2) {
             rightStickControl = true;
         }
+
 
         Intake.operate(intakeState);
 
@@ -148,7 +157,12 @@ public class SubSystemManager {
 
         lastYButtonState = gamepad1.y;
         lastRightBumperButtonState = gamepad1.right_bumper;
+        lastLeftBumperButtonState = gamepad1.left_bumper;
+        lastxButtonState = gamepad1.x;
         lastState = state;
+        if (!gamepad1.y){
+            depleteControl = false;
+        }
     }
 
     public static void printStates(Telemetry telemetry) {
