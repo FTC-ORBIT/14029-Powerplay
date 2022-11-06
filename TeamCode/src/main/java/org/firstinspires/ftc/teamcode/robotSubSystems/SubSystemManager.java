@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawConstants;
@@ -32,8 +33,10 @@ public class SubSystemManager {
     private static boolean rightBumperControl = false; // TODO maybe a better name?
     private static boolean yButtonControl = false; // TODO maybe a better name?
     private static boolean rightStickControl = false; // TODO maybe better name?
+    private static ElapsedTime time = new ElapsedTime();
 
     private static RobotState getState(Gamepad gamepad) {
+        time.reset();
         return gamepad.b ? RobotState.TRAVEL
                 : gamepad.a ? RobotState.INTAKE
                         : gamepad.x ? RobotState.DEPLETE : gamepad.left_bumper ? RobotState.CLAWINTAKE : null;
