@@ -8,4 +8,5 @@ public class DrivetrainConstants {
     public final static double wheelErrorRange = 0.5;
     public final static int requiredTimeWithInactiveMotor =1500;
     public final static double deltaTimeOfInactiveMotor =0.004;
+
 }

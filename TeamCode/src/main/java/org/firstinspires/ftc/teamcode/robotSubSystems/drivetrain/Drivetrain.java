@@ -143,6 +143,7 @@ public class Drivetrain {
                 motors[3].setPower((rbPower));
             }
             else {
+
                 rfPower = drive.y - r;
                 lbPower = drive.y + r;
                 motors[0].setPower((0));
