@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.ImageProc;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
+import org.firstinspires.ftc.robotcontroller.internal.FtcOpModeRegister;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -26,8 +30,8 @@ public class TestPipeline extends OpenCvPipeline {
     }
     Telemetry telemetry;
     public double[] junctionDist = new double[2];
-
-
+    private static FtcDashboard dashboard = FtcDashboard.getInstance();
+    private static TelemetryPacket packet = new TelemetryPacket();
 
 
     @Override
@@ -49,7 +53,7 @@ public class TestPipeline extends OpenCvPipeline {
         Mat picInput = new Mat();
         picInput = Imgcodecs.imread("/sdcard/FIRST/36cm" + ".bmp"); //Junction pic from 36 cm
         Mat blur = new Mat();
-        Imgproc.medianBlur(picInput, blur, 7); // 10-12
+        Imgproc.medianBlur(picInput, blur, 25); // 10-12
         Mat hsv = new Mat();
         Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
 
@@ -71,8 +75,9 @@ public class TestPipeline extends OpenCvPipeline {
         Rect areaRect = null;
         boolean detected = false;
         double area = 0;
-        double minArea = 0;         // The minimum pixels area of a junction from maximum +- 100 cm
+        double minArea = 100;         // The minimum pixels area of a junction from maximum +- 100 cm
         double minWidth = 0;
+
 
 
         //Detecting junctions:
@@ -82,19 +87,22 @@ public class TestPipeline extends OpenCvPipeline {
             Moments M = Imgproc.moments(contour);
             cx = (int)(M.m10/M.m00);
             cy = (int)(M.m01/M.m00);
+
         }
         Point pnt = new Point(cx, cy);
 
 
         //Marking the closest junction:
         if (area > minArea && areaRect.width > minWidth){
+            packet.put("area", area);
+            dashboard.sendTelemetryPacket(packet);
             detected = true;
             Imgproc.rectangle(picInput, areaRect, new Scalar (255, 0, 0));
         }
 
 
 
-        return mask;
+        return picInput;
 
 
 
