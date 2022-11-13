@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
@@ -26,6 +27,7 @@ public class Robot extends LinearOpMode {
     ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
+    DigitalChannel clawDistanceSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,7 +47,6 @@ public class Robot extends LinearOpMode {
         GlobalData.currentTime = 0;
         GlobalData.lastTime = 0;
         GlobalData.deltaTime = 0;
-        SubSystemManager.subSystemManagerTime.reset();
 
         waitForStart();
 

@@ -35,8 +35,6 @@ public class SubSystemManager {
     private static boolean rightStickControl = false; // TODO maybe better name?
     private static boolean lastLeftBumperButtonState;
     private static boolean depleteControl = false;
-    public static ElapsedTime subSystemManagerTime = new ElapsedTime();
-    private static boolean goingBackControl = true;
     private static boolean clawStateControl = true;
 
     private static RobotState getState(Gamepad gamepad) {
@@ -61,7 +59,6 @@ public class SubSystemManager {
 
 
     private static void setSubsystemToState(Gamepad gamepad1, Gamepad gamepad2) {
-        float currentTime = (float) subSystemManagerTime.milliseconds();
         if (getElevatorStateFromSecondDriver(gamepad2) != null) {
             elevatorStateFromSecondDriver = getElevatorStateFromSecondDriver(gamepad2);
         }
