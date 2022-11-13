@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
 
-    ElapsedTime time = new ElapsedTime();
+    ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
 
@@ -33,13 +33,13 @@ public class Robot extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
-        time.reset();
-        //Drivetrain.init(hardwareMap);
-        //OrbitGyro.init(hardwareMap);
-        //Elevator.init(hardwareMap);
-        //Claw.init(hardwareMap);
-        //Arm.init(hardwareMap);
-        //Intake.init(hardwareMap);
+        robotTime.reset();
+        Drivetrain.init(hardwareMap);
+        OrbitGyro.init(hardwareMap);
+        Elevator.init(hardwareMap);
+        Claw.init(hardwareMap);
+        Arm.init(hardwareMap);
+        Intake.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
@@ -50,7 +50,7 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            GlobalData.currentTime = (float) time.seconds();
+            GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
             SubSystemManager.setState(gamepad1, gamepad2);
