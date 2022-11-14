@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 
 public class Elevator {
     private static DcMotor elevatorMotor;
@@ -46,8 +48,10 @@ public class Elevator {
                 elevatorPID.setWanted(highHeight);
                 break;
             case OVERRIDE:
-                elevatorPower = gamepad1.right_stick_y;
+                elevatorPower = GlobalData.robotState.equals(RobotState.DEPLETE) ? gamepad1.right_stick_y + ElevatorConstants.depletePower : gamepad1.right_stick_y;
                 break;
+            case DEPLETE:
+                elevatorPower = ElevatorConstants.depletePower;
         }
         if (!elevatorState.equals(ElevatorStates.OVERRIDE)) {
             elevatorPower = (float) elevatorPID.update(height);

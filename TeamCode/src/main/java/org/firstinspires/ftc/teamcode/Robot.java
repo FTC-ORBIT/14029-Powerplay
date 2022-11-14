@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
@@ -23,9 +24,10 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
 
-    ElapsedTime time = new ElapsedTime();
+    ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
+    DigitalChannel clawDistanceSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,7 +35,7 @@ public class Robot extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
-        time.reset();
+        robotTime.reset();
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
         Elevator.init(hardwareMap);
@@ -49,7 +51,7 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            GlobalData.currentTime = (float) time.seconds();
+            GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
             SubSystemManager.setState(gamepad1, gamepad2);
@@ -58,7 +60,7 @@ public class Robot extends LinearOpMode {
 
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
-            telemetry.addData("distance", distanceSensor.getDistance());
+            SubSystemManager.printStates(telemetry);
 
             packet.put("distance", distanceSensor.getDistance());
             dashboard.sendTelemetryPacket(packet);
