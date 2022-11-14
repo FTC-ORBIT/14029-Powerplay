@@ -66,7 +66,7 @@ public class SubSystemManager {
             xButtonControl = false;
             rightStickControl = false;
         }
-        if (!lastState.equals(RobotState.DEPLETE) && state.equals(RobotState.DEPLETE)){
+        if (!lastState.equals(RobotState.DEPLETE) && GlobalData.robotState.equals(RobotState.DEPLETE)){
             clawStateControl = true;
         }
         switch (GlobalData.robotState) {
