@@ -34,6 +34,8 @@ public class Robot extends LinearOpMode {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
+        clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
+        clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
 
         robotTime.reset();
         Drivetrain.init(hardwareMap);
@@ -51,6 +53,8 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
+            GlobalData.hasGamePiece = clawDistanceSensor.getState();
+            
             GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
