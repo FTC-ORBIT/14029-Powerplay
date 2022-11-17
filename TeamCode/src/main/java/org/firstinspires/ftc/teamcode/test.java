@@ -46,35 +46,34 @@ public class test extends LinearOpMode {
 
         waitForStart();
 
-        while (!isStopRequested()){
+        while (!isStopRequested()) {
 
         }
     }
 
 
-    private static void testMotor(DcMotor motor, float power){
+    private static void testMotor(DcMotor motor, float power) {
         motor.setPower(power);
     }
 
-    private static void testServo(Servo servo){
-        for (int i = 0; i < 3; i++){
-            time.reset();
-            servo.setPosition(45);
-            if (time.milliseconds() < 1000){}
-            time.reset();
-            servo.setPosition(0);
-            if (time.milliseconds() < 1000){}
-        }
+    private static void testServo(Servo servo, float startPos, float endPos) {
+        time.reset();
+        servo.setPosition(startPos);
+        if (time.milliseconds() < 1000) {}
+        time.reset();
+        servo.setPosition(endPos);
+        if (time.milliseconds() < 1000) {}
+
     }
 
-    private static void subsystemChecks(Gamepad gamepad1, Gamepad gamepad2){
+    private static void subsystemChecks(Gamepad gamepad1, Gamepad gamepad2) {
         time.reset();
         while (time.milliseconds() < 5000) {
             SubSystemManager.state = RobotState.TRAVEL;
             SubSystemManager.setState(gamepad1, gamepad2);
         }
         time.reset();
-        while (time.milliseconds() < 5000){
+        while (time.milliseconds() < 5000) {
             SubSystemManager.state = RobotState.INTAKE;
             SubSystemManager.setState(gamepad1, gamepad2);
         }
@@ -84,7 +83,7 @@ public class test extends LinearOpMode {
             SubSystemManager.setState(gamepad1, gamepad2);
         }
         time.reset();
-        while (time.milliseconds() < 5000){
+        while (time.milliseconds() < 5000) {
             SubSystemManager.state = RobotState.DEPLETE;
             SubSystemManager.setState(gamepad1, gamepad2);
         }
