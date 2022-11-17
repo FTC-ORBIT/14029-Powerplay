@@ -33,7 +33,7 @@ public class OpenCv extends LinearOpMode {
                 FtcDashboard.getInstance().startCameraStream(camera, 60);
                 TelemetryPacket packet = new TelemetryPacket();
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
-                sleep(2000);
+
             }
 
             @Override

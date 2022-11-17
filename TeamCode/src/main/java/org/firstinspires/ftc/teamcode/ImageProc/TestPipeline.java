@@ -47,20 +47,29 @@ public class TestPipeline extends OpenCvPipeline {
         HSV:
         low 0, 136, 154
         high 36, 214, 255
+        36 cm:
+        area
+        width
+
+        42cm:
+        area
+        width
+
          */
+
 
         //Filters:
         Mat picInput = new Mat();
-        picInput = Imgcodecs.imread("/sdcard/FIRST/36cm" + ".bmp"); //Junction pic from 36 cm
+        picInput = Imgcodecs.imread("/sdcard/FIRST/42cm" + ".bmp"); //Junction pic from 36 cm
         Mat blur = new Mat();
-        Imgproc.medianBlur(picInput, blur, 25); // 10-12
+        Imgproc.medianBlur(input, blur, 7); //  Odd numbers only
         Mat hsv = new Mat();
         Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
 
 
 
-        Scalar low = new Scalar(94, 142, 149); // <- right for the picture
-        Scalar high = new Scalar(107, 208, 255); // <- right for the picture
+        Scalar low = new Scalar(8, 78, 120); // <- right for the picture
+        Scalar high = new Scalar(151, 255, 255); // <- right for the picture
         Mat mask = new Mat();
         Core.inRange(hsv, low, high, mask);
         List <MatOfPoint> contours = new ArrayList<>();
@@ -75,7 +84,7 @@ public class TestPipeline extends OpenCvPipeline {
         Rect areaRect = null;
         boolean detected = false;
         double area = 0;
-        double minArea = 100;         // The minimum pixels area of a junction from maximum +- 100 cm
+        double minArea = 200;         // The minimum pixels area of a junction from maximum +- 100 cm
         double minWidth = 0;
 
 
@@ -95,16 +104,26 @@ public class TestPipeline extends OpenCvPipeline {
         //Marking the closest junction:
         if (area > minArea && areaRect.width > minWidth){
             packet.put("area", area);
+            packet.put("width: ", areaRect.width);
             dashboard.sendTelemetryPacket(packet);
             detected = true;
-            Imgproc.rectangle(picInput, areaRect, new Scalar (255, 0, 0));
+            Imgproc.rectangle(input, areaRect, new Scalar (255, 0, 0));
         }
 
 
 
-        return picInput;
+        return mask;
+
+    /*
+    point
+
+    w:21, dist: 63
+    w:23, dst: 56
+    w:40, dist: 36
+    w: 49, dist: 30
 
 
+     */
 
 
 //        Mat dilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
