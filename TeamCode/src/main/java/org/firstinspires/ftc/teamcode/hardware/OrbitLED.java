@@ -10,12 +10,13 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 
 public class OrbitLED {
 
-    public static RevBlinkinLedDriver blinkin;
-    public static RevBlinkinLedDriver.BlinkinPattern pattern;
+    private static RevBlinkinLedDriver blinkin;
+    private static RevBlinkinLedDriver.BlinkinPattern pattern;
     private static ElapsedTime elapsedTime = new ElapsedTime();
 
     public static void init(HardwareMap hardwareMap) {
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class,"LED");
+        elapsedTime.reset();
     }
 
     public static void operate() {
@@ -27,7 +28,7 @@ public class OrbitLED {
             }
         } else {
             elapsedTime.reset();
-            switch (SubSystemManager.state){
+            switch (GlobalData.robotState){
                 case TRAVEL:
                     pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
                     break;
@@ -40,6 +41,6 @@ public class OrbitLED {
             }
         }
 
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        blinkin.setPattern(pattern);
         }
     }
