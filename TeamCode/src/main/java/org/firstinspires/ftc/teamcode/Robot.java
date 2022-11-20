@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
+import org.firstinspires.ftc.teamcode.hardware.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
@@ -44,6 +45,7 @@ public class Robot extends LinearOpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
+        OrbitLED.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
@@ -59,6 +61,7 @@ public class Robot extends LinearOpMode {
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
             SubSystemManager.setState(gamepad1, gamepad2);
+            OrbitLED.operate();
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
