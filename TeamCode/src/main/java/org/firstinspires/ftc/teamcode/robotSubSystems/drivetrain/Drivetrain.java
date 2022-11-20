@@ -94,4 +94,10 @@ public class Drivetrain {
         motors[3].setPower((rbPower / highestPower));
     }
 
+    public static void testMotors(){
+        for (final DcMotor motor : motors){
+            motor.setPower(0.2);
+        }
+    }
+
 }

@@ -35,4 +35,10 @@ public class Intake {
             motor.setPower(power);
 
     }
+
+    public static void testMotors(){
+        for (final DcMotor motor : motors){
+            motor.setPower(0.2);
+        }
+    }
 }
