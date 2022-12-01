@@ -3,20 +3,18 @@ package org.firstinspires.ftc.teamcode.robotSubSystems;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
-import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
-import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
-import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 
 public class SubSystemManager {
 
-    public static RobotState lastState = RobotState.TRAVEL;
+    public static org.firstinspires.ftc.teamcode.robotSubSystems.RobotState lastState = org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.TRAVEL;
     private static ElevatorStates elevatorState = ElevatorStates.INTAKE;
     private static ClawState clawState = ClawState.CLOSE;
     private static ArmState armState = ArmState.BACK;
@@ -34,14 +32,14 @@ public class SubSystemManager {
     private static boolean depleteControl = false;
     private static boolean clawStateControl = true;
 
-    private static RobotState getState(Gamepad gamepad) {
-        return gamepad.b ? RobotState.TRAVEL
-                : gamepad.a ? RobotState.INTAKE
-                        : gamepad.right_bumper ? RobotState.DEPLETE : gamepad.x ? RobotState.CLAWINTAKE : null;
+    private static org.firstinspires.ftc.teamcode.robotSubSystems.RobotState getState(Gamepad gamepad) {
+        return gamepad.b ? org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.TRAVEL
+                : gamepad.a ? org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.INTAKE
+                        : gamepad.right_bumper ? org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.DEPLETE : gamepad.x ? org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.CLAWINTAKE : null;
     }
 
     public static void setState(Gamepad gamepad, Gamepad gamepad2) {
-        final RobotState fromDriver = getState(gamepad);
+        final org.firstinspires.ftc.teamcode.robotSubSystems.RobotState fromDriver = getState(gamepad);
         if (fromDriver != null) {
             GlobalData.robotState = fromDriver;
         }
@@ -64,7 +62,7 @@ public class SubSystemManager {
             xButtonControl = false;
             rightStickControl = false;
         }
-        if (!lastState.equals(RobotState.DEPLETE) && GlobalData.robotState.equals(RobotState.DEPLETE)){
+        if (!lastState.equals(org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.DEPLETE) && GlobalData.robotState.equals(org.firstinspires.ftc.teamcode.robotSubSystems.RobotState.DEPLETE)){
             clawStateControl = true;
         }
         switch (GlobalData.robotState) {
@@ -88,8 +86,8 @@ public class SubSystemManager {
                     intakeState = IntakeState.COLLECT;
                     clawState = ClawState.OPEN;
                     armState = ArmState.BACK;
-                } else {
-                    GlobalData.robotState = RobotState.TRAVEL;
+                }  {
+                  GlobalData.robotState = RobotState.TRAVEL;
                 }
                 break;
             case CLAWINTAKE:
@@ -149,21 +147,21 @@ public class SubSystemManager {
 
          Intake.operate(intakeState);
 
-         if (!xButtonControl) {
-             Claw.operate(clawState);
-         } else {
-             Claw.operate(clawStateDriver);
-         }
-         if (!leftBumperControl) {
-             Arm.operate(armState);
-         } else {
-             Arm.operate(armStateDriver);
-         }
-         if (!rightStickControl) {
-             Elevator.operate(elevatorState, gamepad1);
-         } else {
-             Elevator.operate(elevatorStateOverride, gamepad1);
-         }
+        // if (!xButtonControl) {
+        //     Claw.operate(clawState);
+        // } else {
+        //     Claw.operate(clawStateDriver);
+        // }
+         //if (!leftBumperControl) {
+         //    Arm.operate(armState);
+         //} else {
+         //    Arm.operate(armStateDriver);
+         //}
+        // if (!rightStickControl) {
+        //     Elevator.operate(elevatorState, gamepad1);
+        // } else {
+        //     Elevator.operate(elevatorStateOverride, gamepad1);
+        // }
 
         lastYButtonState = gamepad1.y;
         lastLeftBumperButtonState = gamepad1.left_bumper;

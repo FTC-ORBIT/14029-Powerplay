@@ -12,13 +12,9 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
-import org.firstinspires.ftc.teamcode.hardware.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
-import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
-import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
-import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
 @Config
@@ -35,17 +31,17 @@ public class Robot extends LinearOpMode {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
-        clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
-        clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
+        //clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
+        //clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
 
         robotTime.reset();
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
-        Elevator.init(hardwareMap);
-        Claw.init(hardwareMap);
-        Arm.init(hardwareMap);
+        //Elevator.init(hardwareMap);
+        //Claw.init(hardwareMap);
+        //Arm.init(hardwareMap);
         Intake.init(hardwareMap);
-        OrbitLED.init(hardwareMap);
+        //OrbitLED.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
@@ -55,22 +51,24 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            GlobalData.hasGamePiece = clawDistanceSensor.getState();
+           // GlobalData.hasGamePiece = clawDistanceSensor.getState();
             
             GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
             Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
             SubSystemManager.setState(gamepad1, gamepad2);
-            OrbitLED.operate();
+           // OrbitLED.operate();
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
             GlobalData.lastTime = GlobalData.currentTime;
+            telemetry.addData("x", leftStick.x);
+            telemetry.addData("y", leftStick.y);
             telemetry.update();
-            SubSystemManager.printStates(telemetry);
+            //SubSystemManager.printStates(telemetry);
 
-            packet.put("distance", distanceSensor.getDistance());
-            dashboard.sendTelemetryPacket(packet);
+            //packet.put("distance", distanceSensor.getDistance());
+            //dashboard.sendTelemetryPacket(packet);
         }
     }
 

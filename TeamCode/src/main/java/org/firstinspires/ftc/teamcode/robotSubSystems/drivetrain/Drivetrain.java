@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
@@ -29,6 +31,9 @@ public class Drivetrain {
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
+
+        motors[1].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO if your initial robot position is not 0,0,0 make sure to fix the
         // position (look for the function in the documentry). might be setPoseEstimate
@@ -94,10 +99,11 @@ public class Drivetrain {
         motors[3].setPower((rbPower / highestPower));
     }
 
-    public static void testMotors(){
-        for (final DcMotor motor : motors){
-            motor.setPower(0.2);
-        }
+    public static void testMotors(Gamepad gamepad){
+        if (gamepad.dpad_down){motors[0].setPower(0.2);}
+        else if (gamepad.dpad_left){motors[1].setPower(0.2);}
+        else if (gamepad.dpad_up){motors[2].setPower(0.2);}
+        else if (gamepad.dpad_right){motors[3].setPower(0.2);}
     }
 
 }
