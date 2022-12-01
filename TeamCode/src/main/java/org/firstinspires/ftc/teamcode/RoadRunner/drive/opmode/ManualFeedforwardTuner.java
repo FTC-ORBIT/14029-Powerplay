@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 
 import java.util.Objects;
@@ -68,7 +69,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     "when using the built-in drive motor velocity PID.");
         }
 
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
         drive = new SampleMecanumDrive(hardwareMap);
 

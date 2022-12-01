@@ -44,7 +44,7 @@ public class Drivetrain {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
         drive(velocity_FieldCS_W, omega);
-        if (GlobalData.inAutonomous) pose = drive.getPoseEstimate(); //// TODO: delete it because it may be useless
+        if (GlobalData.inAutonomous) pose = drive.getPoseEstimate();
     }
     // did field centric
 
