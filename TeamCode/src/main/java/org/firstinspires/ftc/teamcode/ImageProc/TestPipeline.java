@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.ImageProc;
 
+import androidx.core.math.MathUtils;
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcOpModeRegister;
@@ -20,10 +23,12 @@ import org.opencv.core.Core;
 
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
-
+import org.opencv.core.RotatedRect.*;
+import org.opencv.core.RotatedRect;
 import java.util.ArrayList;
 import java.util.List;
-
+import
+@Config
 public class TestPipeline extends OpenCvPipeline {
     public TestPipeline(Telemetry telemetry) {
 
@@ -32,6 +37,12 @@ public class TestPipeline extends OpenCvPipeline {
     public double[] junctionDist = new double[2];
     private static FtcDashboard dashboard = FtcDashboard.getInstance();
     private static TelemetryPacket packet = new TelemetryPacket();
+    public static int lh = 0;
+    public static int ls = 0;
+    public static int lv = 0;
+    public static int hh = 180;
+    public static int hs = 255;
+    public static int hv = 255;
 
 
     @Override
@@ -62,14 +73,14 @@ public class TestPipeline extends OpenCvPipeline {
         Mat picInput = new Mat();
         picInput = Imgcodecs.imread("/sdcard/FIRST/42cm" + ".bmp"); //Junction pic from 36 cm
         Mat blur = new Mat();
-        Imgproc.medianBlur(input, blur, 7); //  Odd numbers only
+        Imgproc.medianBlur(input, blur, 3); //  Odd numbers only
         Mat hsv = new Mat();
-        Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor(blur, hsv, Imgproc.COLOR_RGB2HSV);
 
 
 
-        Scalar low = new Scalar(8, 78, 120); // <- right for the picture
-        Scalar high = new Scalar(151, 255, 255); // <- right for the picture
+        Scalar low = new Scalar(lh, ls, lv);
+        Scalar high = new Scalar(hh, hs, hv);
         Mat mask = new Mat();
         Core.inRange(hsv, low, high, mask);
         List <MatOfPoint> contours = new ArrayList<>();
@@ -86,6 +97,7 @@ public class TestPipeline extends OpenCvPipeline {
         double area = 0;
         double minArea = 200;         // The minimum pixels area of a junction from maximum +- 100 cm
         double minWidth = 0;
+        double dist;
 
 
 
@@ -96,23 +108,35 @@ public class TestPipeline extends OpenCvPipeline {
             Moments M = Imgproc.moments(contour);
             cx = (int)(M.m10/M.m00);
             cy = (int)(M.m01/M.m00);
+            Point pnt = new Point(cx, cy);
+            Point[] vertices = new Point[4];
+            //RotatedRect.(vertices);
+            List<MatOfPoint> boxContours = new ArrayList<>();
+            boxContours.add(new MatOfPoint(vertices));
+            Imgproc.drawContours(input, boxContours, 0, new Scalar(128, 128, 128), -1);
+
 
         }
         Point pnt = new Point(cx, cy);
-
+        MatOfPoint2f contoureFloat = MathUtils.;
 
         //Marking the closest junction:
         if (area > minArea && areaRect.width > minWidth){
+            dist = -11*areaRect.width + 62;
+            Imgproc.arcLength(, true);
             packet.put("area", area);
+            packet.put("distance", dist);
             packet.put("width: ", areaRect.width);
             dashboard.sendTelemetryPacket(packet);
             detected = true;
-            Imgproc.rectangle(input, areaRect, new Scalar (255, 0, 0));
+
+            Imgproc.rectangle(input, areaRect, new Scalar (0, 255, 0));
+
         }
 
 
 
-        return mask;
+        return input;
 
     /*
     point
@@ -121,7 +145,8 @@ public class TestPipeline extends OpenCvPipeline {
     w:23, dst: 56
     w:40, dist: 36
     w: 49, dist: 30
-
+    equation:
+    dist = -11*width + 62
 
      */
 
