@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
@@ -21,7 +22,7 @@ public class Intake {
         }
     }
 
-    public static void operate(IntakeState state) {
+    public static void operate(IntakeState state, Gamepad gamepad) {
         switch (state) {
             case COLLECT:
                 power = IntakeConstants.intakePower;

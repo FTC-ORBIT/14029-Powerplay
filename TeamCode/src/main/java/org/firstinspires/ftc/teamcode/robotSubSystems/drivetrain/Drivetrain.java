@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
@@ -32,8 +34,8 @@ public class Drivetrain {
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
         motors[3] = hardwareMap.get(DcMotor.class, "rb");
 
-        motors[1].setDirection(DcMotorSimple.Direction.REVERSE);
-        motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[0].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO if your initial robot position is not 0,0,0 make sure to fix the
         // position (look for the function in the documentry). might be setPoseEstimate
@@ -48,7 +50,8 @@ public class Drivetrain {
     public static void operate(final Vector velocity_W, float omega) {
         final float robotAngle = (float) Math.toRadians(OrbitGyro.getAngle());
         final Vector velocity_FieldCS_W = velocity_W.rotate(-robotAngle);
-        drive(velocity_FieldCS_W, omega);
+        if(velocity_FieldCS_W.norm() <= Math.sqrt(0.005) && Math.abs(omega) == 0) stop();
+        else drive(velocity_FieldCS_W, omega);
         if (GlobalData.inAutonomous) pose = drive.getPoseEstimate();
     }
     // did field centric

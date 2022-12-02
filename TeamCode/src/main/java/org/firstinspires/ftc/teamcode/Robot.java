@@ -54,8 +54,8 @@ public class Robot extends LinearOpMode {
            // GlobalData.hasGamePiece = clawDistanceSensor.getState();
             
             GlobalData.currentTime = (float) robotTime.seconds();
-            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+            Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+            Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
             SubSystemManager.setState(gamepad1, gamepad2);
            // OrbitLED.operate();
 
@@ -64,11 +64,14 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.addData("x", leftStick.x);
             telemetry.addData("y", leftStick.y);
+            telemetry.addData("rightTrigger", gamepad1.right_trigger);
+            telemetry.addData("leftTrigger", gamepad1.left_trigger);
             telemetry.update();
             //SubSystemManager.printStates(telemetry);
 
-            //packet.put("distance", distanceSensor.getDistance());
-            //dashboard.sendTelemetryPacket(packet);
+            packet.put("x", leftStick.x);
+            packet.put("y", leftStick.y);
+            dashboard.sendTelemetryPacket(packet);
         }
     }
 
