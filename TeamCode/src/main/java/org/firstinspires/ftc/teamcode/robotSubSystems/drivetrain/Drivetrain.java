@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
@@ -53,6 +54,12 @@ public class Drivetrain {
         if(velocity_FieldCS_W.norm() <= Math.sqrt(0.005) && Math.abs(omega) == 0) stop();
         else drive(velocity_FieldCS_W, omega);
         if (GlobalData.inAutonomous) pose = drive.getPoseEstimate();
+
+        Robot.packet.put("lf", motors[0].getCurrentPosition());
+        Robot.packet.put("rf", motors[1].getCurrentPosition());
+        Robot.packet.put("lb", motors[2].getCurrentPosition());
+        Robot.packet.put("rb", motors[3].getCurrentPosition());
+
     }
     // did field centric
 

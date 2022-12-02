@@ -25,12 +25,13 @@ public class Robot extends LinearOpMode {
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
     DigitalChannel clawDistanceSensor;
+    public static TelemetryPacket packet;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
-        TelemetryPacket packet = new TelemetryPacket();
+         packet = new TelemetryPacket();
         //clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
         //clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
 
