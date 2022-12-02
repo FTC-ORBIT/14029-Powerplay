@@ -15,7 +15,7 @@ public class OrbitGyro {
     private static float heading = 0;
     private static float omega = 0;
     public static BNO055IMU imu;
-    private static double  lastAngle;
+    private static double  lastAngle = 0;
     static double currentAngle = 0;
 
     public static void init(HardwareMap hardwareMap){

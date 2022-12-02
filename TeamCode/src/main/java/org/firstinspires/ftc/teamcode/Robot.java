@@ -52,7 +52,8 @@ public class Robot extends LinearOpMode {
 
         while (!isStopRequested()) {
            // GlobalData.hasGamePiece = clawDistanceSensor.getState();
-            
+
+            if (gamepad2.right_bumper) OrbitGyro.resetGyro();
             GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);

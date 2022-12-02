@@ -34,6 +34,7 @@ public class Intake {
                 power = IntakeConstants.depletePower;
                 break;
         }
+        if (gamepad.dpad_left) power = IntakeConstants.depletePower;
 
         for (final DcMotor motor : motors)
             motor.setPower(power);
