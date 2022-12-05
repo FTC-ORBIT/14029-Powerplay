@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.claw;
 
+import com.qualcomm.hardware.ams.AMSColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
 
-    private static float pos;
+    private static double pos;
     public static Servo clawServo;
 
     public static void init(HardwareMap hardwareMap) {
@@ -24,7 +25,11 @@ public class Claw {
         clawServo.setPosition(pos);
     }
 
-    public static boolean isClawCorrectPos(float wantedPos) {
+    public static boolean isClawCorrectPos(double wantedPos) {
         return clawServo.getPosition() == wantedPos ? true : false;
+    }
+
+    public static void test(double pos){
+        clawServo.setPosition(pos);
     }
 }

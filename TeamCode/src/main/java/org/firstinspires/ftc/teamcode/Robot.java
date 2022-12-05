@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
+import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
@@ -25,52 +26,52 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 @TeleOp(name = "main")
 public class Robot extends LinearOpMode {
 
-    ElapsedTime robotTime = new ElapsedTime();
-    OrbitDistanceSensor distanceSensor;
-    OrbitColorSensor colorSensor;
-    DigitalChannel clawDistanceSensor;
+//    ElapsedTime robotTime = new ElapsedTime();
+//    OrbitDistanceSensor distanceSensor;
+//    OrbitColorSensor colorSensor;
+//    DigitalChannel clawDistanceSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        TelemetryPacket packet = new TelemetryPacket();
-        clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
-        clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
+//        FtcDashboard dashboard = FtcDashboard.getInstance();
+//        TelemetryPacket packet = new TelemetryPacket();
+//        clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
+//        clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
 
-        robotTime.reset();
-        Drivetrain.init(hardwareMap);
-        OrbitGyro.init(hardwareMap);
-        Elevator.init(hardwareMap);
+//        robotTime.reset();
+//        Drivetrain.init(hardwareMap);
+//        OrbitGyro.init(hardwareMap);
+//        Elevator.init(hardwareMap);
         Claw.init(hardwareMap);
-        Arm.init(hardwareMap);
-        Intake.init(hardwareMap);
-        OrbitLED.init(hardwareMap);
+//        Arm.init(hardwareMap);
+//        Intake.init(hardwareMap);
+//        OrbitLED.init(hardwareMap);
 
-        GlobalData.inAutonomous = false;
-        GlobalData.currentTime = 0;
-        GlobalData.lastTime = 0;
-        GlobalData.deltaTime = 0;
+//        GlobalData.inAutonomous = false;
+//        GlobalData.currentTime = 0;
+//        GlobalData.lastTime = 0;
+//        GlobalData.deltaTime = 0;
 
         waitForStart();
 
         while (!isStopRequested()) {
-            GlobalData.hasGamePiece = clawDistanceSensor.getState();
+//            GlobalData.hasGamePiece = clawDistanceSensor.getState();
             
-            GlobalData.currentTime = (float) robotTime.seconds();
-            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
-            SubSystemManager.setState(gamepad1, gamepad2);
-            OrbitLED.operate();
+//            GlobalData.currentTime = (float) robotTime.seconds();
+//            Vector leftStick = new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+//            Drivetrain.operate(leftStick, (float) OrbitGyro.getAngle());
+              Claw.test(ClawConstants.closed);
+//            OrbitLED.operate();
 
-            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+//            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
-            GlobalData.lastTime = GlobalData.currentTime;
-            telemetry.update();
-            SubSystemManager.printStates(telemetry);
+//            GlobalData.lastTime = GlobalData.currentTime;
+//            telemetry.update();
+//            SubSystemManager.printStates(telemetry);
 
-            packet.put("distance", distanceSensor.getDistance());
-            dashboard.sendTelemetryPacket(packet);
+//            packet.put("distance", distanceSensor.getDistance());
+//            dashboard.sendTelemetryPacket(packet);
         }
     }
 

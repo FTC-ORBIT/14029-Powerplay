@@ -149,7 +149,7 @@ public class SubSystemManager {
         }
 
 
-         Intake.operate(intakeState);
+//         Intake.operate(intakeState);
 
          if (!xButtonControl) {
              Claw.operate(clawState);
@@ -157,14 +157,14 @@ public class SubSystemManager {
              Claw.operate(clawStateDriver);
          }
          if (!leftBumperControl) {
-             Arm.operate(armState);
+//             Arm.operate(armState);
          } else {
-             Arm.operate(armStateDriver);
+//             Arm.operate(armStateDriver);
          }
          if (!rightStickControl) {
-             Elevator.operate(elevatorState, gamepad1);
+//             Elevator.operate(elevatorState, gamepad1);
          } else {
-             Elevator.operate(elevatorStateOverride, gamepad1);
+//             Elevator.operate(elevatorStateOverride, gamepad1);
          }
 
         lastYButtonState = gamepad1.y;
