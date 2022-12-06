@@ -25,6 +25,6 @@ public class Claw {
     }
 
     public static boolean isClawCorrectPos(float wantedPos) {
-        return clawServo.getPosition() == wantedPos ? true : false;
+        return clawServo.getPosition() == wantedPos;
     }
 }

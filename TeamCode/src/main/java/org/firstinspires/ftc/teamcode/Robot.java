@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
+import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
+import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
@@ -39,7 +41,7 @@ public class Robot extends LinearOpMode {
         Drivetrain.init(hardwareMap);
         OrbitGyro.init(hardwareMap);
         //Elevator.init(hardwareMap);
-        //Claw.init(hardwareMap);
+        Claw.init(hardwareMap);
         //Arm.init(hardwareMap);
         Intake.init(hardwareMap);
         //OrbitLED.init(hardwareMap);
@@ -60,6 +62,11 @@ public class Robot extends LinearOpMode {
             Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
             SubSystemManager.setState(gamepad1, gamepad2);
            // OrbitLED.operate();
+
+
+            telemetry.addData("servoPose", Claw.clawServo.getPortNumber());
+
+            telemetry.addData("servoPose", Claw.clawServo.getPosition());
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
