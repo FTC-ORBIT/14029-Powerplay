@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
@@ -103,10 +101,10 @@ public class Drivetrain {
                 Math.max(Math.abs(lbPower), Math.max(Math.abs(rfPower), Math.abs(rbPower))));
         if (max > 1)
             highestPower = max;
-        motors[0].setPower((lfPower / highestPower));
-        motors[1].setPower((rfPower / highestPower));
-        motors[2].setPower((lbPower / highestPower));
-        motors[3].setPower((rbPower / highestPower));
+        motors[0].setPower(DrivetrainConstants.power * (lfPower / highestPower));
+        motors[1].setPower(DrivetrainConstants.power * (rfPower / highestPower));
+        motors[2].setPower(DrivetrainConstants.power * (lbPower / highestPower));
+        motors[3].setPower(DrivetrainConstants.power * (rbPower / highestPower));
     }
 
     public static void testMotors(Gamepad gamepad){
