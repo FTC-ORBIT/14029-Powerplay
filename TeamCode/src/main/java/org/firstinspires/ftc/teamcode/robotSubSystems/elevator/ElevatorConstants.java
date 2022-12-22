@@ -9,12 +9,14 @@ public class ElevatorConstants {
     public static final float lowHeight = metersToTicks(0f);
     public static final float midHeight = metersToTicks(0f);
     public static final float highHeight = metersToTicks(0f);
-    public static final Vector min = new Vector(0 , 0);
-    public static final Vector max = new Vector(20000, 2);
-    public static final float kP = 0;
+    public static final Vector minMetersToTicks = new Vector(0 , 0);
+    public static final Vector maxMetersToTicks = new Vector(20000, 2);
+    public static final Vector minTicksToMeters = new Vector(minMetersToTicks.y, minMetersToTicks.x);
+    public static final Vector maxTicksToMeters = new Vector(maxMetersToTicks.y, maxMetersToTicks.x);
+    public static final float kP = (float) (0.85 / 0.93);
     public static final float depletePower = -0.1f;
 
 private static float metersToTicks (float meters){
-    return MathFuncs.twoPointsLinear(min, max, meters);
+    return MathFuncs.twoPointsLinear(minMetersToTicks, maxMetersToTicks, meters);
 }
 }

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.OrbitUtils.MathFuncs;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
@@ -19,7 +20,6 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 public class Elevator {
     private static DcMotor elevatorMotor;
     private static final DcMotor elevatorEncoder = elevatorMotor;
-    private static float height;
     private static final PID elevatorPID = new PID(kP, 0, 0, 0, 0);
     private static float lastStateHeight;
     private static boolean lastOverrideState = false;
@@ -30,7 +30,7 @@ public class Elevator {
     }
 
     public static void operate(ElevatorStates elevatorState, Gamepad gamepad1) {
-        final float height = elevatorEncoder.getCurrentPosition() * gearRatio;
+        final float height = ticksToMeters(elevatorEncoder.getCurrentPosition());
         switch (elevatorState) {
             case INTAKE:
                 elevatorPID.setWanted(intakeHeight);
@@ -62,6 +62,10 @@ public class Elevator {
 
     public static void testMotors(){
         elevatorMotor.setPower(0.2);
+    }
+
+    public static float ticksToMeters (float Ticks){
+        return MathFuncs.twoPointsLinear(ElevatorConstants.minTicksToMeters, ElevatorConstants.maxTicksToMeters, Ticks);
     }
 
 }
