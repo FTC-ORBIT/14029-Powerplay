@@ -16,7 +16,6 @@ public class Intake {
         motors[1] = hardwareMap.get(DcMotor.class, "IntakeL");
 
         motors[1].setDirection(DcMotorSimple.Direction.REVERSE);
-
         for (final DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
@@ -42,8 +41,8 @@ public class Intake {
     }
 
     public static void testMotors(){
-        for (final DcMotor motor : motors){
-            motor.setPower(0.2);
-        }
+            for (final DcMotor motor : motors){
+                motor.setPower(0.2);
+            }
     }
 }

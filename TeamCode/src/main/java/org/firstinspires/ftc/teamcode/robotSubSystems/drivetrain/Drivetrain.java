@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
@@ -107,11 +108,13 @@ public class Drivetrain {
         motors[3].setPower(DrivetrainConstants.power * (rbPower / highestPower));
     }
 
-    public static void testMotors(Gamepad gamepad){
+    public static void testMotors(Gamepad gamepad, Telemetry telemetry){
         if (gamepad.dpad_down){motors[0].setPower(0.2);}
         else if (gamepad.dpad_left){motors[1].setPower(0.2);}
         else if (gamepad.dpad_up){motors[2].setPower(0.2);}
         else if (gamepad.dpad_right){motors[3].setPower(0.2);}
+        telemetry.addData("lb", motors[2].getCurrentPosition());
+        telemetry.addData("rb", motors[3].getCurrentPosition());
     }
 
 }

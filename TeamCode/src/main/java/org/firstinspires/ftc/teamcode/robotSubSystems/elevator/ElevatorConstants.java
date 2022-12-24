@@ -1,22 +1,19 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 
-import org.firstinspires.ftc.teamcode.OrbitUtils.MathFuncs;
-import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 
 public class ElevatorConstants {
-    public static final float intakeHeight = metersToTicks(0f); //TODO change this to the real values
-    public static final float groundHeight = metersToTicks(0f);
-    public static final float lowHeight = metersToTicks(0f);
-    public static final float midHeight = metersToTicks(0f);
-    public static final float highHeight = metersToTicks(0f);
-    public static final Vector minMetersToTicks = new Vector(0 , 0);
-    public static final Vector maxMetersToTicks = new Vector(20000, 2);
-    public static final Vector minTicksToMeters = new Vector(minMetersToTicks.y, minMetersToTicks.x);
-    public static final Vector maxTicksToMeters = new Vector(maxMetersToTicks.y, maxMetersToTicks.x);
-    public static final float kP = (float) (0.85 / 0.93);
+    public static final float intakeHeight = 0;
+    public static final float groundHeight = 0;
+    public static final float lowHeight = 17265;
+    public static final float midHeight = 26735;
+    public static final float highHeight = 26735; //33000;
+    public static final float ableToOpenClawHeight = 4060;
+    public static final float constantPower = 0;
+    public static final float kP = (float) 0.001;
+    public static final float kD = (float) 0;
     public static final float depletePower = -0.1f;
+    //public static final Vector minMetersToTicks = new Vector(0 , 0);
+    //public static final Vector maxMetersToTicks = new Vector(0.86f, 33025);
 
-private static float metersToTicks (float meters){
-    return MathFuncs.twoPointsLinear(minMetersToTicks, maxMetersToTicks, meters);
-}
+
 }

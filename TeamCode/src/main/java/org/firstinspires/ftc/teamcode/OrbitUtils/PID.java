@@ -16,7 +16,6 @@ public class PID {
 
     private double prevError = 0;
     private double prevTime = 0;
-    private double prevDerivative = 0;
 
     public PID(final double kP, final double kI, final double kD, final double kF, final double iZone) {
         this.kP = kP;
@@ -43,11 +42,10 @@ public class PID {
             }
         }
 
-        final double derivative = deltaTime == 0 ? prevDerivative : (currentError - prevError) / deltaTime;
+        final double derivative = deltaTime == 0 ? 0 : (currentError - prevError) / deltaTime;
 
         prevError = currentError;
         prevTime = currentTime;
-        prevDerivative = derivative;
 
         return kP * currentError + kI * integral + kD * derivative + kF * wanted;
     }
