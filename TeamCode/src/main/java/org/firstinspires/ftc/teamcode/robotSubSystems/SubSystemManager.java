@@ -24,7 +24,7 @@ public class SubSystemManager {
     private static ClawState clawStateDriver = ClawState.CLOSE;
     private static ArmState armStateDriver = ArmState.BACK;
     private static final ElevatorStates elevatorStateOverride = ElevatorStates.OVERRIDE;
-    private static ElevatorStates elevatorStateFromSecondDriver;
+    private static ElevatorStates elevatorStateFromSecondDriver = ElevatorStates.LOW;
     private static IntakeState intakeState = IntakeState.STOP;
     private static boolean lastYButtonState;
     private static boolean lastxButtonState;
@@ -60,7 +60,7 @@ public class SubSystemManager {
     public static ElevatorStates getElevatorStateFromSecondDriver(Gamepad gamepad2) {
         return gamepad2.a ? ElevatorStates.GROUND
                 : gamepad2.b ? ElevatorStates.LOW
-                        : gamepad2.x ? ElevatorStates.MID : gamepad2.y ? ElevatorStates.HIGH : ElevatorStates.LOW;
+                        : gamepad2.x ? ElevatorStates.MID : gamepad2.y ? ElevatorStates.HIGH : null;
     }
 
 
@@ -89,19 +89,19 @@ public class SubSystemManager {
                         clawTime = GlobalData.currentTime;
                         clawTimeControl = false;
                     }
-                    if (GlobalData.currentTime - clawTime >= 2) {
+                    if (GlobalData.currentTime - clawTime >= 3) {
                         elevatorState = ElevatorStates.LOW;// TODO need to check the timing when intaking
                         if (elevatorTimeControl) {
                             elevatorTime = GlobalData.currentTime;
                             elevatorTimeControl = false;
                         }
-                        if (GlobalData.currentTime - elevatorTime >= 1) { //todo check
+                        if (GlobalData.currentTime - elevatorTime >= 3.5) { //todo check
                             armState = ArmState.FRONT;
                         }
 
                     }
                 } else {
-                      elevatorState = ElevatorStates.INTAKE;
+                      elevatorState = ElevatorStates.GROUND;
                       armState = ArmState.BACK;
                       clawState = ClawState.OPEN;
                 }
@@ -174,7 +174,7 @@ public class SubSystemManager {
             leftBumperControl = true;
         }
 
-        if (gamepad1.dpad_left && !lastxButtonState) {
+        if (gamepad1.dpad_right && !lastxButtonState) {
             clawStateDriver = clawState == ClawState.CLOSE ? ClawState.OPEN : ClawState.CLOSE;
             xButtonControl = true;
         }
@@ -186,15 +186,15 @@ public class SubSystemManager {
 
          Intake.operate(intakeState, gamepad1);
 
-         if (!xButtonControl) {
-             Claw.operate(clawState);
-         } else {
-             Claw.operate(clawStateDriver);
-         }
+         //if (!xButtonControl) {
+           //  Claw.operate(clawState);
+         //} else {
+           //  Claw.operate(clawStateDriver);
+         //}
          if (!leftBumperControl) {
-             Arm.operate(armState);
+             Arm.operate(ArmState.BACK);
          } else {
-             Arm.operate(armStateDriver);
+             Arm.operate(ArmState.BACK);
          }
         if (!rightStickControl) {
              Elevator.operate(elevatorState, gamepad1);
@@ -204,7 +204,7 @@ public class SubSystemManager {
 
         lastYButtonState = gamepad1.y;
         lastLeftBumperButtonState = gamepad1.left_bumper;
-        lastxButtonState = gamepad1.dpad_left;
+        lastxButtonState = gamepad1.dpad_right;
         lastState = GlobalData.robotState;
     }
 

@@ -1,18 +1,24 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.arm;
 
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Arm {
 
     private static float pos;
-    public static Servo armServo;
+    public static CRServo armServo;
 
     public static void init(HardwareMap hardwareMap) {
-        armServo = hardwareMap.get(Servo.class, "armServo");
-        armServo.setDirection(Servo.Direction.FORWARD);
-        armServo.setPosition(ArmConstants.back);
+        armServo = hardwareMap.get(CRServo.class, "armServo");
+        armServo.setDirection(CRServo.Direction.REVERSE);
+        armServo.setPower(ArmConstants.back);
+
+
     }
 
     public static void operate(ArmState state) {
@@ -24,15 +30,16 @@ public class Arm {
                 pos = ArmConstants.back;
                 break;
         }
-        armServo.setPosition(pos);
+        armServo.setPower(pos);
     }
 
     public static void reset() {
-        armServo.setPosition(ArmConstants.back); // TODO or front...
+        armServo.setPower(ArmConstants.back); // TODO or front...
     }
 
-    public static double testArm (Gamepad gamepad) {
-        armServo.setPosition(gamepad.right_trigger);
-        return armServo.getPosition();
+    public static void testArm (Gamepad gamepad, Telemetry telemetry) {
+        armServo.setPower(gamepad.left_stick_y);
+        telemetry.addData("pos", armServo.getPower());
+
     }
 }

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 
 
 public class ElevatorConstants {
-    public static final float intakeHeight = 0;
     public static final float groundHeight = 0;
+    public static final float intakeHeight = groundHeight;
     public static final float lowHeight = 17265;
     public static final float midHeight = 26735;
     public static final float highHeight = 26735; //33000;
@@ -17,3 +17,4 @@ public class ElevatorConstants {
 
 
 }
+

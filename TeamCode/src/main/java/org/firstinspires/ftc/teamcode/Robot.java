@@ -73,7 +73,16 @@ public class Robot extends LinearOpMode {
             GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
-            SubSystemManager.setState(gamepad1, gamepad2);
+            SubSystemManager.setState(  gamepad1, gamepad2);
+            if (gamepad1.dpad_up) {
+                Claw.operate(ClawState.CLOSE);
+            } else if (gamepad1.dpad_right){
+                Claw.operate(ClawState.OPEN);
+            } else {
+                Claw.operate(ClawState.STOP);
+            }
+            Elevator.operate(ElevatorStates.OVERRIDE, gamepad1);
+
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
