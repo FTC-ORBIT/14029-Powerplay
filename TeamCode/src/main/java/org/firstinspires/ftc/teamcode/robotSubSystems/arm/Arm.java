@@ -11,14 +11,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     private static float pos;
-    public static CRServo armServo;
+    public static Servo armServo;
+    private static double power = 0;
+    private static boolean lastRight;
+    private static boolean lastLeft;
 
     public static void init(HardwareMap hardwareMap) {
-        armServo = hardwareMap.get(CRServo.class, "armServo");
-        armServo.setDirection(CRServo.Direction.REVERSE);
-        armServo.setPower(ArmConstants.back);
-
-
+        armServo = hardwareMap.get(Servo.class, "armServo");
+        armServo.setDirection(Servo.Direction.REVERSE);
     }
 
     public static void operate(ArmState state) {
@@ -30,16 +30,23 @@ public class Arm {
                 pos = ArmConstants.back;
                 break;
         }
-        armServo.setPower(pos);
+        armServo.setPosition(pos);
     }
 
     public static void reset() {
-        armServo.setPower(ArmConstants.back); // TODO or front...
+        armServo.setPosition(ArmConstants.back); // TODO or front...
     }
 
     public static void testArm (Gamepad gamepad, Telemetry telemetry) {
-        armServo.setPower(gamepad.left_stick_y);
-        telemetry.addData("pos", armServo.getPower());
+        if (!lastRight && gamepad.right_bumper){
+            power = power + 0.005;
+        } else if (!lastLeft && gamepad.left_bumper){
+            power = power - 0.005;
+        }
+        armServo.setPosition(power);
+        telemetry.addData("position", armServo.getPosition());
+        lastRight = gamepad.right_bumper;
+        lastLeft = gamepad.left_bumper;
 
     }
 }

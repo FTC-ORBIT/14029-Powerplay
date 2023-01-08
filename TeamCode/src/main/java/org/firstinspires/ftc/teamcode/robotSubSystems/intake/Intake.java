@@ -21,7 +21,7 @@ public class Intake {
         }
     }
 
-    public static void operate(IntakeState state, Gamepad gamepad) {
+    public static void operate(IntakeState state) {
         switch (state) {
             case COLLECT:
                 power = IntakeConstants.intakePower;
@@ -33,7 +33,6 @@ public class Intake {
                 power = IntakeConstants.depletePower;
                 break;
         }
-        if (gamepad.dpad_left) power = IntakeConstants.depletePower;
 
         for (final DcMotor motor : motors)
             motor.setPower(power);

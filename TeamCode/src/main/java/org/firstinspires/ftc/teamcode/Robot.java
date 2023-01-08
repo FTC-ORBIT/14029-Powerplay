@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
@@ -36,7 +37,7 @@ public class Robot extends LinearOpMode {
     ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
-    DigitalChannel clawDistanceSensor;
+    public  static DigitalChannel clawDistanceSensor;
     public static TelemetryPacket packet;
     static ElevatorStates states = ElevatorStates.GROUND;
     static  ClawState clawState = ClawState.CLOSE;
@@ -64,24 +65,18 @@ public class Robot extends LinearOpMode {
         GlobalData.lastTime = 0;
         GlobalData.deltaTime = 0;
         GlobalData.robotState = RobotState.TRAVEL;
+        GlobalData.hasGamePiece = false;
 
         waitForStart();
 
         while (!isStopRequested()) {
-            GlobalData.hasGamePiece = gamepad2.left_bumper;
             if (gamepad2.right_bumper) OrbitGyro.resetGyro();
             GlobalData.currentTime = (float) robotTime.seconds();
             Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
-            SubSystemManager.setState(  gamepad1, gamepad2);
-            if (gamepad1.dpad_up) {
-                Claw.operate(ClawState.CLOSE);
-            } else if (gamepad1.dpad_right){
-                Claw.operate(ClawState.OPEN);
-            } else {
-                Claw.operate(ClawState.STOP);
-            }
-            Elevator.operate(ElevatorStates.OVERRIDE, gamepad1);
+            SubSystemManager.setState(  gamepad1, gamepad2, telemetry);
+
+
 
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
@@ -90,9 +85,7 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             SubSystemManager.printStates(telemetry);
-            telemetry.addData("height", Elevator.getHeight());
-            telemetry.addData("time", GlobalData.currentTime);
-
+            telemetry.addData("reachedHeight", Elevator.reachedHeight());
         }
     }
 

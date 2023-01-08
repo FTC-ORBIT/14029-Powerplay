@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 public class Drivetrain {
 
-    private static final DcMotor[] motors = new DcMotor[4];
+    public static final DcMotor[] motors = new DcMotor[4];
 
     public static SampleMecanumDrive drive;
 
@@ -58,7 +59,6 @@ public class Drivetrain {
         Robot.packet.put("rf", motors[1].getCurrentPosition());
         Robot.packet.put("lb", motors[2].getCurrentPosition());
         Robot.packet.put("rb", motors[3].getCurrentPosition());
-
     }
     // did field centric
 
@@ -113,6 +113,7 @@ public class Drivetrain {
         else if (gamepad.dpad_left){motors[1].setPower(0.2);}
         else if (gamepad.dpad_up){motors[2].setPower(0.2);}
         else if (gamepad.dpad_right){motors[3].setPower(0.2);}
+        telemetry.addData("lf", motors[0].getCurrentPosition());
         telemetry.addData("lb", motors[2].getCurrentPosition());
         telemetry.addData("rb", motors[3].getCurrentPosition());
     }
