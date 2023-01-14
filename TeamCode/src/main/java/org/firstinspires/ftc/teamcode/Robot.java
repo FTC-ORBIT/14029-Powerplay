@@ -3,32 +3,28 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.EventLoop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
-import org.firstinspires.ftc.teamcode.robotSubSystems.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
-import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
-import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 
 @Config
 @TeleOp(name = "main")
@@ -37,8 +33,12 @@ public class Robot extends LinearOpMode {
     ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
     OrbitColorSensor colorSensor;
-    public  static DigitalChannel clawDistanceSensor;
+    public static DigitalChannel coneDistanceSensor;
+    public static DigitalChannel clawTouchSensor;
     public static TelemetryPacket packet;
+    private static boolean lastLeftBumperButtonState = false;
+    private static boolean lastDPadDownButtonState = false;
+    private static boolean lastYButtonState = false;
     static ElevatorStates states = ElevatorStates.GROUND;
     static  ClawState clawState = ClawState.CLOSE;
     static  ArmState armState = ArmState.BACK;
@@ -48,8 +48,13 @@ public class Robot extends LinearOpMode {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
-        clawDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
-        clawDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
+        coneDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
+        coneDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
+
+        clawTouchSensor = hardwareMap.get(DigitalChannel.class, "clawTouchSensor");
+        clawTouchSensor.setMode(DigitalChannel.Mode.INPUT);
+
+
 
         robotTime.reset();
         Drivetrain.init(hardwareMap);
@@ -70,12 +75,11 @@ public class Robot extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            if (gamepad2.right_bumper) OrbitGyro.resetGyro();
-            GlobalData.currentTime = (float) robotTime.seconds();
-            Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-            Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
-            SubSystemManager.setState(  gamepad1, gamepad2, telemetry);
-
+           if (gamepad2.right_bumper) OrbitGyro.resetGyro();
+           GlobalData.currentTime = (float) robotTime.seconds();
+           Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+           Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
+           SubSystemManager.setState(  gamepad1, gamepad2, telemetry);
 
 
 
@@ -85,7 +89,9 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             SubSystemManager.printStates(telemetry);
-            telemetry.addData("reachedHeight", Elevator.reachedHeight());
+            telemetry.addData("digital_distance_sensor", coneDistanceSensor.getState());
+            telemetry.addData("digital_touch_sensor", clawTouchSensor.getState());
+
         }
     }
 

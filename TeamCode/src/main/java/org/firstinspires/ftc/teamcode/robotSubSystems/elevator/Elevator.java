@@ -36,7 +36,7 @@ public class Elevator {
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public static void operate(ElevatorStates elevatorState, Gamepad gamepad1) {
+    public static void operate(ElevatorStates elevatorState, Gamepad gamepad1, Telemetry telemetry) {
         height = -Drivetrain.motors[0].getCurrentPosition();
 
         switch (elevatorState) {
@@ -67,6 +67,7 @@ public class Elevator {
         }
 
         elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
+        telemetry.addData("height", height);
 
     }
     public static float getMotorCurrent(Telemetry telemetry){

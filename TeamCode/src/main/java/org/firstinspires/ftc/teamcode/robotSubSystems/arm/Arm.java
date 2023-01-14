@@ -44,7 +44,7 @@ public class Arm {
             power = power - 0.005;
         }
         armServo.setPosition(power);
-        telemetry.addData("position", armServo.getPosition());
+        telemetry.addData("position", power);
         lastRight = gamepad.right_bumper;
         lastLeft = gamepad.left_bumper;
 
