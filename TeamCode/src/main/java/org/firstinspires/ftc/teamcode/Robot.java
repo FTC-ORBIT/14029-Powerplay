@@ -39,9 +39,7 @@ public class Robot extends LinearOpMode {
     private static boolean lastLeftBumperButtonState = false;
     private static boolean lastDPadDownButtonState = false;
     private static boolean lastYButtonState = false;
-    static ElevatorStates states = ElevatorStates.GROUND;
-    static  ClawState clawState = ClawState.CLOSE;
-    static  ArmState armState = ArmState.BACK;
+    private static ElevatorStates states = ElevatorStates.GROUND;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,38 +80,19 @@ public class Robot extends LinearOpMode {
            SubSystemManager.setState(  gamepad1, gamepad2, telemetry);
 
 
-
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
 
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             SubSystemManager.printStates(telemetry);
-            telemetry.addData("digital_distance_sensor", coneDistanceSensor.getState());
-            telemetry.addData("digital_touch_sensor", clawTouchSensor.getState());
+            telemetry.addData("leftBumper", gamepad1.left_bumper);
+//            telemetry.addData("digital_distance_sensor", coneDistanceSensor.getState());
+//            telemetry.addData("digital_touch_sensor", clawTouchSensor.getState());
 
         }
     }
 
-    public static  void test(Gamepad gamepad1){
-        if(gamepad1.b){
-            clawState = ClawState.CLOSE;
-        }else if (gamepad1.a){
-            clawState = ClawState.OPEN;
-        }
-        Claw.operate(clawState);
 
-        if (gamepad1.y){
-            states = ElevatorStates.LOW;
-        }else if(gamepad1.x){
-            states = ElevatorStates.GROUND;
-        }
-//            Elevator.operate(states, gamepad1, telemetry);
-        if(gamepad1.right_bumper){
-            armState = ArmState.BACK;
-        }else if(gamepad1.left_bumper){
-            armState = ArmState.FRONT;
-        }
-    }
 
 }

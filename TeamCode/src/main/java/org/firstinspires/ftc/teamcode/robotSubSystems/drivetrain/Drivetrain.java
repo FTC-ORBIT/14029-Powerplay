@@ -114,6 +114,7 @@ public class Drivetrain {
         else if (gamepad.dpad_up){motors[2].setPower(0.2);}
         else if (gamepad.dpad_right){motors[3].setPower(0.2);}
         telemetry.addData("lf", motors[0].getCurrentPosition());
+        telemetry.addData("rf", motors[1].getCurrentPosition());
         telemetry.addData("lb", motors[2].getCurrentPosition());
         telemetry.addData("rb", motors[3].getCurrentPosition());
     }

@@ -27,17 +27,18 @@ public class Elevator {
     private static DcMotorEx elevatorMotor;
     private static final PID elevatorPID = new PID(kP, 0, kD, 0, 0);
     private static float lastStateHeight;
-    private static boolean lastOverrideState = false;
+    private static boolean ableToChangeConeStacksFloor = false;
     private static float elevatorPower = 0f;
     private static  float wanted = 0;
     private static  float height = 0;
+    private static  int coneStacksFloor = 5;
     public static void init(HardwareMap hardwareMap) {
         elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public static void operate(ElevatorStates elevatorState, Gamepad gamepad1, Telemetry telemetry) {
-        height = -Drivetrain.motors[0].getCurrentPosition();
+        height = Drivetrain.motors[1].getCurrentPosition();
 
         switch (elevatorState) {
             case INTAKE:
@@ -55,6 +56,16 @@ public class Elevator {
             case HIGH:
                 wanted = highHeight;
                 break;
+            case CLAWINTAKE:
+                wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference * (5 - coneStacksFloor);
+                if ((gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor += 1;
+                    ableToChangeConeStacksFloor = false;
+                }
+                else if ((gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor -= 1;
+                    ableToChangeConeStacksFloor = false;
+                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
             case OVERRIDE:
                 elevatorPower = GlobalData.robotState.equals(RobotState.DEPLETE) ? -gamepad1.right_stick_y + ElevatorConstants.depletePower : -gamepad1.right_stick_y;
                 break;
@@ -68,6 +79,7 @@ public class Elevator {
 
         elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
         telemetry.addData("height", height);
+        telemetry.addData("reachedHeight", reachedHeight());
 
     }
     public static float getMotorCurrent(Telemetry telemetry){
@@ -82,12 +94,12 @@ public class Elevator {
         return wanted - height;
     }
     public static float getHeight (){
-        return -Drivetrain.motors[0].getCurrentPosition();
+        return Drivetrain.motors[1].getCurrentPosition();
     }
 
     public static void testMotors(Telemetry telemetry, Gamepad gamepad){
-        if (gamepad.a) elevatorMotor.setPower(0.2);
-        telemetry.addData("value", -Drivetrain.motors[0].getCurrentPosition());
+        if (gamepad.a) elevatorMotor.setPower(0.5);
+        telemetry.addData("value", Drivetrain.motors[1].getCurrentPosition());
         telemetry.addData("power", elevatorPower);
     }
 

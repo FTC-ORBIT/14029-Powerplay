@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Intake {
 
     public static final DcMotor motors[] = new DcMotor[2];
@@ -39,9 +41,12 @@ public class Intake {
 
     }
 
-    public static void testMotors(){
+    public static void testMotors(Telemetry telemetry){
+        int num = 0;
             for (final DcMotor motor : motors){
-                motor.setPower(0.2);
+                motor.setPower(0.5);
+                telemetry.addData(String.valueOf(num), motors[num].getCurrentPosition());
+                num++;
             }
     }
 }
