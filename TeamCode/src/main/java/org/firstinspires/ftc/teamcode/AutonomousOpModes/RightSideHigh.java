@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
 import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.camera;
+import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.tagOfInterest;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -105,6 +106,7 @@ public class RightSideHigh extends LinearOpMode {
                 .build();
 
         waitForStart();
+
         signalSleeveNum = AprilTag.currentTagId(telemetry);
         drive.followTrajectorySequence(firstCone);
         Elevator.height = Drivetrain.motors[1].getCurrentPosition();
