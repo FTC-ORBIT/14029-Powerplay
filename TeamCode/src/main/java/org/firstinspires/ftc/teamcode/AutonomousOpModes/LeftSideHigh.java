@@ -24,15 +24,15 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants
 public class LeftSideHigh extends LinearOpMode {
 
     public static double strafeRightFirst = 0.7;
-    public static double moveForwardToHighX = 0.97;
+    public static double moveForwardToHighX = 0.96;
     public static double turnAngle = Math.toRadians(90);
-    public static double depleteY = 0.87;
+    public static double depleteY = 0.92;
     public static double prepareToParkX = 0.65;
     public static double prepareToParkY = -0.8;
     public static double signalSleeveNum = 0;
-    public static double park0Distance = 0.03;
+    public static double park0Distance = 1.27;
     public static double park1Distance = 0.67;
-    public static double park2Distance = 1.25;
+    public static double park2Distance = 0.05;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -42,6 +42,7 @@ public class LeftSideHigh extends LinearOpMode {
         Arm.init(hardwareMap);
         Claw.init(hardwareMap);
         ElapsedTime time = new ElapsedTime();
+        time.reset();
 
         TrajectorySequence firstCone = drive.trajectorySequenceBuilder(new Pose2d())
                 .addDisplacementMarker(() -> {
@@ -87,14 +88,7 @@ public class LeftSideHigh extends LinearOpMode {
             if (Elevator.height > ElevatorConstants.ableToTurnArmHeight) Arm.operate(ArmState.FRONT);
             drive.update();
         }
-        double startTime = time.seconds();
-        while (time.seconds() - startTime <= 2) Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
         Claw.operate(ClawState.OPEN);
-        sleep(800);
-        while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){
-            Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
-            drive.update();
-        }
         sleep(800);
         drive.followTrajectory(backFromJunction);
         while (!Elevator.reachedHeightVal(ElevatorConstants.groundHeight)){
