@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
+import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.camera;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -8,6 +12,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.OpenCV.AprilTag;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
@@ -18,6 +23,8 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
 @Autonomous (group = "rightSideHighCycles")
@@ -35,6 +42,27 @@ public class RightSideHigh extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        AprilTag.init(hardwareMap);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                camera.setPipeline(AprilTag.aprilTagDetectionPipeline);
+                FtcDashboard.getInstance().startCameraStream(camera, 60);
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("place", AprilTag.aprilTagDetectionPipeline.getLatestDetections());
+                FtcDashboard.getInstance().sendTelemetryPacket(packet);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Elevator.init(hardwareMap);
         Drivetrain.init(hardwareMap);
@@ -77,7 +105,7 @@ public class RightSideHigh extends LinearOpMode {
                 .build();
 
         waitForStart();
-
+        signalSleeveNum = AprilTag.currentTagId(telemetry);
         drive.followTrajectorySequence(firstCone);
         Elevator.height = Drivetrain.motors[1].getCurrentPosition();
         while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){
