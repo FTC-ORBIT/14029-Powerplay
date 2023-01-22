@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySe
 @Config
 @Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 48; // in
+    public static double DISTANCE = 1.5; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,13 +41,13 @@ public class FollowerPIDTuner extends LinearOpMode {
         while (!isStopRequested()) {
             TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
                     .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
+                    .turn(Math.toRadians(-90))
                     .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
+                    .turn(Math.toRadians(-90))
                     .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
+                    .turn(Math.toRadians(-90))
                     .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
+                    .turn(Math.toRadians(-90))
                     .build();
             drive.followTrajectorySequence(trajSeq);
         }

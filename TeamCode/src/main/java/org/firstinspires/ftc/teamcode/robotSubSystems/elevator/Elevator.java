@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorCo
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.lowHeight;
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.midHeight;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -16,11 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.OrbitUtils.MathFuncs;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.robotData.GlobalData;
-import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
 public class Elevator {
@@ -58,16 +53,16 @@ public class Elevator {
                 break;
             case CLAWINTAKE:
                 wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference * (5 - coneStacksFloor);
-                if ((gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
+                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
                     coneStacksFloor += 1;
                     ableToChangeConeStacksFloor = false;
                 }
-                else if ((gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
+                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
                     coneStacksFloor -= 1;
                     ableToChangeConeStacksFloor = false;
                 } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
             case OVERRIDE:
-                elevatorPower = GlobalData.robotState.equals(RobotState.DEPLETE) ? -gamepad1.right_stick_y + ElevatorConstants.depletePower : -gamepad1.right_stick_y;
+                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
                 break;
             case DEPLETE:
                 elevatorPower = ElevatorConstants.depletePower;
@@ -90,11 +85,15 @@ public class Elevator {
     public static boolean reachedHeight (){
         return height >= wanted - 200 && height <= wanted + 200;
     }
+
+    public static boolean reachedHeightVal (float wantedHeight){
+        return height >= wantedHeight - 200 && height <= wantedHeight + 200;
+    }
     public static float getError(){
         return wanted - height;
     }
     public static float getHeight (){
-        return Drivetrain.motors[1].getCurrentPosition();
+        return height;
     }
 
     public static void testMotors(Telemetry telemetry, Gamepad gamepad){

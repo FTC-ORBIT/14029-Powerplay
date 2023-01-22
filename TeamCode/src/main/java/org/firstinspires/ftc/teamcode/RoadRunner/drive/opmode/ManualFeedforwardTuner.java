@@ -18,7 +18,6 @@ import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -50,9 +49,6 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     private SampleMecanumDrive drive;
 
-    private ElapsedTime time = new ElapsedTime();
-
-
     enum Mode {
         DRIVER_MODE,
         TUNING_MODE
@@ -68,7 +64,6 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        time.reset();
         if (RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
@@ -87,7 +82,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         telemetry.clearAll();
 
         waitForStart();
-        while (time.seconds() < 2){}
+
         if (isStopRequested()) return;
 
         boolean movingForwards = true;

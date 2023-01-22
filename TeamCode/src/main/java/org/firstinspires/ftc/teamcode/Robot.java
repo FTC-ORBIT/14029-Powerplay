@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.eventloop.EventLoop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
@@ -18,9 +16,7 @@ import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
-import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
-import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
@@ -32,7 +28,6 @@ public class Robot extends LinearOpMode {
 
     ElapsedTime robotTime = new ElapsedTime();
     OrbitDistanceSensor distanceSensor;
-    OrbitColorSensor colorSensor;
     public static DigitalChannel coneDistanceSensor;
     public static DigitalChannel clawTouchSensor;
     public static TelemetryPacket packet;
@@ -40,10 +35,12 @@ public class Robot extends LinearOpMode {
     private static boolean lastDPadDownButtonState = false;
     private static boolean lastYButtonState = false;
     private static ElevatorStates states = ElevatorStates.GROUND;
+    public static OrbitColorSensor colorSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        colorSensor = new OrbitColorSensor(hardwareMap, "colorSensor");
         FtcDashboard dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
         coneDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
@@ -86,9 +83,10 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             SubSystemManager.printStates(telemetry);
-            telemetry.addData("leftBumper", gamepad1.left_bumper);
-//            telemetry.addData("digital_distance_sensor", coneDistanceSensor.getState());
-//            telemetry.addData("digital_touch_sensor", clawTouchSensor.getState());
+            colorSensor.printRGB(telemetry);
+            telemetry.addData("lf", Drivetrain.motors[0].getCurrentPosition());
+            telemetry.addData("rb", Drivetrain.motors[3].getCurrentPosition());
+            telemetry.addData("hasGamePiece", GlobalData.hasGamePiece);
 
         }
     }

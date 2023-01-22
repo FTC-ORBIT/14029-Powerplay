@@ -33,9 +33,6 @@ public class Claw {
             case CLOSE:
                 pos = ClawConstants.closed;
                 break;
-            case OPENDEPLETE:
-                pos = ClawConstants.openDeplete;
-                break;
         }
 
         clawServo.setPosition(pos);
@@ -44,29 +41,6 @@ public class Claw {
 
     public static boolean isClawCorrectPos(float wantedPos) {
         return clawServo.getPosition() == wantedPos;
-    }
-
-    public static boolean hasGamePiece (){
-        colorControlRedCone = 0;
-        colorControlBlueCone = 0;
-        for (int i = 0; i < 3; i++){
-            if ((clawColorSensor.rgb()[i] < ClawConstants.blueCone[i] + ClawConstants.constNum) && (clawColorSensor.rgb()[i] > ClawConstants.blueCone[i] - ClawConstants.constNum)){
-                colorControlBlueCone ++;
-            }
-        }
-
-        for (int i = 0; i < 3; i++){
-            if ((clawColorSensor.rgb()[i] < ClawConstants.redCone[i] + ClawConstants.constNum) && (clawColorSensor.rgb()[i] > ClawConstants.redCone[i] - ClawConstants.constNum)){
-                colorControlRedCone++;
-            }
-        }
-        return (colorControlBlueCone ==3 || colorControlRedCone == 3);
-    }
-
-    public static void print (Telemetry telemetry){
-        telemetry.addData("red", clawColorSensor.rgb()[0]);
-        telemetry.addData("green", clawColorSensor.rgb()[1]);
-        telemetry.addData("blue", clawColorSensor.rgb()[2]);
     }
 
     public static void clawTest (Gamepad gamepad, Telemetry telemetry) {

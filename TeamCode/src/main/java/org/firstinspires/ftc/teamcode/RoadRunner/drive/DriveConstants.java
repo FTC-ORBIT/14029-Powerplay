@@ -20,8 +20,8 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 384.5;
-    public static final double MAX_RPM = 435;
+    public static final double TICKS_PER_REV = 537.7;
+    public static final double MAX_RPM = 312;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -43,9 +43,10 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 0.048; // meters
-    public static double GEAR_RATIO = 3.0/2.0; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 0.385; // meters
+    public static double WHEEL_RADIUS = 0.048; // in
+    public static double GEAR_RATIO = (3.0/2.0) * 1.007824775154842; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 0.3185; // in
+
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
      * the built-in velocity PID, *these values are fine as is*. However, if you do not have drive
@@ -63,10 +64,11 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 1.5;
-    public static double MAX_ACCEL = 1.5;
-    public static double MAX_ANG_VEL = 6.569915932443494;
-    public static double MAX_ANG_ACCEL = 1.5;
+    public static double MAX_VEL = 2;
+    public static double MAX_ACCEL = 2;
+    public static double MAX_ANG_VEL = 22;
+    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
