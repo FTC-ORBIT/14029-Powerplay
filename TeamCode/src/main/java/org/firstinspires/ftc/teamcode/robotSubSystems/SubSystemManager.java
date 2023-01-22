@@ -202,8 +202,8 @@ public class SubSystemManager {
         if (clawToggleControl) clawState = clawStateDriver;
         if (intakeToggleControl) intakeState = intakeStateFromDriver;
 
-        if (elevatorToggleControl) Elevator.operate(elevatorState, gamepad1, telemetry);
-        else Elevator.operate(elevatorStateToggle, gamepad1, telemetry);
+        if (elevatorToggleControl) Elevator.operateTeleop(elevatorState, gamepad1, telemetry);
+        else Elevator.operateTeleop(elevatorStateToggle, gamepad1, telemetry);
 
         Intake.operate(intakeState);
         Claw.operate(clawState);
