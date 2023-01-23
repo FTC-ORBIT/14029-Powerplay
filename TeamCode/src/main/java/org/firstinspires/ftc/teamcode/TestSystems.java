@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -17,11 +16,13 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 
-@Disabled
-@TeleOp(group = "TestSystems")
+import java.util.IllegalFormatCodePointException;
+
+
+@TeleOp(name = "TestSystems")
 public class TestSystems extends LinearOpMode {
     ElevatorStates elevatorState = ElevatorStates.GROUND;
-    boolean lastDPadUp;
+      boolean lastRightBumper;
     public static DigitalChannel coneDistanceSensor;
 
     @Override
@@ -37,39 +38,27 @@ public class TestSystems extends LinearOpMode {
 
 
         waitForStart();
-        if (gamepad1.a) Claw.operate(ClawState.OPEN);
-        else if (gamepad1.b) Claw.operate(ClawState.CLOSE);
-        if (gamepad1.x) Arm.operate(ArmState.BACK);
-        else if (gamepad1.y) Arm.operate(ArmState.FRONT);
-        if (gamepad1.dpad_left) Intake.operate(IntakeState.COLLECT);
-        else if (gamepad1.dpad_down) Intake.operate(IntakeState.STOP);
-        else if (gamepad1.dpad_right) Intake.operate(IntakeState.DEPLETE);
-        if (!lastDPadUp && gamepad1.dpad_up){
-            switch (elevatorState){
-                case GROUND:
-                    elevatorState = ElevatorStates.LOW;
-                    break;
-                case LOW:
-                    elevatorState = ElevatorStates.MID;
-                    break;
-                case MID:
-                    elevatorState = ElevatorStates.HIGH;
-                    break;
-                case HIGH:
-                    elevatorState = ElevatorStates.GROUND;
-                    break;
-            }
+        while (!isStopRequested()) {
+            if (gamepad1.a) Claw.operate(ClawState.OPEN);
+            else if (gamepad1.b) Claw.operate(ClawState.CLOSE);
+            if (gamepad1.x) Arm.operate(ArmState.BACK);
+            else if (gamepad1.y) Arm.operate(ArmState.FRONT);
+            if (gamepad1.dpad_left) Intake.operate(IntakeState.COLLECT);
+            else if (gamepad1.dpad_down) Intake.operate(IntakeState.STOP);
+            else if (gamepad1.dpad_right) Intake.operate(IntakeState.DEPLETE);
+
+            if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2 || gamepad1.left_stick_x > 0.2 || gamepad1.left_stick_x < -0.2)
+                Drivetrain.operate(new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
+
+
+            telemetry.update();
+            telemetry.addData("distanceSensor", coneDistanceSensor.getState());
+            telemetry.addData("parallelEncoder", Drivetrain.motors[0].getCurrentPosition());
+            telemetry.addData("perpandicularEncoder", Drivetrain.motors[3].getCurrentPosition());
+            telemetry.addData("elevatorEncoder", Drivetrain.motors[1].getCurrentPosition());
+
+
+            lastRightBumper = gamepad1.right_bumper;
         }
-        Elevator.operateTeleop(elevatorState, gamepad1, telemetry);
-        if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2 || gamepad1.left_stick_x > 0.2 || gamepad1.left_stick_x < -0.2) Drivetrain.operate(new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
-
-
-        telemetry.addData("distanceSensor", coneDistanceSensor);
-        telemetry.addData("parallelEncoder", Drivetrain.motors[0].getCurrentPosition());
-        telemetry.addData("perpandicularEncoder", Drivetrain.motors[3].getCurrentPosition());
-        telemetry.addData("elevatorEncoder", Drivetrain.motors[1].getCurrentPosition());
-
-
-       lastDPadUp = gamepad1.dpad_up;
     }
 }

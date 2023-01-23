@@ -33,7 +33,7 @@ public class RightSideHigh extends LinearOpMode {
     public static double strafeLeftFirst = 0.4;
     public static double moveForwardToHighX = 1.03;
     public static double turnAngle = Math.toRadians(-90);
-    public static double depleteY = 0.6;
+    public static double depleteY = 0.63;
     public static double prepareToParkX = 0.65;
     public static double prepareToParkY = 0.45;
     public static double signalSleeveNum = 0;
@@ -63,7 +63,7 @@ public class RightSideHigh extends LinearOpMode {
 
             }
         });
-
+        camera.closeCameraDevice();
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Elevator.init(hardwareMap);
         Drivetrain.init(hardwareMap);
@@ -108,6 +108,7 @@ public class RightSideHigh extends LinearOpMode {
         waitForStart();
 
         signalSleeveNum = AprilTag.currentTagId(telemetry);
+        if (!(signalSleeveNum ==0 || signalSleeveNum == 1 || signalSleeveNum == 2)) signalSleeveNum = 0;
         drive.followTrajectorySequence(firstCone);
         Elevator.height = Drivetrain.motors[1].getCurrentPosition();
         while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){

@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 
+@Config
 public class DriveConstants {
 
     /*
@@ -64,10 +65,10 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 2;
-    public static double MAX_ACCEL = 2;
-    public static double MAX_ANG_VEL = 22;
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 1;
+    public static double MAX_ACCEL = 1;
+    public static double MAX_ANG_VEL = Math.toRadians(40);
+    public static double MAX_ANG_ACCEL = Math.toRadians(40);
 
 
     public static double encoderTicksToInches(double ticks) {

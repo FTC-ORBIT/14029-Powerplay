@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.OpenCV;
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.calib3d.Calib3d;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
@@ -9,6 +12,7 @@ import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.apriltag.AprilTagDetectorJNI;
@@ -16,10 +20,14 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 
+@Config
 public class AprilTagDetectionPipeline extends OpenCvPipeline{
     private long nativeApriltagPtr;
     private Mat grey = new Mat();
     private ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    public static double alpha = 1.5;
+    public static double beta = -50;
+
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
     private final Object detectionsUpdateSync = new Object();
@@ -78,11 +86,13 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
         }
     }
 
+    Mat adjusted = new Mat();
     @Override
     public Mat processFrame(Mat input)
     {
         // Convert to greyscale
-        Imgproc.cvtColor(input, grey, Imgproc.COLOR_RGBA2GRAY);
+        Core.convertScaleAbs(input, adjusted, alpha, beta);
+        Imgproc.cvtColor(adjusted, grey, Imgproc.COLOR_RGBA2GRAY);
 
         synchronized (decimationSync)
         {

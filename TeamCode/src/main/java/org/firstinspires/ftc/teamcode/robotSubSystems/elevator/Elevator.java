@@ -131,7 +131,8 @@ public class Elevator {
     }
 
     public static void setPower (float power) { elevatorMotor.setPower(-power);}
-    public static float getHeight (){
+    public static float getAndUpdateHeight(){
+        height = Drivetrain.motors[1].getCurrentPosition();
         return height;
     }
 

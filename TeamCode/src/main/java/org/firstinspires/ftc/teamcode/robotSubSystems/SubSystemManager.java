@@ -117,7 +117,7 @@ public class SubSystemManager {
                         clawState = ClawState.CLOSE;
                         if (lastState.equals(RobotState.INTAKE)) travelToDepleteDelay.startAction(GlobalData.currentTime);
                         if (travelToDepleteDelay.isDelayPassed()) elevatorState = elevatorStateFromDriver;
-                        if (Elevator.getHeight() >= ElevatorConstants.ableToTurnArmHeight) readyToMoveFromTravelToDeplate = true;
+                        if (Elevator.getAndUpdateHeight() >= ElevatorConstants.ableToTurnArmHeight) readyToMoveFromTravelToDeplate = true;
                     } else {
                         elevatorState = ElevatorStates.GROUND;
                         armState = ArmState.BACK;

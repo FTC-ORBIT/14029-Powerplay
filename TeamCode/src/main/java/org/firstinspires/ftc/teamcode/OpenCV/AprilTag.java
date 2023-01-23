@@ -79,7 +79,6 @@ public class AprilTag {
             }
 
             if (tagFound) {
-
                 telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                 tagToTelemetry(tagOfInterest, telemetry);
             } else {

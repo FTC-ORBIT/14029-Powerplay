@@ -53,11 +53,6 @@ public class Drivetrain {
         if(velocity_FieldCS_W.norm() <= Math.sqrt(0.005) && Math.abs(omega) == 0) stop();
         else drive(velocity_FieldCS_W, omega);
         if (GlobalData.inAutonomous) pose = drive.getPoseEstimate();
-
-        Robot.packet.put("lf", motors[0].getCurrentPosition());
-        Robot.packet.put("rf", motors[1].getCurrentPosition());
-        Robot.packet.put("lb", motors[2].getCurrentPosition());
-        Robot.packet.put("rb", motors[3].getCurrentPosition());
     }
     // did field centric
 
