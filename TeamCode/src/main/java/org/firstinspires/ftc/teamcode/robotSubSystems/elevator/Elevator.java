@@ -101,6 +101,14 @@ public class Elevator {
             case DEPLETE:
                 elevatorPower = ElevatorConstants.depletePower;
                 break;
+            case CLAWINTAKE:
+                if (wanted == ElevatorConstants.coneStacksHeight) {
+                    wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference;
+                } else if (wanted == ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference){
+                    wanted = ElevatorConstants.coneStacksHeight - 2 * ElevatorConstants.coneStacksDifference;
+                } else {
+                    wanted = ElevatorConstants.coneStacksHeight;
+                }
         }
         elevatorPID.setWanted(wanted);
         if (!elevatorState.equals(ElevatorStates.OVERRIDE) && !elevatorState.equals(ElevatorStates.DEPLETE)) {
