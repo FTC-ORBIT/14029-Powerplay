@@ -81,6 +81,7 @@ public class Elevator {
 
     public static void operateAutonomous (ElevatorStates elevatorState, Telemetry telemetry) {
         height = Drivetrain.motors[1].getCurrentPosition();
+
         switch (elevatorState) {
             case INTAKE:
                 wanted = intakeHeight;
@@ -101,17 +102,14 @@ public class Elevator {
                 elevatorPower = ElevatorConstants.depletePower;
                 break;
         }
-        while (!Elevator.reachedHeight()) {
-            height = Drivetrain.motors[1].getCurrentPosition();
-            elevatorPID.setWanted(wanted);
-            if (!elevatorState.equals(ElevatorStates.OVERRIDE) && !elevatorState.equals(ElevatorStates.DEPLETE)) {
-                elevatorPower = (float) elevatorPID.update(height);
-            }
-
-            elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
-            telemetry.addData("height", height);
-            telemetry.addData("reachedHeight", reachedHeight());
+        elevatorPID.setWanted(wanted);
+        if (!elevatorState.equals(ElevatorStates.OVERRIDE) && !elevatorState.equals(ElevatorStates.DEPLETE)) {
+            elevatorPower = (float) elevatorPID.update(height);
         }
+
+        elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
+        telemetry.addData("height", height);
+        telemetry.addData("reachedHeight", reachedHeight());
     }
 
     public static float getMotorCurrent(Telemetry telemetry){
