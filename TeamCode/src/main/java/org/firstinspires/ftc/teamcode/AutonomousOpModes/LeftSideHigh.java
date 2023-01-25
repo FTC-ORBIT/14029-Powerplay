@@ -117,9 +117,7 @@ public class LeftSideHigh extends LinearOpMode {
 
         WAIT_DEPLETE_HIGH_3,
 
-        AWAY_FROM_JUNCTION_HIGH_3,
-
-        GO_TO_PARKING
+        AWAY_FROM_JUNCTION_HIGH_3
     }
 
     STEPS currentStep = STEPS.STRAFE_RIGHT;
@@ -245,7 +243,9 @@ public class LeftSideHigh extends LinearOpMode {
         telemetry.addData("tag", AprilTag.currentTagId(telemetry));
 
         currentStep = STEPS.STRAFE_RIGHT;
+        drive.update();
         drive.followTrajectoryAsync(strafeRight);
+        drive.update();
 
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentStep) {
@@ -254,13 +254,17 @@ public class LeftSideHigh extends LinearOpMode {
                     if (!drive.isBusy()) {
                         currentStep = STEPS.FORWARD_AND_TURN_MEDIUM_1;
                         elevatorStates = ElevatorStates.MID;
+                        drive.update();
                         drive.followTrajectoryAsync(forwardAndTurnMedium1);
+                        drive.update();
                     }
                     break;
                 case FORWARD_AND_TURN_MEDIUM_1:
                     if (!drive.isBusy()) {
                         currentStep = STEPS.GO_TO_DEPLETE_MEDIUM;
+                        drive.update();
                         drive.followTrajectoryAsync(goToDepleteMedium1);
+                        drive.update();
                     }
                     break;
                 case GO_TO_DEPLETE_MEDIUM:
@@ -276,7 +280,9 @@ public class LeftSideHigh extends LinearOpMode {
                     if (time.milliseconds() > waitTimeDeplete) {
                         currentStep = STEPS.AWAY_FROM_JUNCTION_MEDIUM;
                         elevatorStates = ElevatorStates.MID;
+                        drive.update();
                         drive.followTrajectoryAsync(awayFromJunctionMedium1);
+                        drive.update();
                     }
                     break;
                 case AWAY_FROM_JUNCTION_MEDIUM:
@@ -285,7 +291,9 @@ public class LeftSideHigh extends LinearOpMode {
                         currentStep = STEPS.GO_TO_CONE_STACKS_1;
                         armState = ArmState.FRONT;
                         elevatorStates = ElevatorStates.CLAWINTAKE;
+                        drive.update();
                         drive.followTrajectoryAsync(goToConeStacksFirst);
+                        drive.update();
                     }
                     break;
                 case GO_TO_CONE_STACKS_1:
@@ -303,13 +311,17 @@ public class LeftSideHigh extends LinearOpMode {
                     if (time.milliseconds() > waitIntake) {
                         currentStep = STEPS.FORWARD_AND_TURN_HIGH_1;
                         armState = ArmState.BACK;
+                        drive.update();
                         drive.followTrajectoryAsync(forwardAndTurnHigh1);
+                        drive.update();
                     }
                     break;
                 case FORWARD_AND_TURN_HIGH_1:
                     if (!drive.isBusy()) {
                         currentStep = STEPS.GO_TO_DEPLETE_HIGH_1;
+                        drive.update();
                         drive.followTrajectoryAsync(goToDeplete1High);
+                        drive.update();
                     }
                     break;
                 case GO_TO_DEPLETE_HIGH_1:
@@ -318,14 +330,18 @@ public class LeftSideHigh extends LinearOpMode {
                         currentStep = STEPS.WAIT_DEPLETE_HIGH_1;
                         clawState = ClawState.OPEN;
                         elevatorStates = ElevatorStates.DEPLETE;
+                        drive.update();
                         drive.followTrajectoryAsync(goToDeplete1High);
+                        drive.update();
                         time.reset();
                     }
                     break;
                 case WAIT_DEPLETE_HIGH_1:
                     if (time.milliseconds() > waitTimeDeplete) {
                         currentStep = STEPS.AWAY_FROM_JUNCTION_HIGH_1;
+                        drive.update();
                         drive.followTrajectoryAsync(awayFromJunctionHigh1);
+                        drive.update();
                     }
                     break;
                 case AWAY_FROM_JUNCTION_HIGH_1:
@@ -334,14 +350,131 @@ public class LeftSideHigh extends LinearOpMode {
                         currentStep = STEPS.GO_TO_CONE_STACKS_2;
                         armState = ArmState.FRONT;
                         elevatorStates = ElevatorStates.CLAWINTAKE;
+                        drive.update();
                         drive.followTrajectoryAsync(goToConeStacks2);
+                        drive.update();
                     }
                     break;
                 case GO_TO_CONE_STACKS_2:
                     intakeState = IntakeState.STOP;
                     if (!drive.isBusy()) {
                         currentStep = STEPS.WAIT_INTAKE_2;
+                        time.reset();
                     }
+                    break;
+                case WAIT_INTAKE_2:
+                    clawState = ClawState.CLOSE;
+                    if (time.milliseconds() > waitTillElevatorCanGoUp) {
+                        elevatorStates = ElevatorStates.HIGH;
+                    }
+                    if (time.milliseconds() > waitIntake) {
+                        currentStep = STEPS.FORWARD_AND_TURN_HIGH_2;
+                        armState = ArmState.BACK;
+                        drive.update();
+                        drive.followTrajectoryAsync(forwardAndTurnHigh2);
+                        drive.update();
+                    }
+                    break;
+                case FORWARD_AND_TURN_HIGH_2:
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.GO_TO_DEPLETE_HIGH_2;
+                        drive.update();
+                        drive.followTrajectoryAsync(goToDeplete2High);
+                        drive.update();
+                    }
+                    break;
+                case GO_TO_DEPLETE_HIGH_2:
+                    intakeState = IntakeState.COLLECT;
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.WAIT_DEPLETE_HIGH_2;
+                        clawState = ClawState.OPEN;
+                        elevatorStates = ElevatorStates.DEPLETE;
+                        drive.update();
+                        drive.followTrajectoryAsync(goToDeplete2High);
+                        drive.update();
+                        time.reset();
+                    }
+                    break;
+                case WAIT_DEPLETE_HIGH_2:
+                    if (time.milliseconds() > waitTimeDeplete) {
+                        currentStep = STEPS.AWAY_FROM_JUNCTION_HIGH_2;
+                        drive.update();
+                        drive.followTrajectoryAsync(awayFromJunctionHigh2);
+                        drive.update();
+                    }
+                    break;
+                case AWAY_FROM_JUNCTION_HIGH_2:
+                    intakeState = IntakeState.DEPLETE;
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.GO_TO_CONE_STACKS_3;
+                        armState = ArmState.FRONT;
+                        elevatorStates = ElevatorStates.CLAWINTAKE;
+                        drive.update();
+                        drive.followTrajectoryAsync(goToConeStacks3);
+                        drive.update();
+                    }
+                    break;
+                case GO_TO_CONE_STACKS_3:
+                    intakeState = IntakeState.STOP;
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.WAIT_INTAKE_3;
+                        time.reset();
+                    }
+                    break;
+                case WAIT_INTAKE_3:
+                    clawState = ClawState.CLOSE;
+                    if (time.milliseconds() > waitTillElevatorCanGoUp) {
+                        elevatorStates = ElevatorStates.HIGH;
+                    }
+                    if (time.milliseconds() > waitIntake) {
+                        currentStep = STEPS.FORWARD_AND_TURN_HIGH_3;
+                        armState = ArmState.BACK;
+                        drive.update();
+                        drive.followTrajectoryAsync(forwardAndTurnHigh3);
+                        drive.update();
+                    }
+                    break;
+                case FORWARD_AND_TURN_HIGH_3:
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.GO_TO_DEPLETE_HIGH_3;
+                        drive.update();
+                        drive.followTrajectoryAsync(goToDeplete3High);
+                        drive.update();
+                    }
+                    break;
+                case GO_TO_DEPLETE_HIGH_3:
+                    intakeState = IntakeState.COLLECT;
+                    if (!drive.isBusy()) {
+                        currentStep = STEPS.WAIT_DEPLETE_HIGH_3;
+                        clawState = ClawState.OPEN;
+                        elevatorStates = ElevatorStates.DEPLETE;
+                        drive.update();
+                        drive.followTrajectoryAsync(goToDeplete3High);
+                        drive.update();
+                        time.reset();
+                    }
+                    break;
+                case WAIT_DEPLETE_HIGH_3:
+                    if (time.milliseconds() > waitTimeDeplete) {
+                        currentStep = STEPS.AWAY_FROM_JUNCTION_HIGH_3;
+                        drive.update();
+                        drive.followTrajectoryAsync(awayFromJunctionHigh3);
+                        drive.update();
+                    }
+                    break;
+                case AWAY_FROM_JUNCTION_HIGH_3:
+                    intakeState = IntakeState.DEPLETE;
+                    if (!drive.isBusy()) {
+                        if (signalSleeveNum == 0){
+                            drive.followTrajectory(parking0);
+                        } else if (signalSleeveNum == 1){
+                            drive.followTrajectory(parking1);
+                        } else if (signalSleeveNum == 2){
+                            drive.followTrajectory(parking2);
+                        }
+                    }
+                    break;
+
             }
 
             drive.update();
