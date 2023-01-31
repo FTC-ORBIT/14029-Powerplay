@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.OpenCV.AprilTag;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.positionTracker.PoseStorage;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
@@ -30,7 +31,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @Config
 @Autonomous (group = "rightSideHighCycles")
 public class RightSideHigh extends LinearOpMode {
-    public static double strafeLeftFirst = 0.4;
+    public static double strafeLeftFirst = 0.43;
     public static double moveForwardToHighX = 1.03;
     public static double turnAngle = Math.toRadians(-90);
     public static double depleteY = 0.63;
@@ -70,10 +71,9 @@ public class RightSideHigh extends LinearOpMode {
         Arm.init(hardwareMap);
         Claw.init(hardwareMap);
 
+
+
         TrajectorySequence firstCone = drive.trajectorySequenceBuilder(new Pose2d())
-                .addDisplacementMarker(() -> {
-                    Claw.operate(ClawState.CLOSE);
-                })
                 .strafeLeft(strafeLeftFirst)
                 .forward(moveForwardToHighX)
                 .turn(turnAngle)
@@ -106,9 +106,11 @@ public class RightSideHigh extends LinearOpMode {
                 .build();
 
         waitForStart();
-
         signalSleeveNum = AprilTag.currentTagId(telemetry);
         if (!(signalSleeveNum ==0 || signalSleeveNum == 1 || signalSleeveNum == 2)) signalSleeveNum = 0;
+        Claw.operate(ClawState.CLOSE);
+        sleep(500);
+        Elevator.operateAutonomous(ElevatorStates.LOW, telemetry);
         drive.followTrajectorySequence(firstCone);
         Elevator.height = Drivetrain.motors[1].getCurrentPosition();
         while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){
@@ -117,6 +119,8 @@ public class RightSideHigh extends LinearOpMode {
             drive.update();
         }
         sleep(800);
+        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
+        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
         Claw.operate(ClawState.OPEN);
         sleep(800);
         drive.followTrajectory(backFromJunction);
@@ -128,5 +132,6 @@ public class RightSideHigh extends LinearOpMode {
         if (signalSleeveNum == 1) drive.followTrajectory(parking1);
         else if (signalSleeveNum == 2) drive.followTrajectory(parking2);
         else if (signalSleeveNum == 0 ) drive.followTrajectory(parking0);
+        PoseStorage.currentPose = drive.getPoseEstimate();
     }
 }

@@ -32,6 +32,10 @@ public class OrbitGyro {
     public static void resetGyro (){
         lastAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
+
+    public static void resetGyroStartTeleop (float angle){
+        lastAngle = -angle;
+    }
     public static double getAngle() {
 //        telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle );
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle;

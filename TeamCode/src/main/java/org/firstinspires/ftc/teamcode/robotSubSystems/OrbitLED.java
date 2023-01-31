@@ -19,10 +19,10 @@ public class OrbitLED {
 
     public static void operate() {
         if (GlobalData.hasGamePiece){
-            if (elapsedTime.milliseconds() < 200){
+            if (elapsedTime.milliseconds() < 500){
                 pattern = RevBlinkinLedDriver.BlinkinPattern.SHOT_WHITE;
             } else {
-                pattern = RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW;
+                pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_WHITE;
             }
         } else {
             elapsedTime.reset();

@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitColorSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitDistanceSensor;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
+import org.firstinspires.ftc.teamcode.positionTracker.PoseStorage;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
+import org.firstinspires.ftc.teamcode.robotSubSystems.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
@@ -35,12 +37,11 @@ public class Robot extends LinearOpMode {
     private static boolean lastDPadDownButtonState = false;
     private static boolean lastYButtonState = false;
     private static ElevatorStates states = ElevatorStates.GROUND;
-    public static OrbitColorSensor colorSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        colorSensor = new OrbitColorSensor(hardwareMap, "colorSensor");
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
         coneDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
@@ -48,6 +49,10 @@ public class Robot extends LinearOpMode {
 
         clawTouchSensor = hardwareMap.get(DigitalChannel.class, "clawTouchSensor");
         clawTouchSensor.setMode(DigitalChannel.Mode.INPUT);
+
+        OrbitGyro.resetGyroStartTeleop((float) PoseStorage.currentPose.getHeading());
+        telemetry.update();
+        telemetry.addData("gyro", PoseStorage.currentPose.getHeading());
 
 
 
@@ -58,7 +63,7 @@ public class Robot extends LinearOpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
-        //OrbitLED.init(hardwareMap);
+        OrbitLED.init(hardwareMap);
 
         GlobalData.inAutonomous = false;
         GlobalData.currentTime = 0;
@@ -74,8 +79,8 @@ public class Robot extends LinearOpMode {
            GlobalData.currentTime = (float) robotTime.seconds();
            Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
            Drivetrain.operate(leftStick,  gamepad1.right_trigger - gamepad1.left_trigger);
-           SubSystemManager.setState(  gamepad1, gamepad2, telemetry);
-
+           SubSystemManager.setState(gamepad1, gamepad2, telemetry);
+            OrbitLED.operate();
 
             GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
@@ -83,10 +88,8 @@ public class Robot extends LinearOpMode {
             GlobalData.lastTime = GlobalData.currentTime;
             telemetry.update();
             SubSystemManager.printStates(telemetry);
-            colorSensor.printRGB(telemetry);
-            telemetry.addData("lf", Drivetrain.motors[0].getCurrentPosition());
-            telemetry.addData("rb", Drivetrain.motors[3].getCurrentPosition());
             telemetry.addData("hasGamePiece", GlobalData.hasGamePiece);
+            //TODO : Dani yaleichan!!!
 
         }
     }

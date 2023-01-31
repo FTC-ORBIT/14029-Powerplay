@@ -8,28 +8,37 @@ import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorCo
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.lowHeight;
 import static org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants.midHeight;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 
+@Config
 public class Elevator {
     private static DcMotorEx elevatorMotor;
     private static final PID elevatorPID = new PID(kP, 0, kD, 0, 0);
     private static float lastStateHeight;
     private static boolean ableToChangeConeStacksFloor = false;
     private static float elevatorPower = 0f;
-    private static  float wanted = 0;
+    public static  float wanted = 0;
     public static  float height = 0;
     private static  int coneStacksFloor = 5;
+    public static int floor = 5;
+    private static final ElapsedTime time = new ElapsedTime();
+    public static final double depleteTime = 400;
+
     public static void init(HardwareMap hardwareMap) {
         elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        height = 0;
+        floor = 5;
     }
 
     public static void operateTeleop(ElevatorStates elevatorState, Gamepad gamepad1, Telemetry telemetry) {
@@ -80,8 +89,6 @@ public class Elevator {
     }
 
     public static void operateAutonomous (ElevatorStates elevatorState, Telemetry telemetry) {
-        height = Drivetrain.motors[1].getCurrentPosition();
-
         switch (elevatorState) {
             case INTAKE:
                 wanted = intakeHeight;
@@ -99,25 +106,25 @@ public class Elevator {
                 wanted = highHeight;
                 break;
             case DEPLETE:
-                elevatorPower = ElevatorConstants.depletePower;
+                time.reset();
+                while (time.milliseconds() < depleteTime){
+                    elevatorMotor.setPower(ElevatorConstants.depletePower);
+                }
                 break;
             case CLAWINTAKE:
-                if (wanted == ElevatorConstants.coneStacksHeight) {
-                    wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference;
-                } else if (wanted == ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference){
-                    wanted = ElevatorConstants.coneStacksHeight - 2 * ElevatorConstants.coneStacksDifference;
-                } else {
-                    wanted = ElevatorConstants.coneStacksHeight;
-                }
+                wanted = ElevatorConstants.coneStacksHeight - (5 - floor) * ElevatorConstants.coneStacksDifference;
         }
-        elevatorPID.setWanted(wanted);
-        if (!elevatorState.equals(ElevatorStates.OVERRIDE) && !elevatorState.equals(ElevatorStates.DEPLETE)) {
+        while (!Elevator.reachedHeight() && !elevatorState.equals(ElevatorStates.DEPLETE)) {
+            height = Drivetrain.motors[1].getCurrentPosition();
+            elevatorPID.setWanted(wanted);
             elevatorPower = (float) elevatorPID.update(height);
-        }
 
-        elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
-        telemetry.addData("height", height);
-        telemetry.addData("reachedHeight", reachedHeight());
+            elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
+            telemetry.addData("height", height);
+            telemetry.addData("reachedHeight", reachedHeight());
+        }
+        if (elevatorState.equals(ElevatorStates.CLAWINTAKE)) floor--;
+        elevatorMotor.setPower(ElevatorConstants.constantPower);
     }
 
     public static float getMotorCurrent(Telemetry telemetry){

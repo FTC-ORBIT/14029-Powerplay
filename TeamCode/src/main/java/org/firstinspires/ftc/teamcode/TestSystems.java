@@ -53,7 +53,7 @@ public class TestSystems extends LinearOpMode {
 
             telemetry.update();
             telemetry.addData("distanceSensor", coneDistanceSensor.getState());
-            telemetry.addData("parallelEncoder", Drivetrain.motors[0].getCurrentPosition());
+            telemetry.addData("parallelEncoder", Drivetrain.motors[2].getCurrentPosition());
             telemetry.addData("perpandicularEncoder", Drivetrain.motors[3].getCurrentPosition());
             telemetry.addData("elevatorEncoder", Drivetrain.motors[1].getCurrentPosition());
 

@@ -25,8 +25,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     private long nativeApriltagPtr;
     private Mat grey = new Mat();
     private ArrayList<AprilTagDetection> detections = new ArrayList<>();
-    public static double alpha = 1.5;
-    public static double beta = -50;
+    public static double alpha = 0.7;
+    public static double beta = -60;
 
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
