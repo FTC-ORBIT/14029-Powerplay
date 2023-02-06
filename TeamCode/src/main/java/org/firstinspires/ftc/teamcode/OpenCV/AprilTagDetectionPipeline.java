@@ -27,6 +27,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     private ArrayList<AprilTagDetection> detections = new ArrayList<>();
     public static double alpha = 0.7;
     public static double beta = -60;
+    public static int row = 200;
+    public static int col = 50;
 
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
@@ -87,9 +89,14 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     }
 
     Mat adjusted = new Mat();
+    Mat hsv = new Mat();
+    double[] data;
     @Override
     public Mat processFrame(Mat input)
     {
+        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
+        data = hsv.get(row,col);
+
         // Convert to greyscale
         Core.convertScaleAbs(input, adjusted, alpha, beta);
         Imgproc.cvtColor(adjusted, grey, Imgproc.COLOR_RGBA2GRAY);
@@ -119,6 +126,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
             drawAxisMarker(input, tagsizeY/2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
+        Imgproc.putText(input, Double.toString(data[2]), new Point(50, 50), 1, 2, new Scalar(255,0,0), 2);
+        Imgproc.circle(input, new Point(row, col), 7, new Scalar(255,255,0));
 
         return input;
     }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
 import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.camera;
-import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.tagOfInterest;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -9,7 +8,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -17,6 +15,7 @@ import org.firstinspires.ftc.teamcode.OpenCV.AprilTag;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.positionTracker.PoseStorage;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
@@ -65,8 +64,9 @@ public class RightSideHigh extends LinearOpMode {
             }
         });
         camera.closeCameraDevice();
+        GlobalData.autonomousSide = true;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Elevator.init(hardwareMap);
+        Elevator.initAutonomous(hardwareMap);
         Drivetrain.init(hardwareMap);
         Arm.init(hardwareMap);
         Claw.init(hardwareMap);
@@ -110,22 +110,22 @@ public class RightSideHigh extends LinearOpMode {
         if (!(signalSleeveNum ==0 || signalSleeveNum == 1 || signalSleeveNum == 2)) signalSleeveNum = 0;
         Claw.operate(ClawState.CLOSE);
         sleep(500);
-        Elevator.operateAutonomous(ElevatorStates.LOW, telemetry);
+        Elevator.operateAutonomous(ElevatorStates.LOW, telemetry, opModeIsActive());
         drive.followTrajectorySequence(firstCone);
         Elevator.height = Drivetrain.motors[1].getCurrentPosition();
         while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){
-            Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
+            Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry, opModeIsActive());
             if (Elevator.height > ElevatorConstants.ableToTurnArmHeight) Arm.operate(ArmState.FRONT);
             drive.update();
         }
         sleep(800);
-        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
-        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
+        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
+        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
         Claw.operate(ClawState.OPEN);
         sleep(800);
         drive.followTrajectory(backFromJunction);
         while (!Elevator.reachedHeightVal(ElevatorConstants.groundHeight)){
-            Elevator.operateAutonomous(ElevatorStates.GROUND, telemetry);
+            Elevator.operateAutonomous(ElevatorStates.GROUND, telemetry, opModeIsActive());
             drive.update();
         }
         drive.followTrajectory(prepareToParking);

@@ -9,4 +9,5 @@ public class GlobalData {
     public static float currentTime = 0;
     public static float lastTime = 0;
     public static float deltaTime = 0;
+    public static boolean autonomousSide = false; //false = left, true = right
 }

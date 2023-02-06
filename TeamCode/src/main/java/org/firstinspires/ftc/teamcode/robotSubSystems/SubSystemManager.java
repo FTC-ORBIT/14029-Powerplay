@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 
 public class SubSystemManager {
 
-    public static RobotState lastState = RobotState.TRAVEL;
-    public static RobotState stateBefore = RobotState.TRAVEL;
+    public static RobotState lastState = RobotState.CLAWINTAKE;
+    public static RobotState stateBefore = RobotState.CLAWINTAKE;
     public static ElevatorStates elevatorState = ElevatorStates.INTAKE;
     public static ClawState clawState = ClawState.CLOSE;
     public static ArmState armState = ArmState.BACK;
@@ -171,6 +171,8 @@ public class SubSystemManager {
                     break;
             }
 
+        lastYButtonState = gamepad1.y;
+
         if ((elevatorState.equals(ElevatorStates.GROUND) || elevatorState.equals(ElevatorStates.INTAKE)) && !GlobalData.hasGamePiece){
             if (Elevator.reachedHeight()) clawState = ClawState.OPEN;
                 else clawState = ClawState.CLOSE;
@@ -212,7 +214,6 @@ public class SubSystemManager {
 
         lastRightBumperButtonState = gamepad1.right_bumper;
         lastLeftBumperButtonState = gamepad1.left_bumper;
-        lastYButtonState = gamepad1.y;
         lastDPadDownButtonState = gamepad1.dpad_down;
         lastGamePieceState = GlobalData.hasGamePiece;
         lastRightStickButtonState = gamepad1.right_stick_button;

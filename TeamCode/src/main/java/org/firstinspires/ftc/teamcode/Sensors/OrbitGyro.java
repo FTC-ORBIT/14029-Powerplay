@@ -8,14 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
 public class OrbitGyro {
-    private static float gyroOffset = 0;
-    private static float prevHeading = 0;
-    private static float heading = 0;
-    private static float omega = 0;
     public static BNO055IMU imu;
-    private static double  lastAngle = 0;
+    public static double  lastAngle = 0;
     static double currentAngle = 0;
 
     public static void init(HardwareMap hardwareMap){
@@ -34,7 +31,11 @@ public class OrbitGyro {
     }
 
     public static void resetGyroStartTeleop (float angle){
-        lastAngle = -angle;
+        if (angle < 290 && angle > 250) {
+            lastAngle = -angle;
+        } else if (!GlobalData.autonomousSide){
+            lastAngle = -270;
+        }
     }
     public static double getAngle() {
 //        telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle );

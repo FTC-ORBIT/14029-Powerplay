@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 
-import java.util.IllegalFormatCodePointException;
-
 
 @TeleOp(name = "TestSystems")
 public class TestSystems extends LinearOpMode {
@@ -31,7 +29,7 @@ public class TestSystems extends LinearOpMode {
         Intake.init(hardwareMap);
         Arm.init(hardwareMap);
         Drivetrain.init(hardwareMap);
-        Elevator.init(hardwareMap);
+        Elevator.initAutonomous(hardwareMap);
         OrbitGyro.init(hardwareMap);
         coneDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
         coneDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
