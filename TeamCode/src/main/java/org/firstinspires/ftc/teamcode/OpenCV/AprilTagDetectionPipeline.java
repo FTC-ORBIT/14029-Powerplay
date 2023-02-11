@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpenCV;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.WhiteBalanceControl;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -17,7 +18,10 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.apriltag.AprilTagDetectorJNI;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.opencv.core.Algorithm;
 
+import java.security.AlgorithmConstraints;
+import java.security.AlgorithmParameters;
 import java.util.ArrayList;
 
 @Config
@@ -25,8 +29,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     private long nativeApriltagPtr;
     private Mat grey = new Mat();
     private ArrayList<AprilTagDetection> detections = new ArrayList<>();
-    public static double alpha = 0.7;
-    public static double beta = -60;
+    public static double alpha = 1.5;
+    public static double beta = 0;
     public static int row = 200;
     public static int col = 50;
 
@@ -55,6 +59,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     private boolean needToSetDecimation;
     private final Object decimationSync = new Object();
 
+
+
     public AprilTagDetectionPipeline(double tagsize, double fx, double fy, double cx, double cy)
     {
         this.tagsize = tagsize;
@@ -72,7 +78,6 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     }
 
 
-    @Override
     public void finalize()
     {
         // Might be null if createApriltagDetector() threw an exception
@@ -91,15 +96,18 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
     Mat adjusted = new Mat();
     Mat hsv = new Mat();
     double[] data;
-    @Override
+
     public Mat processFrame(Mat input)
     {
+
+        //WhiteBalancer.balanceWhite(input, adjusted);
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
-        data = hsv.get(row,col);
+
 
         // Convert to greyscale
         Core.convertScaleAbs(input, adjusted, alpha, beta);
         Imgproc.cvtColor(adjusted, grey, Imgproc.COLOR_RGBA2GRAY);
+        data = hsv.get(row, col);
 
         synchronized (decimationSync)
         {
@@ -126,8 +134,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
             drawAxisMarker(input, tagsizeY/2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
-        Imgproc.putText(input, Double.toString(data[2]), new Point(50, 50), 1, 2, new Scalar(255,0,0), 2);
-        Imgproc.circle(input, new Point(row, col), 7, new Scalar(255,255,0));
+        Imgproc.putText(adjusted, Double.toString(data[2]), new Point(25, 25), 1, 2, new Scalar(255,0,0), 2);
+        Imgproc.circle(adjusted, new Point(row, col), 7, new Scalar(255,255,0));
 
         return input;
     }
@@ -140,6 +148,7 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline{
             needToSetDecimation = true;
         }
     }
+
 
     public ArrayList<AprilTagDetection> getLatestDetections()
     {

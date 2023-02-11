@@ -24,16 +24,25 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorStates;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstants;
+import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
+import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
-@Autonomous (group = "rightSideHighCycles")
-public class RightSideHigh extends LinearOpMode {
-    public static double strafeLeftFirst = 0.43;
+@Autonomous (group = "rightSideLow")
+public class RightSideLow extends LinearOpMode {
+    public static double strafeLeftFirst = 0.5;
     public static double moveForwardToHighX = 1.03;
-    public static double turnAngle = Math.toRadians(-90);
-    public static double depleteY = 0.63;
+    public static double moveForwardToHighY = 0.4;
+    public static double turnAngleHigh = Math.toRadians(90);
+    public static double goToDepleteHigh = 0.255;
+    public static double awayFromHigh = 0.22;
+    public static double theStrafeRightAfterHighX = 0.4;
+    public static double theStrafeRightAfterHighY = 0.6;
+    public static double coneStacks1X = 1.25;
+    public static double coneStacks1Y = -0.15;
+    public static double coneStacks1Angle = Math.toRadians(90);
     public static double prepareToParkX = 0.65;
     public static double prepareToParkY = 0.45;
     public static double signalSleeveNum = 0;
@@ -67,43 +76,33 @@ public class RightSideHigh extends LinearOpMode {
         GlobalData.autonomousSide = true;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Elevator.initAutonomous(hardwareMap);
+        Intake.init(hardwareMap);
         Drivetrain.init(hardwareMap);
         Arm.init(hardwareMap);
         Claw.init(hardwareMap);
 
 
 
-        TrajectorySequence firstCone = drive.trajectorySequenceBuilder(new Pose2d())
+        TrajectorySequence firstCone = drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
                 .strafeLeft(strafeLeftFirst)
-                .forward(moveForwardToHighX)
-                .turn(turnAngle)
-                .back(depleteY - strafeLeftFirst)
+                .lineToLinearHeading(new Pose2d(moveForwardToHighX, moveForwardToHighY, turnAngleHigh))
                 .build();
 
-        Trajectory backFromJunction = drive.trajectoryBuilder(firstCone.end())
-                .addDisplacementMarker(() -> {
-                    Arm.operate(ArmState.BACK);
-                    Claw.operate(ClawState.CLOSE);
-                })
-                        .forward(depleteY - strafeLeftFirst)
-                                .build();
-
-        Trajectory prepareToParking = drive.trajectoryBuilder(backFromJunction.end())
-                        .lineTo(new Vector2d(prepareToParkX, prepareToParkY))
-                                .build();
-
-        Trajectory parking0 = drive.trajectoryBuilder(prepareToParking.end())
-                .forward(park0Distance)
+        Trajectory goToDepleteHigh1 = drive.trajectoryBuilder(firstCone.end())
+                .forward(goToDepleteHigh)
                 .build();
 
-        Trajectory parking1 = drive.trajectoryBuilder(prepareToParking.end())
-                        .forward(park1Distance)
+        Trajectory awayFromJunctionHigh1 = drive.trajectoryBuilder(goToDepleteHigh1.end())
+                .back(awayFromHigh)
+                .build();
+
+        Trajectory strafeRightAfterHigh = drive.trajectoryBuilder(awayFromJunctionHigh1.end())
+                .lineToLinearHeading(new Pose2d(moveForwardToHighX + theStrafeRightAfterHighX, theStrafeRightAfterHighY, coneStacks1Angle))
                                 .build();
 
-
-        Trajectory parking2 = drive.trajectoryBuilder(prepareToParking.end())
-                .forward(park2Distance)
-                .build();
+        Trajectory goToConeStacks1 = drive.trajectoryBuilder(strafeRightAfterHigh.end())
+                        .lineToLinearHeading(new Pose2d(coneStacks1X, coneStacks1Y, coneStacks1Angle))
+                                .build();
 
         waitForStart();
         signalSleeveNum = AprilTag.currentTagId(telemetry);
@@ -112,26 +111,19 @@ public class RightSideHigh extends LinearOpMode {
         sleep(500);
         Elevator.operateAutonomous(ElevatorStates.LOW, telemetry, opModeIsActive());
         drive.followTrajectorySequence(firstCone);
-        Elevator.height = Drivetrain.motors[1].getCurrentPosition();
-        while (!Elevator.reachedHeightVal(ElevatorConstants.highHeight)){
-            Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry, opModeIsActive());
-            if (Elevator.height > ElevatorConstants.ableToTurnArmHeight) Arm.operate(ArmState.FRONT);
-            drive.update();
-        }
-        sleep(800);
-        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
+        Intake.operate(IntakeState.COLLECT);
+        Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry, opModeIsActive());
+        drive.followTrajectory(goToDepleteHigh1);
         Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
         Claw.operate(ClawState.OPEN);
         sleep(800);
-        drive.followTrajectory(backFromJunction);
-        while (!Elevator.reachedHeightVal(ElevatorConstants.groundHeight)){
-            Elevator.operateAutonomous(ElevatorStates.GROUND, telemetry, opModeIsActive());
-            drive.update();
-        }
-        drive.followTrajectory(prepareToParking);
-        if (signalSleeveNum == 1) drive.followTrajectory(parking1);
-        else if (signalSleeveNum == 2) drive.followTrajectory(parking2);
-        else if (signalSleeveNum == 0 ) drive.followTrajectory(parking0);
+        Intake.operate(IntakeState.DEPLETE);
+        drive.followTrajectory(awayFromJunctionHigh1);
+        Intake.operate(IntakeState.STOP);
+        drive.followTrajectory(strafeRightAfterHigh);
+        Arm.operate(ArmState.FRONT);
+        Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry, opModeIsActive());
+        drive.followTrajectory(goToConeStacks1);
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
 }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
 import static org.firstinspires.ftc.teamcode.OpenCV.AprilTag.camera;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -11,10 +10,10 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.OpenCV.AprilTag;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.positionTracker.PoseStorage;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
@@ -29,30 +28,41 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
-@Autonomous(group = "LeftSideHigh")
-public class LeftSideHigh extends LinearOpMode {
+@Autonomous (group = "LeftSideLow")
+public class LeftSideLow extends LinearOpMode {
     public static double strafeRightFirst = 0.75;
-    public static double moveForwardToHighX = 1.055;
-    public static double moveForwardToHighY = -0.61;
+    public static double moveForwardToHighX = 1.06;
+    public static double moveForwardToHighY = -0.65;
     public static double moveForwardTiHighAngle = Math.toRadians(-90);
     public static double goToDepleteHigh = 0.27;
-    public static double awayFromHighJunction = 0.22;
-    public static double coneStacks1X = 1.25;
-    public static double coneStacks1Y = 0.68;
+    public static double awayFromHighJunction = 0.3;
+    public static double coneStacks1X = 1.315;
+    public static double coneStacks1Y = 0.55;
     public static double coneStacksAngle = Math.toRadians(-90);
-    public static double theStrafeLeftAfterHighAdditional = 0;
-    public static double prepareToHighY = -0.13;
-    public static double highJunctionX = 1.62;
-    public static double highJunctionY = -0.37;
-    public static double highJunctionAngleDegrees = -70;
-    public static double highJunctionAngleRadians = Math.toRadians(highJunctionAngleDegrees);
-    public static double backFromJunctionHigh = 0.25;;
+    public static double theStrafeLeftAfterHighAdditional = -0.06;
     public static long waitTillIntake = 800;
-    public static double coneStacks2X = 1.25;
-    public static double parking0Y = 0.25;
-    public static double parking1Y = -0.22;
-    public static double parking2Y = -0.8;
-    public static int signalSleeveNum = 0;
+    public static double lowJunction1X = 1;
+    public static double lowJunction1Y = 0.17;
+    public static double lowJunctionAngle = Math.toRadians(-120);
+    public static double awayFromLow = 0.2;
+    public static double strafeLeftAfterLow = 0.2;
+    public static double minusXConeStacks2 = 0.1;
+    public static double coneStacks2X = 1.4;
+    public static double coneStacks2Y = 0.6;
+    public static double lowJunction2X = 1;
+    public static double lowJunction2Y = 0.17;
+    public static double awayFromLow2 = 0.45;
+    public static double prepareForParkingAngleDegrees = 60;
+    public static double prepareForParkingAngleRadians = Math.toRadians(prepareForParkingAngleDegrees);
+    public static long waitTillArmReachesPos = 400;
+    public static double park0X = 1.27;
+    public static double park0Y = 0.325;
+    public static double park1X = 1.27;
+    public static double park1Y = -0.25;
+    public static double park2X = 1.25;
+    public static double park2Y = -0.85;
+    public static double signalSleeveNum = 0;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -105,40 +115,42 @@ public class LeftSideHigh extends LinearOpMode {
                 .lineTo(new Vector2d(coneStacks1X + theStrafeLeftAfterHighAdditional, -strafeRightFirst))
                 .build();
 
-        TrajectorySequence goToConeStacks1 = drive.trajectorySequenceBuilder(strafeLeftAfterHigh.end())
+        Trajectory goToConeStacks1 = drive.trajectoryBuilder(strafeLeftAfterHigh.end())
                 .lineToLinearHeading(new Pose2d(coneStacks1X, coneStacks1Y, coneStacksAngle))
                 .build();
 
-        TrajectorySequence prepareToHigh = drive.trajectorySequenceBuilder(goToConeStacks1.end())
-                .lineToLinearHeading(new Pose2d(coneStacks1X, prepareToHighY, coneStacksAngle))
-                .lineToLinearHeading(new Pose2d(highJunctionX, prepareToHighY, coneStacksAngle))
+        Trajectory goToLowJunction1 = drive.trajectoryBuilder(goToConeStacks1.end())
+                .lineToLinearHeading(new Pose2d(lowJunction1X, lowJunction1Y, lowJunctionAngle))
                 .build();
 
-        Trajectory goToHighJunction = drive.trajectoryBuilder(prepareToHigh.end())
-                .lineToLinearHeading(new Pose2d(highJunctionX, highJunctionY, coneStacksAngle))
-                                .build();
+        Trajectory awayFromLowJunction = drive.trajectoryBuilder(goToLowJunction1.end())
+                .back(awayFromLow)
+                .build();
 
-        Trajectory backFromJunctionHigh1 = drive.trajectoryBuilder(goToHighJunction.end())
-                        .back(backFromJunctionHigh)
-                                .build();
+        TrajectorySequence goToConeStacks2 = drive.trajectorySequenceBuilder(goToLowJunction1.end())
+                .lineTo(new Vector2d(coneStacks2X - minusXConeStacks2, coneStacks2Y - strafeLeftAfterLow))
+                .lineToLinearHeading(new Pose2d(coneStacks2X - minusXConeStacks2, coneStacks2Y, coneStacksAngle))
+                .build();
 
-        Trajectory backFromJunctionHigh2 = drive.trajectoryBuilder(backFromJunctionHigh1.end())
-                .strafeRight(0.45)
+        Trajectory lowJunction2 = drive.trajectoryBuilder(goToConeStacks2.end())
+                .lineToLinearHeading(new Pose2d(lowJunction2X, lowJunction2Y, lowJunctionAngle))
+                .build();
+
+        TrajectorySequence prepareForParking = drive.trajectorySequenceBuilder(lowJunction2.end())
+                .back(awayFromLow2)
+                .turn(prepareForParkingAngleRadians)
                 .build();
 
 
-        Trajectory parking0Forward = drive.trajectoryBuilder(backFromJunctionHigh2.end())
-                        .lineToLinearHeading(new Pose2d(coneStacks2X, parking0Y, coneStacksAngle))
-                                .build();
-
-        TrajectorySequence parking1Forward = drive.trajectorySequenceBuilder(backFromJunctionHigh2.end())
-                .lineToLinearHeading(new Pose2d(coneStacks2X, parking1Y, coneStacksAngle))
-                .lineToLinearHeading(new Pose2d(coneStacks2X - 0.5, parking1Y, coneStacksAngle))
-                                .build();
-
-        Trajectory parking2Forward = drive.trajectoryBuilder(backFromJunctionHigh2.end())
-                .lineToLinearHeading(new Pose2d(coneStacks2X, parking2Y, coneStacksAngle))
-                                .build();
+        Trajectory parking0 = drive.trajectoryBuilder(prepareForParking.end())
+                .lineToLinearHeading(new Pose2d(park0X, park0Y, coneStacksAngle))
+                .build();
+        Trajectory parking1 = drive.trajectoryBuilder(prepareForParking.end())
+                .lineToLinearHeading(new Pose2d(park1X, park1Y, coneStacksAngle))
+                .build();
+        Trajectory parking2 = drive.trajectoryBuilder(prepareForParking.end())
+                .lineToLinearHeading(new Pose2d(park2X, park2Y, coneStacksAngle))
+                .build();
 
         waitForStart();
 
@@ -160,31 +172,42 @@ public class LeftSideHigh extends LinearOpMode {
         Intake.operate(IntakeState.DEPLETE);
         drive.followTrajectory(awayFromHighFirst);
         drive.followTrajectory(strafeLeftAfterHigh);
+        Intake.operate(IntakeState.STOP);
         Arm.operate(ArmState.FRONT);
         Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry, opModeIsActive());
-        drive.followTrajectorySequence(goToConeStacks1);
+        drive.followTrajectory(goToConeStacks1);
         Claw.operate(ClawState.CLOSE);
         sleep(waitTillIntake);
         Elevator.operateAutonomous(ElevatorStates.LOW, telemetry, opModeIsActive());
-        drive.followTrajectorySequence(prepareToHigh);
-        Intake.operate(IntakeState.COLLECT);
         Arm.operate(ArmState.BACK);
-        Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry, opModeIsActive());
-        drive.followTrajectory(goToHighJunction);
+        Intake.operate(IntakeState.COLLECT);
+        drive.followTrajectory(goToLowJunction1);
+        Intake.operate(IntakeState.DEPLETE);
         Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
         Claw.operate(ClawState.OPEN);
         Intake.operate(IntakeState.DEPLETE);
-        drive.followTrajectory(backFromJunctionHigh1);
-        drive.followTrajectory(backFromJunctionHigh2);
+        drive.followTrajectory(awayFromLowJunction);
+        Elevator.operateAutonomous(ElevatorStates.MID, telemetry, opModeIsActive());
         Arm.operate(ArmState.FRONT);
         Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry, opModeIsActive());
-        if (signalSleeveNum == 0){
-            drive.followTrajectory(parking0Forward);
-        } else if (signalSleeveNum == 1){
-            drive.followTrajectorySequence(parking1Forward);
-        } else if (signalSleeveNum == 2){
-            drive.followTrajectory(parking2Forward);
-        }
+        drive.followTrajectorySequence(goToConeStacks2);
+        Intake.operate(IntakeState.STOP);
+        Claw.operate(ClawState.CLOSE);
+        sleep(waitTillIntake);
+        Elevator.operateAutonomous(ElevatorStates.LOW, telemetry, opModeIsActive());
+        Arm.operate(ArmState.BACK);
+        Intake.operate(IntakeState.COLLECT);
+        drive.followTrajectory(lowJunction2);
+        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry, opModeIsActive());
+        Claw.operate(ClawState.OPEN);
+        Intake.operate(IntakeState.DEPLETE);
+        drive.followTrajectorySequence(prepareForParking);
+        Arm.operate(ArmState.FRONT);
+        sleep(waitTillArmReachesPos);
         Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry, opModeIsActive());
+        if (signalSleeveNum == 1) drive.followTrajectory(parking1);
+        else if (signalSleeveNum == 2) drive.followTrajectory(parking2);
+        else if (signalSleeveNum == 0 ) drive.followTrajectory(parking0);
+        PoseStorage.currentPose = drive.getPoseEstimate();
     }
 }
