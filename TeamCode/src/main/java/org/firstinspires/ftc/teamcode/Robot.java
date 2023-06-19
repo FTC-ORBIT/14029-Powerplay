@@ -47,7 +47,7 @@ public class Robot extends LinearOpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
-//        OrbitLED.init(hardwareMap);
+        OrbitLED.init(hardwareMap);
 
 
         OrbitGyro.resetGyroStartTeleop((float) Math.toDegrees(PoseStorage.currentPose.getHeading()));
@@ -74,7 +74,7 @@ public class Robot extends LinearOpMode {
           float omega = gamepad1.right_trigger - gamepad1.left_trigger;
           Drivetrain.operate(leftStick,  omega);
           SubSystemManager.setState(gamepad1, gamepad2, telemetry);
-//          OrbitLED.operate();
+          OrbitLED.operate();
 
            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 

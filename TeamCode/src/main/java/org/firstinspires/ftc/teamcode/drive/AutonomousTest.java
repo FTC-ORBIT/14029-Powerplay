@@ -167,7 +167,7 @@ public class AutonomousTest extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()){
             switch (currentState) {
                 case FIRST:
-                    Elevator.operateTeleop(ElevatorStates.HIGH, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
                     Claw.operate(ClawState.CLOSE);
                     Arm.operate(ArmState.BACK);
                     timer.reset();
@@ -179,10 +179,10 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case SECOND:
                     ServoCenter.operate(CenterState.DOWN);
-                    Elevator.operateTeleop(ElevatorStates.HIGH, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
                     Intake.operate(IntakeState.COLLECT);
                     if (!drive.isBusy()){
-                        Elevator.operateTeleop(ElevatorStates.DEPLETE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
                         if (timer.seconds() >= depleteDelay) {
                             Claw.operate(ClawState.OPEN);
                             currentState = States.THIRD;
@@ -192,7 +192,7 @@ public class AutonomousTest extends LinearOpMode {
                     telemetry.addData("second", null);
                     break;
                 case THIRD:
-                    Elevator.operateTeleop(ElevatorStates.MID, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.MID, telemetry);
                     Intake.operate(IntakeState.STOP);
                     if (!drive.isBusy()){
                         Arm.operate(ArmState.FRONT);
@@ -203,7 +203,7 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case FOURTH:
                     Arm.operate(ArmState.FRONT);
-                    Elevator.operateTeleop(ElevatorStates.CLAWINTAKE, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry);
                     if (!drive.isBusy()){
                         Claw.operate(ClawState.CLOSE);
                         currentState = States.FIFTH;
@@ -214,7 +214,7 @@ public class AutonomousTest extends LinearOpMode {
                 case FIFTH:
                     Elevator.setWanted(ElevatorConstants.lowHeight);
                     if (timer.seconds() >= firstDelayTime){
-                        Elevator.operateTeleop(ElevatorStates.LOW, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.LOW, telemetry);
                     }
                     if (Elevator.reachedHeight()){
                         Arm.operate(ArmState.BACK);
@@ -223,7 +223,7 @@ public class AutonomousTest extends LinearOpMode {
                 }
                     break;
                 case SIXTH:
-                    Elevator.operateTeleop(ElevatorStates.HIGH, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(goToDepleteHighSecond);
                         currentState = States.SEVENTH;
@@ -236,7 +236,7 @@ public class AutonomousTest extends LinearOpMode {
                         timer.reset();
                     }
                     if (!drive.isBusy()){
-                        Elevator.operateTeleop(ElevatorStates.DEPLETE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
                         Claw.operate(ClawState.OPEN);
                         Intake.operate(IntakeState.STOP);
                         drive.followTrajectorySequenceAsync(awayFromHighSecond);
@@ -246,7 +246,7 @@ public class AutonomousTest extends LinearOpMode {
                 case EIGHT:
                     Elevator.coneStacksFloor = 4;
                     Intake.operate(IntakeState.STOP);
-                    Elevator.operateTeleop(ElevatorStates.MID, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.MID, telemetry);
                     if (!drive.isBusy()){
                         Arm.operate(ArmState.FRONT);
                         drive.followTrajectorySequenceAsync(goToConeStacksSecond);
@@ -255,14 +255,14 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case NINTH:
                     if (drive.isBusy()) {
-                        Elevator.operateTeleop(ElevatorStates.CLAWINTAKE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry);
                         timer.reset();
                         telemetry.addData("busy", null);
                     }
                     if (!drive.isBusy()){
                         Claw.operate(ClawState.CLOSE);
                         if (timer.seconds() > firstDelayTime){
-                            Elevator.operateTeleop(ElevatorStates.LOW, telemetry);
+                            Elevator.operateAutonomous(ElevatorStates.LOW, telemetry);
                             if (Elevator.reachedHeight()){
                                 currentState = States.TENTH;
                                 drive.followTrajectorySequenceAsync(goToHighThirdTraj);
@@ -272,7 +272,7 @@ public class AutonomousTest extends LinearOpMode {
                     }
                     break;
                 case TENTH:
-                    Elevator.operateTeleop(ElevatorStates.HIGH, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
                     Arm.operate(ArmState.BACK);
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(goToDepleteHighThird);
@@ -286,14 +286,14 @@ public class AutonomousTest extends LinearOpMode {
                     }
                     if (!drive.isBusy()){
                         Intake.operate(IntakeState.DEPLETE);
-                        Elevator.operateTeleop(ElevatorStates.DEPLETE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
                         Claw.operate(ClawState.OPEN);
                         drive.followTrajectorySequenceAsync(awayFromHighThird);
                         currentState = States.TWELVE;
                     }
                     break;
                 case TWELVE:
-                    Elevator.operateTeleop(ElevatorStates.MID, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.MID, telemetry);
                     Intake.operate(IntakeState.DEPLETE);
                     if (!drive.isBusy()){
                         currentState = States.THIRTEEN;
@@ -302,7 +302,7 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case THIRTEEN:
                     if (drive.isBusy()) {
-                        Elevator.operateTeleop(ElevatorStates.CLAWINTAKE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.CLAWINTAKE, telemetry);
                         Arm.operate(ArmState.FRONT);
                         Intake.operate(IntakeState.STOP);
                         timer.reset();
@@ -310,7 +310,7 @@ public class AutonomousTest extends LinearOpMode {
                     if (!drive.isBusy()){
                         Claw.operate(ClawState.CLOSE);
                         if (timer.seconds() >= firstDelayTime) {
-                            Elevator.operateTeleop(ElevatorStates.LOW, telemetry);
+                            Elevator.operateAutonomous(ElevatorStates.LOW, telemetry);
                             if (Elevator.reachedHeight()){
                                 drive.followTrajectorySequenceAsync(goToHighFourthTraj);
                                 currentState = States.FIFTEEN;
@@ -322,7 +322,7 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case FIFTEEN:
                     telemetry.addData("fifteen", null);
-                    Elevator.operateTeleop(ElevatorStates.HIGH, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.HIGH, telemetry);
                     Arm.operate(ArmState.BACK);
                     if (!drive.isBusy()){
                         drive.followTrajectorySequenceAsync(goToDepleteFourthTraj);
@@ -335,14 +335,14 @@ public class AutonomousTest extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Intake.operate(IntakeState.DEPLETE);
-                        Elevator.operateTeleop(ElevatorStates.DEPLETE, telemetry);
+                        Elevator.operateAutonomous(ElevatorStates.DEPLETE, telemetry);
                         Claw.operate(ClawState.OPEN);
                         drive.followTrajectorySequenceAsync(awayFromHighFourthTraj);
                         currentState = States.SEVENTEEN;
                     }
                     break;
                 case SEVENTEEN:
-                    Elevator.operateTeleop(ElevatorStates.MID, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.MID, telemetry);
                     Intake.operate(IntakeState.DEPLETE);
                     if (!drive.isBusy()) {
                      currentState = States.IDLE;
@@ -350,7 +350,7 @@ public class AutonomousTest extends LinearOpMode {
                     break;
                 case IDLE:
                     Arm.operate(ArmState.FRONT);
-                    Elevator.operateTeleop(ElevatorStates.GROUND, telemetry);
+                    Elevator.operateAutonomous(ElevatorStates.GROUND, telemetry);
                     Intake.operate(IntakeState.STOP);
                     break;
             }

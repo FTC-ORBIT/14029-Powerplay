@@ -43,7 +43,7 @@ public class Elevator {
         floor = 5;
     }
 
-    public static void operateTeleop(ElevatorStates elevatorState,  Telemetry telemetry) {
+    public static void operateTeleop(ElevatorStates elevatorState, Gamepad gamepad1, Telemetry telemetry) {
         height = Intake.motors[0].getCurrentPosition() - lastHeight;
 
         switch (elevatorState) {
@@ -64,17 +64,17 @@ public class Elevator {
                 break;
             case CLAWINTAKE:
                 wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference * (5 - coneStacksFloor);
-//                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
-//                    coneStacksFloor += 1;
-//                    ableToChangeConeStacksFloor = false;
-//                }
-//                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
-//                    coneStacksFloor -= 1;
-//                    ableToChangeConeStacksFloor = false;
-//                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
-//            case OVERRIDE:
-//                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
-//                break;
+                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor += 1;
+                    ableToChangeConeStacksFloor = false;
+                }
+                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor -= 1;
+                    ableToChangeConeStacksFloor = false;
+                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
+            case OVERRIDE:
+                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
+                break;
             case DEPLETE:
                 elevatorPower = ElevatorConstants.depletePower;
                 break;
@@ -90,7 +90,7 @@ public class Elevator {
 
     }
 
-    public static void operateAutonomous (ElevatorStates elevatorState, Telemetry telemetry, boolean opModeIsActive) {
+    public static void operateAutonomous (ElevatorStates elevatorState, Telemetry telemetry) {
         switch (elevatorState) {
             case INTAKE:
                 wanted = intakeHeight;
