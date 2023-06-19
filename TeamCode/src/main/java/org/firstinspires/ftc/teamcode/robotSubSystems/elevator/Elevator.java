@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 
 @Config
 public class Elevator {
@@ -30,7 +31,7 @@ public class Elevator {
     public static  float wanted = 0;
     public static float height = 0;
     public static float lastHeight = 0;
-    private static  int coneStacksFloor = 5;
+    public static int coneStacksFloor = 5;
     public static int floor = 5;
     private static final ElapsedTime time = new ElapsedTime();
     public static final double depleteTime = 400;
@@ -42,8 +43,8 @@ public class Elevator {
         floor = 5;
     }
 
-    public static void operateTeleop(ElevatorStates elevatorState, Gamepad gamepad1, Telemetry telemetry) {
-        height = Drivetrain.motors[1].getCurrentPosition() - lastHeight;
+    public static void operateTeleop(ElevatorStates elevatorState,  Telemetry telemetry) {
+        height = Intake.motors[0].getCurrentPosition() - lastHeight;
 
         switch (elevatorState) {
             case INTAKE:
@@ -63,17 +64,17 @@ public class Elevator {
                 break;
             case CLAWINTAKE:
                 wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference * (5 - coneStacksFloor);
-                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
-                    coneStacksFloor += 1;
-                    ableToChangeConeStacksFloor = false;
-                }
-                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
-                    coneStacksFloor -= 1;
-                    ableToChangeConeStacksFloor = false;
-                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
-            case OVERRIDE:
-                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
-                break;
+//                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
+//                    coneStacksFloor += 1;
+//                    ableToChangeConeStacksFloor = false;
+//                }
+//                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
+//                    coneStacksFloor -= 1;
+//                    ableToChangeConeStacksFloor = false;
+//                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
+//            case OVERRIDE:
+//                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
+//                break;
             case DEPLETE:
                 elevatorPower = ElevatorConstants.depletePower;
                 break;
@@ -139,6 +140,10 @@ public class Elevator {
 
     public static boolean reachedHeight (){
         return height >= wanted - 400 && height <= wanted + 400;
+    }
+
+    public static void setWanted (float wantedNum){
+        wanted = wantedNum;
     }
 
     public static boolean reachedHeightVal (float wantedHeight){

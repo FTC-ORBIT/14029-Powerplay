@@ -68,18 +68,19 @@ public class Robot extends LinearOpMode {
         GlobalData.robotState = RobotState.CLAWINTAKE;
 
         while (!isStopRequested()) {
-            if (gamepad2.right_bumper) OrbitGyro.resetGyro();
-           GlobalData.currentTime = (float) robotTime.seconds();
-           Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-           float omega = gamepad1.right_trigger - gamepad1.left_trigger;
-           Drivetrain.operate(leftStick,  omega);
-           SubSystemManager.setState(gamepad1, gamepad2, telemetry);
-//           OrbitLED.operate();
+           if (gamepad2.right_bumper) OrbitGyro.resetGyro();
+          GlobalData.currentTime = (float) robotTime.seconds();
+          Vector leftStick = new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+          float omega = gamepad1.right_trigger - gamepad1.left_trigger;
+          Drivetrain.operate(leftStick,  omega);
+          SubSystemManager.setState(gamepad1, gamepad2, telemetry);
+//          OrbitLED.operate();
 
-            GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+           GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 
 
-            GlobalData.lastTime = GlobalData.currentTime;
+           GlobalData.lastTime = GlobalData.currentTime;
+            Drivetrain.testMotors(gamepad1, telemetry);
             telemetry.update();
             SubSystemManager.printStates(telemetry);
             telemetry.addData("hasGamePiece", GlobalData.hasGamePiece);

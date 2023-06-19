@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.ArmState;
+import org.firstinspires.ftc.teamcode.robotSubSystems.center.ServoCenter;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -31,6 +32,7 @@ public class TestSystems extends LinearOpMode {
         Drivetrain.init(hardwareMap);
         Elevator.initAutonomous(hardwareMap);
         OrbitGyro.init(hardwareMap);
+        ServoCenter.init(hardwareMap);
         coneDistanceSensor = hardwareMap.get(DigitalChannel.class, "clawDistanceSensor");
         coneDistanceSensor.setMode(DigitalChannel.Mode.INPUT);
 
@@ -48,6 +50,7 @@ public class TestSystems extends LinearOpMode {
             if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2 || gamepad1.left_stick_x > 0.2 || gamepad1.left_stick_x < -0.2)
                 Drivetrain.operate(new Vector(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
 
+            ServoCenter.testArm(gamepad1, telemetry);
 
             telemetry.update();
             telemetry.addData("distanceSensor", coneDistanceSensor.getState());

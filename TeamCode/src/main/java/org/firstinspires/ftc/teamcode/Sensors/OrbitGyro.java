@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.Sensors;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,12 +9,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.OrbitUtils.PID;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
+@Config
 public class OrbitGyro {
     public static BNO055IMU imu;
     public static double  lastAngle = 0;
     static double currentAngle = 0;
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
+    static PID anglePID = new PID(kP, kI, kD, 0, 0);
 
     public static void init(HardwareMap hardwareMap){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -46,5 +53,10 @@ public class OrbitGyro {
         double lastAngleT = currentAngle;
         currentAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle;
         return currentAngle - lastAngleT;
+    }
+
+    public static void turnTo (float wantedAngle){
+        anglePID.setWanted(wantedAngle);
+
     }
 }

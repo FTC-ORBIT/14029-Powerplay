@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.OrbitUtils.Vector;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Sensors.OrbitGyro;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 
@@ -17,20 +15,12 @@ public class Drivetrain {
 
     public static final DcMotor[] motors = new DcMotor[4];
 
-    public static SampleMecanumDrive drive;
-
     private static Pose2d pose;
     public static Vector lastPosition;
     // equal to the last Autonomous position?
     public static Vector lastVelocity = GlobalData.inAutonomous ? getVelocity_FieldCS() : null;
 
     public static void init(HardwareMap hardwareMap) {
-        if (GlobalData.inAutonomous) {
-            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            drive = new SampleMecanumDrive(hardwareMap);
-        } else {
-            drive = new SampleMecanumDrive(hardwareMap);
-        }
         motors[0] = hardwareMap.get(DcMotor.class, "lf");
         motors[1] = hardwareMap.get(DcMotor.class, "rf");
         motors[2] = hardwareMap.get(DcMotor.class, "lb");
@@ -54,7 +44,6 @@ public class Drivetrain {
         final Vector velocity_RobotCS_W = velocity_W.rotate(-robotAngle);
         if(velocity_RobotCS_W.norm() <= Math.sqrt(0.005) && Math.abs(omega) == 0) stop();
         else drive(velocity_RobotCS_W, omega);
-        if (GlobalData.inAutonomous) pose = drive.getPoseEstimate();
     }
     // did field centric
 

@@ -14,7 +14,6 @@ public class PoseTracker {
     private static float lastAngle = (float) robotPose.getHeading();
 
     public static void calcPose() { // * we are calling this function every cycle in the opmode.
-        Drivetrain.drive.update(); // ! this is the only place we should call the update function.
         robotPose = Drivetrain.getPose_FieldCS();
         calcPoseDerivatives();
     }
@@ -58,7 +57,6 @@ public class PoseTracker {
 
     public static void setPose(Pose2d pose2d) {
         robotPose = pose2d;
-        Drivetrain.drive.setPoseEstimate(robotPose);
     }
 
     public static void resetPosition() {
