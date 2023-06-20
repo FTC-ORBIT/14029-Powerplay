@@ -9,8 +9,8 @@ public class ElevatorConstants {
     public static final float lowHeight = 15200;
     public static final float midHeight = 23885;
     public static final float highHeight = 32900;//33000
-    public static final float coneStacksHeight = 4600; //1586
-    public static final float coneStacksDifference = 1000;
+    public static final float coneStacksHeight = 4800; //1586
+    public static final float coneStacksDifference = 1300;
     public static final float ableToOpenClawHeight = 6500;
     public static final float ableToTurnArmHeight = 10000;
     public static final float constantPower = 0.074f;

@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.OrbitLED;
 import org.firstinspires.ftc.teamcode.robotSubSystems.RobotState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.SubSystemManager;
 import org.firstinspires.ftc.teamcode.robotSubSystems.arm.Arm;
+import org.firstinspires.ftc.teamcode.robotSubSystems.center.CenterState;
+import org.firstinspires.ftc.teamcode.robotSubSystems.center.ServoCenter;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
@@ -47,6 +49,8 @@ public class Robot extends LinearOpMode {
         Claw.init(hardwareMap);
         Arm.init(hardwareMap);
         Intake.init(hardwareMap);
+        ServoCenter.init(hardwareMap);
+        ServoCenter.operate(CenterState.UP);
 //        OrbitLED.init(hardwareMap);
 
 
