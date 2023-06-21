@@ -43,7 +43,7 @@ public class Elevator {
         floor = 5;
     }
 
-    public static void operateTeleop(ElevatorStates elevatorState,  Telemetry telemetry) {
+    public static void operateAutonomous(ElevatorStates elevatorState, Telemetry telemetry) {
         height = Intake.motors[0].getCurrentPosition() - lastHeight;
 
         switch (elevatorState) {
@@ -74,7 +74,7 @@ public class Elevator {
 //                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
 //            case OVERRIDE:
 //                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
-//                break;
+                break;
             case DEPLETE:
                 elevatorPower = ElevatorConstants.depletePower;
                 break;
@@ -90,7 +90,9 @@ public class Elevator {
 
     }
 
-    public static void operateAutonomous (ElevatorStates elevatorState, Telemetry telemetry, boolean opModeIsActive) {
+    public static void opereateTeleop (ElevatorStates elevatorState,Gamepad gamepad1, Telemetry telemetry) {
+        height = Intake.motors[0].getCurrentPosition() - lastHeight;
+
         switch (elevatorState) {
             case INTAKE:
                 wanted = intakeHeight;
@@ -107,30 +109,31 @@ public class Elevator {
             case HIGH:
                 wanted = highHeight;
                 break;
-            case DEPLETE:
-                time.reset();
-                while (time.milliseconds() < depleteTime){
-                    elevatorMotor.setPower(ElevatorConstants.depletePower);
-                }
-                break;
             case CLAWINTAKE:
-                wanted = ElevatorConstants.coneStacksHeight - (5 - floor) * ElevatorConstants.coneStacksDifference;
+                wanted = ElevatorConstants.coneStacksHeight - ElevatorConstants.coneStacksDifference * (5 - coneStacksFloor);
+                if ((-gamepad1.right_stick_y > 0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor += 1;
+                    ableToChangeConeStacksFloor = false;
+                }
+                else if ((-gamepad1.right_stick_y < -0.8) && ableToChangeConeStacksFloor) {
+                    coneStacksFloor -= 1;
+                    ableToChangeConeStacksFloor = false;
+                } else if (gamepad1.right_stick_y > -0.2 && gamepad1.right_stick_y < 0.2) ableToChangeConeStacksFloor = true;
+            case OVERRIDE:
+                elevatorPower = -gamepad1.right_stick_y + ElevatorConstants.constantPower;
+                break;
+            case DEPLETE:
+                elevatorPower = ElevatorConstants.depletePower;
+                break;
         }
-        while (!Elevator.reachedHeight() && !elevatorState.equals(ElevatorStates.DEPLETE)) {
-            height = Drivetrain.motors[1].getCurrentPosition() - lastHeight;
-            elevatorPID.setWanted(wanted);
+        elevatorPID.setWanted(wanted);
+        if (!elevatorState.equals(ElevatorStates.OVERRIDE) && !elevatorState.equals(ElevatorStates.DEPLETE)) {
             elevatorPower = (float) elevatorPID.update(height);
+        }
 
-            elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
-            telemetry.update();
-            telemetry.addData("height", height);
-            telemetry.addData("reachedHeight", reachedHeight());
-        }
-        if (elevatorState.equals(ElevatorStates.CLAWINTAKE)) {
-            floor--;
-            coneStacksFloor--;
-        }
-        elevatorMotor.setPower(ElevatorConstants.constantPower);
+        elevatorMotor.setPower(elevatorPower + ElevatorConstants.constantPower);
+        telemetry.addData("height", height);
+        telemetry.addData("reachedHeight", reachedHeight());
     }
 
     public static float getMotorCurrent(Telemetry telemetry){
@@ -155,7 +158,7 @@ public class Elevator {
 
     public static void setPower (float power) { elevatorMotor.setPower(-power);}
     public static float getAndUpdateHeight(){
-        height = Drivetrain.motors[1].getCurrentPosition();
+        height = Intake.motors[0].getCurrentPosition();
         return height;
     }
 
